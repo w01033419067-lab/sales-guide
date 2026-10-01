@@ -1042,8 +1042,7 @@ tbody tr:last-child td { border-bottom: none; }
 <div class="cf-note" data-n="tvopt"></div></div>
 <div class="cf-block" data-b="mobile"><div class="cf-h">⑥ 결합 휴대폰 <small>유심 신규 또는 기존 휴대폰</small></div><div class="calc-lines"></div><button class="add-line" type="button">+ 휴대폰 회선 추가</button><div class="cf-note" data-n="mobile"></div></div>
 <div class="cf-block"><div class="cf-h">⑦ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-note" data-n="bundle"></div></div>
-<div class="cf-block"><div class="cf-h">⑧ 설치일 · 현재 요금 · 사은품</div>
-<div class="cf-row"><label class="lbl">설치일</label><div class="chips" data-f="day"></div></div>
+<div class="cf-block"><div class="cf-h">⑧ 현재 요금 · 사은품</div>
 <div class="cf-row"><label class="lbl" for="calcCur">현재 요금</label><input class="calc-num" id="calcCur" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="월 납부액 (선택)"/><span style="font-size:11.5px;color:#6B7C8F;">고객이 지금 내는 인터넷·TV·휴대폰 월 합계</span></div>
 <div class="cf-row"><label class="lbl" for="calcGift">사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span style="font-size:12.5px;font-weight:700;color:#1F4E8C;">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「· 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.</div>
 </div>
@@ -1772,10 +1771,11 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (iN < 0) return;
       var iG = colOf(pt, function(s){ return /구간/.test(s); }),
           iP = colOf(pt, function(s){ return /^월요금/.test(s); }),
-          iD = colOf(pt, function(s){ return /선택약정/.test(s); });
+          iD = colOf(pt, function(s){ return /선택약정/.test(s); }),
+          iData = colOf(pt, function(s){ return /데이터/.test(s); });
       var cat = labelBefore(t);
       pt.rows.forEach(function(r){
-        plans.push({ cat: cat, band: txt(r[iG]), name: txt(r[iN]), price: num(txt(r[iP])), sel: iD >= 0 ? num(txt(r[iD])) : null });
+        plans.push({ cat: cat, band: txt(r[iG]), name: txt(r[iN]), price: num(txt(r[iP])), sel: iD >= 0 ? num(txt(r[iD])) : null, data: iData >= 0 ? txt(r[iData]) : '' });
       });
     });
     return plans;
@@ -1826,14 +1826,14 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
   /* ── 계산 ─────────────────────────────────────────────── */
   function lineInfo(s, ln){
-    var list = 0, selD = 0, name = '', isNew = ln.type === 'new';
+    var list = 0, selD = 0, name = '', data = '', isNew = ln.type === 'new';
     if (isNew){
       var p = D.usim[s.carrier].filter(function(x){ return x.name === ln.plan; })[0];
-      if (p){ list = p.price; name = p.name; if (ln.sel && p.sel != null) selD = p.price - p.sel; }
+      if (p){ list = p.price; name = p.name; data = p.data || ''; if (ln.sel && p.sel != null) selD = p.price - p.sel; }
     } else {
       list = ln.price || 0; name = '기존 휴대폰';          /* 현재 요금(요금제 월정액)만 입력 — 선택약정·청소년 없음 */
     }
-    return { list: list, sel: selD, name: name, isNew: isNew, youth: isNew && !!ln.youth, ok: list > 0 };
+    return { list: list, sel: selD, name: name, data: data, isNew: isNew, youth: isNew && !!ln.youth, ok: list > 0 };
   }
 
   function compute(s, bundleKey){
@@ -1992,7 +1992,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       var room = x.list - x.sel, applied = Math.min(phoneDisc[i], room);     /* 요금보다 큰 할인은 요금만큼만 적용 · 표시 */
       if (phoneDisc[i] > room) notes.push(x.no + '회선은 할인액이 요금보다 커서 0원으로 계산 (남는 할인 ' + won(phoneDisc[i] - room) + ' 미반영)');
       mobile += room - applied;
-      lines.push({ no: x.no, name: x.name, isNew: x.isNew, list: x.list, sel: x.sel, disc: applied, tag: phoneTag[i], pay: room - applied });
+      lines.push({ no: x.no, name: x.name, data: x.data, isNew: x.isNew, list: x.list, sel: x.sel, disc: applied, tag: phoneTag[i], pay: room - applied });
     });
     if (phoneTotalDisc > mobile){ notes.push('휴대폰 결합 할인 ' + won(phoneTotalDisc) + '이 휴대폰 요금보다 커서 ' + won(mobile) + '만 적용'); phoneTotalDisc = mobile; }
     mobile -= phoneTotalDisc;
@@ -2000,7 +2000,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     /* 1회 청구 */
     var kind = r.tv === SOLO ? 'net' : (s.tvAdd && tvAdd ? 'two' : 'bundle');
     var inst = installFee(W, kind, s.day);
-    if (inst){ inst.wk = s.day === 'wk'; var wd = installFee(W, kind, 'wd'); inst.diff = wd && inst.wk ? inst.fee - wd.fee : 0; }
+    if (inst){ inst.wk = s.day === 'wk'; var wd = installFee(W, kind, 'wd'); inst.diff = wd && inst.wk ? inst.fee - wd.fee : 0;
+      var other = installFee(W, kind, inst.wk ? 'wd' : 'wk'); inst.other = other ? other.fee : null; }
     var usim = lineObjs.filter(function(x){ return x.isNew; }).length * RULES.usimFee;
 
     return { ok: true, bundle: b, bLabel: bLabel, row: r, desc: desc, items: items, wired: wired,
@@ -2186,7 +2187,6 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
           return '<option value="' + e.no + '"' + (e.no === S.rep ? ' selected' : '') + '>' + e.no + '회선 · ' + esc(e.name) + ' (' + won(e.list) + ')</option>'; }).join('');
       }
     }
-    chips('day', [{ v: 'wd', t: '평일' }, { v: 'wk', t: '주말·야간', s: '할증' }], S.day);
 
     var pfBox = $('[data-b="pfbase"]'), spBox = $('[data-b="split"]');
     var isPf = S.carrier === 'kt' && eff === 'pfamily', isTot = S.carrier === 'kt' && eff === 'total';
@@ -2234,9 +2234,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     h += '</tbody></table>';
 
     var once = [];
-    if (c.install) once.push('설치비 <b>' + won(c.install.fee) + '</b> '
-      + (c.install.wk ? '<span style="color:#C2410C;font-weight:800;">주말·야간 할증</span>' : '<span style="color:#1F4E8C;font-weight:800;">평일</span>')
-      + ' <span style="color:#6B7C8F;">(' + esc(c.install.item) + (c.install.wk ? (c.install.diff > 0 ? ' · 평일보다 +' + won(c.install.diff) : ' · 평일과 동일') : '') + ')</span>');
+    /* 설치비 : 평일 기준 고정 · 주말·야간 금액은 괄호로 */
+    if (c.install) once.push('설치비 <b>' + won(c.install.fee) + '</b> <span style="color:#1F4E8C;font-weight:800;">평일</span>'
+      + ' <span style="color:#6B7C8F;">(' + (c.install.other == null ? '' : '주말·야간 ' + (c.install.other === c.install.fee ? '동일' : '<b style="color:#C2410C;">' + won(c.install.other) + '</b>') + ' · ') + esc(c.install.item) + ')</span>');
     if (c.usim) once.push('유심비 <b>' + won(c.usim) + '</b> <span style="color:#6B7C8F;">(' + (c.usim / RULES.usimFee) + '회선 × 7,700원)</span>');
     if (once.length) h += '<div class="cr-box"><div class="h">1회 청구</div>' + once.join('<br>') + '</div>';
 
@@ -2265,20 +2265,50 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   window.addEventListener('scroll', syncBar, { passive: true });
   window.addEventListener('resize', syncBar);
 
+  /* 고객 안내 문구 (견적서) — 회선마다 계산 과정을 한 줄로 */
+  function n0(v){ return v.toLocaleString('ko-KR'); }
   function message(c){
-    var L = [];
-    L.push('[요금 안내] ' + c.desc);
-    L.push('· ' + c.wl + ' 월 요금 : 부가세 포함 ' + won(c.wired) + ' (3년 약정)');
-    if (c.n) L.push('· 휴대폰 ' + c.n + '회선 월 요금 : ' + won(c.mobile) + (c.lines.some(function(l){ return l.sel; }) ? ' (선택약정 25% 적용)' : ''));
-    if (c.bLabel){
-      var disc = -c.items.filter(function(x){ return x.kind === 'disc' && /결합/.test(x.label); }).reduce(function(a, x){ return a + x.amt; }, 0)
-               + c.lines.reduce(function(a, l){ return a + l.disc; }, 0) + c.phoneTotalDisc;
-      L.push('· 결합 : ' + c.bLabel + ' — 월 ' + won(disc) + ' 할인');
+    var L = [], sum = function(a){ return a.reduce(function(x, y){ return x + y; }, 0); };
+    L.push('[요금 안내] ' + c.desc + (c.bLabel ? ' · ' + c.bLabel.replace(/^(KT|SK|LG) /, '') : ''));
+    /* 인터넷·TV : 기본 + TV 추가 · 셋탑 − 결합 */
+    var parts = [], adj = false;
+    c.items.forEach(function(it){
+      /* TV 추가 → 「TV 추가(베이직)」, 셋탑 → 「지니A 셋탑」 처럼 무엇인지 보이게 */
+      var nm = it.kind === 'base' ? '' : /결합/.test(it.label) ? '결합 '
+             : it.kind === 'add' && /TV 추가/.test(it.label) ? 'TV 추가(' + it.sub.split(' · ')[0] + ') '
+             : /셋탑/.test(it.label) ? it.sub.replace(/ \(올 요금제 할인 반영\)$/, '') + ' ' : it.label + ' ';
+      if (it.kind === 'base') parts.push(n0(it.amt));
+      else { adj = true; parts.push((it.amt < 0 ? '− ' : '+ ') + nm + n0(Math.abs(it.amt))); }
+    });
+    L.push('· ' + c.wl + ' : ' + (adj ? parts.join(' ') + ' = ' : '') + won(c.wired));
+    /* 휴대폰 : 회선별 (결합 할인이 합계로 정해지는 결합은 회선마다 똑같이 나눠 표시) */
+    if (c.n){
+      var share = c.lines.map(function(){ return 0; });
+      if (c.phoneTotalDisc){
+        share = shareByContribution(c.phoneTotalDisc, c.lines.map(function(){ return 1; })).map(function(x){ return x.amt; });
+        if (c.lines.some(function(l, i){ return share[i] > l.pay; })) share = null;     /* 나눌 수 없으면 합계 한 줄로 */
+      }
+      L.push('· 휴대폰 ' + c.n + '회선' + (c.phoneTotalDisc && share ? ' (' + c.bLabel.replace(/^(KT|SK|LG) /, '') + ' 휴대폰 할인 ' + won(c.phoneTotalDisc) + ' ÷ ' + c.n + '회선)' : ''));
+      c.lines.forEach(function(l, i){
+        var d = l.disc + (share ? share[i] : 0), pay = l.pay - (share ? share[i] : 0);
+        var calc = (l.sel || d) ? n0(l.list) + (l.sel ? ' − 선택약정 ' + n0(l.sel) : '') + (d ? ' − 결합 ' + n0(d) : '') + ' = ' + won(pay) : won(pay);
+        var nm = (i + 1) + ') ' + l.name + (l.data ? ' (' + l.data + ')' : '');
+        if (l.data) { L.push('  ' + nm); L.push('     ' + calc); } else L.push('  ' + nm + ' : ' + calc);
+      });
+      if (c.phoneTotalDisc && !share) L.push('  결합 할인 (휴대폰) : − ' + won(c.phoneTotalDisc));
     }
-    L.push('· 월 합계 : ' + won(c.total) + (S.cur ? (S.cur >= c.total ? ' (현재보다 월 ' + won(S.cur - c.total) + ' 절감)' : ' (현재보다 월 ' + won(c.total - S.cur) + ' 증가)') : ''));
+    if (c.bLabel){
+      var disc = -sum(c.items.filter(function(x){ return x.kind === 'disc' && /결합/.test(x.label); }).map(function(x){ return x.amt; }))
+               + sum(c.lines.map(function(l){ return l.disc; })) + c.phoneTotalDisc;
+      L.push('· 결합 할인 : 월 ' + won(disc));
+    }
+    L.push('· 월 합계 : ' + won(c.total) + ' (부가세 포함)' + (S.cur ? (S.cur >= c.total ? ' · 현재보다 월 ' + won(S.cur - c.total) + ' 절감' : ' · 현재보다 월 ' + won(c.total - S.cur) + ' 증가') : ''));
     var once = [];
-    if (c.install) once.push('설치비 ' + won(c.install.fee) + (c.install.wk ? ' (주말·야간 할증)' : ' (평일)'));
-    if (c.usim) once.push('유심비 ' + won(c.usim));
+    if (c.install){
+      var f = c.install, same = f.other === f.fee;
+      once.push('설치비 ' + won(f.fee) + (f.other == null ? '' : same ? ' (주말·야간 동일)' : ' (주말·야간 ' + won(f.other) + ')'));
+    }
+    if (c.usim) once.push('유심비 ' + won(c.usim) + (c.usim / RULES.usimFee > 1 ? ' (' + (c.usim / RULES.usimFee) + '회선)' : ''));
     if (once.length) L.push('· 1회 청구 : ' + once.join(' + '));
     L.push('· 약정 : ' + c.wl + ' 3년' + (c.lines.some(function(l){ return l.isNew; }) ? ' / 유심 1년' : ''));
     if (S.gift) L.push('· 사은품 : ' + S.gift + '만원');      /* 입력하지 않으면 줄 자체를 뺌 */
@@ -2299,8 +2329,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       else if (f === 'tv') S.tv = v;
       else if (f === 'wifi') S.wifi = v === '1';
       else if (f === 'bundle') S.bundle = v;
-      else if (f === 'day') S.day = v;
-      if (f === 'bundle' || f === 'day') renderResult(); else renderForm();
+      if (f === 'bundle') renderResult(); else renderForm();
       return;
     }
     if (e.target.closest('.add-line')){
