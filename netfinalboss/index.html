@@ -438,6 +438,18 @@ tbody tr:last-child td { border-bottom: none; }
   .ln-type { flex: 0 0 auto; width: auto; }
   .ln-plan { flex: 1 1 180px; }
   .ln-price { width: 130px; }
+  .ln-find { margin-top: 6px; }
+  .ln-find .ln-q { width: 100%; max-width: none; text-align: left; padding-left: 30px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7C8F' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 9px center; }
+  .ln-hits { margin-top: 4px; max-height: 248px; overflow-y: auto; border: 1px solid #BFD3EA; border-radius: 8px; background: #fff; box-shadow: 0 4px 12px rgba(20,60,100,.10); }
+  .ln-hits-h, .ln-hits-none { font-size: 11.5px; color: #6B7C8F; padding: 6px 10px; }
+  .ln-hits-h { position: sticky; top: 0; background: #F3F8FD; border-bottom: 1px solid #E1ECF7; font-weight: 700; }
+  .ln-hit { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; width: 100%; text-align: left; font-family: inherit; background: #fff; border: 0; border-top: 1px solid #EEF3F9; padding: 7px 10px; cursor: pointer; }
+  .ln-hit:first-of-type { border-top: 0; }
+  .ln-hit:hover, .ln-hit:focus { background: #EAF2FB; outline: none; }
+  .ln-hit .nm { font-size: 13px; font-weight: 700; color: #14213D; }
+  .ln-hit .nm mark { background: #FFE58A; color: inherit; border-radius: 2px; padding: 0 1px; }
+  .ln-hit .pr { font-size: 12.5px; font-weight: 800; color: #1F4E8C; font-variant-numeric: tabular-nums; }
+  .ln-hit small { grid-column: 1 / -1; font-size: 11px; color: #6B7C8F; }
   .ln-del { flex: none; margin-left: auto; font-family: inherit; font-size: 12px; font-weight: 700; color: #A32D2D; background: #fff; border: 1px solid #E7B9B9; border-radius: 7px; padding: 4px 9px; cursor: pointer; }
   .ln-bot { margin-top: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .ln-sum { font-size: 11.5px; color: #3A4A5E; font-variant-numeric: tabular-nums; }
@@ -520,7 +532,7 @@ tbody tr:last-child td { border-bottom: none; }
 </div>
 </div>
 <a class="nav-calc" data-page="p7" href="#">3. 요금계산기</a><div id="gsWrap"><input autocomplete="off" id="gsInput" placeholder="문서 전체 검색" type="text"/><button aria-label="검색어 지우기" id="gsClear" type="button">✕</button><div id="gsResults"></div></div></nav>
-<main><div class="section page active" id="p2"><div class="section-header"><span class="num">1</span><h2>유선 요금</h2></div><div class="section-body"><div style="background:#FCEBEB;border-left:4px solid #A32D2D;padding:12px 14px;border-radius:8px;font-size:13.5px;color:#7A1F1F;font-weight:600;margin:0 0 10px;line-height:1.7;"><div style="font-size:14px;font-weight:800;margin-bottom:6px;">⚠ 경품가이드 준수 및 정상 영업활동 권고</div><div style="font-weight:500;">경품고시 가이드 위반으로 <b>실채증 시 적발될 경우 패널티가 부과</b>됩니다.<br/><b>위약금 대납</b>, <b>1년 약정 속임 영업</b> 및 <b>1년 전환영업</b> 등의 <b>불·편법 영업활동</b>으로 판단되거나 적발될 시 <b>즉시 접수 건 전체 취소와 함께 거래가 종료</b>됩니다.</div></div><div class="tabbar"><button class="tab active" data-k="kt" type="button">KT</button><button class="tab" data-k="sk" type="button">SK</button><button class="tab" data-k="lg" type="button">LG</button><button class="tab" data-k="sky" type="button">SKY</button><button class="tab" data-k="fam" type="button">결합 가족범위</button></div><div class="tpanel carrier car-kt active" data-k="kt"><div style="background:#E7F0FA;border-radius:10px;padding:14px 16px;border-left:4px solid #1F4E8C;">
+<main><div class="section page active" id="p2"><div class="section-header"><span class="num">1</span><h2>유선 요금</h2></div><div class="section-body"><div style="background:#FCEBEB;border-left:4px solid #A32D2D;padding:12px 14px;border-radius:8px;font-size:13.5px;color:#7A1F1F;font-weight:600;margin:0 0 10px;line-height:1.7;"><div style="font-size:14px;font-weight:800;margin-bottom:6px;">⚠ 경품가이드 준수 및 정상 영업활동 권고</div><div style="font-weight:500;">경품고시 가이드 위반으로 <b>실채증 시 적발될 경우 패널티가 부과</b>됩니다.<br/><b>위약금 대납</b>, <b>1년 약정 속임 영업</b> 및 <b>1년 전환영업</b> 등의 <b>불·편법 영업활동</b>으로 판단되거나 적발될 시 <b>패널티가 발생</b>됩니다.</div></div><div class="tabbar"><button class="tab active" data-k="kt" type="button">KT</button><button class="tab" data-k="sk" type="button">SK</button><button class="tab" data-k="lg" type="button">LG</button><button class="tab" data-k="sky" type="button">SKY</button><button class="tab" data-k="fam" type="button">결합 가족범위</button></div><div class="tpanel carrier car-kt active" data-k="kt"><div style="background:#E7F0FA;border-radius:10px;padding:14px 16px;border-left:4px solid #1F4E8C;">
 <div class="anchor-target" id="kt-wired" style="font-size:17px;font-weight:800;color:#143C64;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #2E75B6;">KT 유선요금표</div>
 <div style="display:flex;flex-direction:column;gap:16px;">
 <div>
@@ -863,18 +875,18 @@ tbody tr:last-child td { border-bottom: none; }
 <!-- KT -->
 <div style="background:#E7F0FA;border-radius:10px;padding:12px 16px;border-left:4px solid #262021;">
 <div style="font-size:13px;font-weight:700;color:#143C64;margin-bottom:10px;"><span class="tag" style="background:linear-gradient(135deg, #262021 52%, #C8102E 100%);color:#fff;">KT</span></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 시 바로 온라인신청서 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹or톡으로 요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치완료 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">결합인증(유선 인증에서 결합만 체크)</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span><span class="step-arrow">→</span><span class="step-badge">고객 개통완료 &amp; 유심인식 후 결합·선약 요청</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 시 바로 온라인신청서 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹전산 상부요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치완료 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">결합인증(유선 인증에서 결합만 체크)</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span><span class="step-arrow">→</span><span class="step-badge">고객 개통완료 &amp; 유심인식 후 결합·선약 요청</span></div>
 </div>
 <!-- SK -->
 <div style="background:#E7F0FA;border-radius:10px;padding:12px 16px;border-left:4px solid #E4551F;">
 <div style="font-size:13px;font-weight:700;color:#143C64;margin-bottom:10px;"><span class="tag" style="background:linear-gradient(135deg, #E4551F 45%, #F5811F 100%);color:#fff;">SK</span></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹or톡으로 요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 유심 수령 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">인증 진행</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹전산 상부요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 유심 수령 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">인증 진행</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span></div>
 </div>
 <div class="" style="background:#FCEBEB;border:1px solid #F0C9C9;border-left:4px solid #A32D2D;border-radius:8px;padding:10px 13px;margin:-2px 0 0;font-size:12.5px;color:#7A1F1F;font-weight:700;line-height:1.6;">※ 현재 SK "T" 유심 개통 시 최소 1~2주 시간 소요 — 고객 안내 필수!</div>
 <!-- LG -->
 <div style="background:#E7F0FA;border-radius:10px;padding:12px 16px;border-left:4px solid #A50034;">
 <div style="font-size:13px;font-weight:700;color:#143C64;margin-bottom:10px;"><span class="tag" style="background:#A50034;color:#fff;">LG</span></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹or톡으로 요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 유심 수령 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">인증 진행</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;"><span class="step-badge">판매 및 해피콜</span><span class="step-arrow">→</span><span class="step-badge">고객 인터넷 설치 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">유심 발송(웹전산 상부요청)</span><span class="step-arrow">→</span><span class="step-badge">고객 유심 수령 후 직접 연락</span><span class="step-arrow">→</span><span class="step-badge">인증 진행</span><span class="step-arrow">→</span><span class="step-badge">웹or톡으로 개통요청</span></div>
 </div>
 </div>
 </div><div style="font-size:15px;font-weight:700;color:#143C64;margin:20px 0 10px;">통신사별 신규 요금제</div><div class="tabbar"><button class="tab active" data-k="kt" type="button">KT</button><button class="tab" data-k="sk" type="button">SK</button><button class="tab" data-k="lg" type="button">LG</button></div><div class="tpanel carrier car-kt active" data-k="kt"><div>
@@ -1836,7 +1848,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var desc = NAMES[s.carrier] + ' ' + s.speed + ' ' + (r.tv === SOLO ? SOLO : '+ ' + r.tv)
              + (s.carrier === 'lg' ? ' (WiFi 무료)' : (r.wifi != null ? (s.wifi ? ' (WiFi 포함)' : ' (WiFi 미포함)') : ''));
     if (s.carrier === 'kt') desc = 'KT ' + product(s).name.replace(/\s*상품$/, '') + ' ' + desc.slice(3);
-    items.push({ label: '인터넷·TV 기본요금', sub: desc, amt: regular, kind: 'base' });
+    var WL = r.tv === SOLO ? '인터넷' : '인터넷·TV';           /* 인터넷 단독이면 TV 문구 없이 */
+    items.push({ label: WL + ' 기본요금', sub: desc, amt: regular, kind: 'base' });
 
     var tvAdd = tvAddOpts(s)[s.tvAdd - 1];
     if (s.tvAdd && tvAdd) items.push({ label: 'TV 추가 1대', sub: tvAdd[0], amt: tvAdd[1], kind: 'add' });
@@ -1992,7 +2005,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
     return { ok: true, bundle: b, bLabel: bLabel, row: r, desc: desc, items: items, wired: wired,
              lines: lines, phoneTotalDisc: phoneTotalDisc, mobile: mobile, total: wired + mobile,
-             notes: notes, install: inst, usim: usim, n: n, split: splitUsed, pfMode: pfModeUsed };
+             notes: notes, install: inst, usim: usim, n: n, split: splitUsed, pfMode: pfModeUsed, wl: WL };
   }
 
   function installFee(W, kind, day){
@@ -2056,6 +2069,33 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     return html + (grp !== null ? '</optgroup>' : '');
   }
 
+  /* 휴대폰 요금제 검색 : 띄어쓰기·대소문자 무시, 여러 단어는 모두 포함된 요금제만 (예: 「초이스 넷플」) */
+  function normQ(v){ return String(v).toLowerCase().replace(/\s+/g, ''); }
+  function findPlans(k, q){
+    var words = String(q).toLowerCase().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    return D.usim[k].filter(function(p){ var n = normQ(p.name); return words.every(function(w){ return n.indexOf(w) >= 0; }); });
+  }
+  function markQ(name, q){
+    var w = String(q).trim().split(/\s+/)[0] || '', i = w ? name.toLowerCase().indexOf(w.toLowerCase()) : -1;
+    return i < 0 ? esc(name) : esc(name.slice(0, i)) + '<mark>' + esc(name.slice(i, i + w.length)) + '</mark>' + esc(name.slice(i + w.length));
+  }
+  function showHits(inp){
+    var box = inp.parentNode.querySelector('.ln-hits'), q = inp.value.trim();
+    if (!q){ box.hidden = true; box.innerHTML = ''; return; }
+    var hits = findPlans(S.carrier, q);
+    box.innerHTML = hits.length
+      ? '<div class="ln-hits-h">' + NAMES[S.carrier] + ' 요금제 ' + hits.length + '개 · 눌러서 선택</div>' + hits.map(function(p){
+          return '<button type="button" class="ln-hit" data-plan="' + esc(p.name) + '"><span class="nm">' + markQ(p.name, q) + '</span><span class="pr">' + won(p.price) + '</span>'
+            + '<small>' + esc((p.cat ? p.cat.replace(/\s*요금제$/, '') + ' · ' : '') + p.band) + '</small></button>'; }).join('')
+      : '<div class="ln-hits-none">「' + esc(q) + '」이(가) 들어간 ' + NAMES[S.carrier] + ' 요금제가 없습니다</div>';
+    box.hidden = false;
+  }
+  function pickPlan(lnEl, name){
+    S.lines[+lnEl.getAttribute('data-i')].plan = name;
+    renderLines(); renderResult();
+  }
+
   function renderLines(){
     var box = $('.calc-lines');
     box.innerHTML = S.lines.map(function(ln, i){
@@ -2065,6 +2105,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
             ? '<select class="calc-sel ln-plan">' + planOptions(S.carrier, ln.plan) + '</select>'
             : '<input class="calc-num ln-price" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="현재 휴대폰 요금" value="' + (ln.price ? ln.price.toLocaleString('ko-KR') : '') + '"/>')
         + '<button type="button" class="ln-del" aria-label="' + (i + 1) + '회선 삭제">삭제</button></div>'
+        + (ln.type === 'new' ? '<div class="ln-find"><input class="calc-num ln-q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="요금제 검색 · 예: 베이직, 80, 넷플릭스" aria-label="' + (i + 1) + '회선 요금제 검색"/><div class="ln-hits" hidden></div></div>' : '')
         + '<div class="ln-bot">'
         + (ln.type === 'new'
             ? '<label class="calc-chk"><input type="checkbox" class="ln-sel"' + (ln.sel ? ' checked' : '') + '/>선택약정 25%</label>'
@@ -2172,16 +2213,16 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
     var h = '';
     h += '<div class="cr-card cr-head"><div class="cr-total"><div class="t1"><span>월 예상 요금</span><span>부가세 포함</span></div><div class="t2">' + won(c.total) + '</div>'
-       + '<div class="t3">인터넷·TV ' + won(c.wired) + (c.n ? ' + 휴대폰 ' + c.n + '회선 ' + won(c.mobile) : '') + '</div></div>';
+       + '<div class="t3">' + c.wl + ' ' + won(c.wired) + (c.n ? ' + 휴대폰 ' + c.n + '회선 ' + won(c.mobile) : '') + '</div></div>';
     if (S.cur){
       var d = S.cur - c.total;
       h += '<div class="cr-save ' + (d >= 0 ? 'down' : 'up') + '">' + (d >= 0 ? '현재보다 월 ' + won(d) + ' 절감 · 3년(36개월) ' + won(d * 36) : '현재보다 월 ' + won(-d) + ' 증가') + '</div>';
     }
-    h += '</div><div class="cr-card"><table class="cr-tbl"><tbody><tr class="sec"><td colspan="2">인터넷 · TV</td></tr>';
+    h += '</div><div class="cr-card"><table class="cr-tbl"><tbody><tr class="sec"><td colspan="2">' + c.wl.replace('·', ' · ') + '</td></tr>';
     c.items.forEach(function(it){
       h += '<tr class="' + (it.kind === 'disc' ? 'disc' : '') + '"><td>' + esc(it.label) + (it.sub ? '<small>' + esc(it.sub) + '</small>' : '') + '</td><td class="a">' + (it.amt < 0 ? '' : (it.kind === 'add' ? '+' : '')) + won(it.amt) + '</td></tr>';
     });
-    h += '<tr class="sub"><td>인터넷·TV 월 요금</td><td class="a">' + won(c.wired) + '</td></tr>';
+    h += '<tr class="sub"><td>' + c.wl + ' 월 요금</td><td class="a">' + won(c.wired) + '</td></tr>';
     if (c.n){
       h += '<tr class="sec"><td colspan="2">휴대폰</td></tr>';
       c.lines.forEach(function(l){
@@ -2227,7 +2268,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   function message(c){
     var L = [];
     L.push('[요금 안내] ' + c.desc);
-    L.push('· 인터넷·TV 월 요금 : 부가세 포함 ' + won(c.wired) + ' (3년 약정)');
+    L.push('· ' + c.wl + ' 월 요금 : 부가세 포함 ' + won(c.wired) + ' (3년 약정)');
     if (c.n) L.push('· 휴대폰 ' + c.n + '회선 월 요금 : ' + won(c.mobile) + (c.lines.some(function(l){ return l.sel; }) ? ' (선택약정 25% 적용)' : ''));
     if (c.bLabel){
       var disc = -c.items.filter(function(x){ return x.kind === 'disc' && /결합/.test(x.label); }).reduce(function(a, x){ return a + x.amt; }, 0)
@@ -2239,7 +2280,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (c.install) once.push('설치비 ' + won(c.install.fee) + (c.install.wk ? ' (주말·야간 할증)' : ' (평일)'));
     if (c.usim) once.push('유심비 ' + won(c.usim));
     if (once.length) L.push('· 1회 청구 : ' + once.join(' + '));
-    L.push('· 약정 : 인터넷·TV 3년' + (c.lines.some(function(l){ return l.isNew; }) ? ' / 유심 1년' : ''));
+    L.push('· 약정 : ' + c.wl + ' 3년' + (c.lines.some(function(l){ return l.isNew; }) ? ' / 유심 1년' : ''));
     if (S.gift) L.push('· 사은품 : ' + S.gift + '만원');      /* 입력하지 않으면 줄 자체를 뺌 */
     return L.join('\n');
   }
@@ -2266,6 +2307,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (S.lines.length < RULES.maxLines){ S.lines.push({ type: 'new', plan: '', price: null, sel: true, youth: false }); renderLines(); renderResult(); }
       return;
     }
+    var hit = e.target.closest('.ln-hit');
+    if (hit){ pickPlan(hit.closest('.ln'), hit.getAttribute('data-plan')); return; }
     var del = e.target.closest('.ln-del');
     if (del){ S.lines.splice(+del.closest('.ln').getAttribute('data-i'), 1); S.rep = 0; if (/^line:/.test(S.splitTotal)) S.splitTotal = 'eq'; renderLines(); renderResult(); return; }
     if (e.target.closest('.calc-bar')){
@@ -2304,10 +2347,21 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   });
   P7.addEventListener('input', function(e){
     var t = e.target;
+    if (t.classList.contains('ln-q')){ showHits(t); return; }
     if (t.id === 'calcCur'){ S.cur = parseWon(t.value); renderResult(); return; }
     if (t.id === 'calcGift'){ var cg = cleanGift(t.value); if (cg !== t.value) t.value = cg; S.gift = parseFloat(cg) > 0 ? String(parseFloat(cg)) : null; renderResult(); return; }
     if (t.classList.contains('ln-price')){ S.lines[+t.closest('.ln').getAttribute('data-i')].price = parseWon(t.value); renderResult(); }
   });
+  P7.addEventListener('keydown', function(e){
+    var t = e.target; if (!t.classList || !t.classList.contains('ln-q')) return;
+    if (e.key === 'Enter'){ e.preventDefault(); var h = findPlans(S.carrier, t.value); if (h.length) pickPlan(t.closest('.ln'), h[0].name); }   /* 엔터 = 첫 번째 결과 */
+    else if (e.key === 'Escape'){ t.value = ''; showHits(t); }
+  });
+  document.addEventListener('click', function(e){      /* 검색 결과 밖을 누르면 닫기 */
+    if (e.target.closest && e.target.closest('.ln-find')) return;
+    Array.prototype.forEach.call(P7.querySelectorAll('.ln-hits'), function(b){ b.hidden = true; });
+  });
+  P7.addEventListener('focusin', function(e){ if (e.target.classList && e.target.classList.contains('ln-q') && e.target.value.trim()) showHits(e.target); });
   P7.addEventListener('focusout', function(e){
     var t = e.target;
     if (t.id === 'calcCur' || t.classList.contains('ln-price')){ var n = parseWon(t.value); t.value = n ? n.toLocaleString('ko-KR') : ''; }
