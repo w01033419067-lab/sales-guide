@@ -512,6 +512,27 @@ tbody tr:last-child td { border-bottom: none; }
     #calcFab svg { width: 18px; height: 18px; }
     #calcFab .cfb-tx { font-size: 9px; }
   }
+
+  /* ── 구분 강화 : 진한 테두리 · 항목 제목 띠 · 결과 구역 제목 ── */
+  .calc-form { gap: 12px; }
+  .cf-block { border: 1px solid #8FB0D3; border-left: 5px solid #1F4E8C; border-radius: 10px; padding: 0 12px 12px; box-shadow: 0 1px 3px rgba(20,33,61,.08); }
+  .cf-h { margin: 0 -12px 10px; padding: 8px 12px; background: #E6EFF9; border-bottom: 1px solid #BFD3EA; border-radius: 0 9px 0 0; font-size: 13px; color: #102F55; }
+  .cf-h small { color: #4F6580; }
+  .ln { border: 1px solid #9FBCDB; background: #fff; box-shadow: 0 1px 2px rgba(20,33,61,.05); }
+  .cr-card { border: 1.5px solid #6F98C6; }
+  .cr-tbl td { border-bottom: 1px solid #DDE7F2; }
+  .cr-tbl tr.sec td { background: #DCE8F5; color: #102F55; border-top: 1px solid #B6CCE4; border-bottom: 1px solid #B6CCE4; }
+  .cr-tbl tr.sub td { border-bottom: 2px solid #9FBCDB; }
+  .cr-box + .cr-box { border-top: 1px solid #C9DAEC; }
+  .cr-box .h { margin: -10px -12px 7px; padding: 6px 12px; background: #E6EFF9; border-bottom: 1px solid #C9DAEC; font-size: 12px; color: #102F55; }
+  .cr-msg textarea { border-color: #9FBCDB; }
+  /* B안 : 항목 묶음별 색 (휴대폰 초록 · 결합 주황 · 현재요금/사은품 보라) */
+  .cf-block[data-b="mobile"] { border-left-color: #1E7A5A; }
+  .cf-block[data-b="mobile"] > .cf-h { background: #E3F3EC; border-bottom-color: #B5DCCB; color: #134D39; }
+  .cf-block:has(> .chips[data-f="bundle"]) { border-left-color: #C2410C; }
+  .cf-block:has(> .chips[data-f="bundle"]) > .cf-h { background: #FCEDE3; border-bottom-color: #F1C8AE; color: #7A2A08; }
+  .cf-block:has(#calcGift) { border-left-color: #6B3FA0; }
+  .cf-block:has(#calcGift) > .cf-h { background: #F0EAF8; border-bottom-color: #D5C6EA; color: #45266B; }
 </style></head>
 <body>
 <header>
