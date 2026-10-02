@@ -2049,6 +2049,11 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     box.hidden = !(o && o[2]);
     if (o && o[2]) box.innerHTML = '추가 TV : ' + esc(o[0].split(' · ')[0]) + ' <span class="stb-tag" style="color:' + stbColor(o[2]) + ';border-color:' + stbColor(o[2]) + ';">' + esc(o[2]) + ' 셋탑</span> <b>+' + won(o[1]) + '</b>';
   }
+  /* 상품명 뒤에 붙는 셋탑 이름 — 「지니3 셋탑 (기본 · 요금표 동일)」 → 「지니3」, 「AI5 (임대형)」 → 「AI5 임대형」 */
+  function stbName(s){
+    var l = stbOpts(s), o = l[s.stb] || l[0]; if (!o) return '';
+    return o[0].replace(/\s*\(기본[^)]*\)$/, '').replace(/ 셋탑$/, '').replace(/\s*\((임대형|케어형)\)$/, ' $1');
+  }
   function stbOpts(s){ var r = row(s); return (!r || r.tv === SOLO) ? [] : (RULES.stb[s.carrier] || []); }
   function stbAmount(s){
     var o = stbOpts(s)[s.stb]; if (!o) return 0;
@@ -2100,7 +2105,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var n = lineObjs.length;
     var hasProd = W.products.length > 1;          /* KT · SK : 인터넷 / 패밀리인터넷 */
     var desc = MSG_NAME[s.carrier] + ' ' + (hasProd ? (isFamilyProduct(s) ? '패밀리인터넷 ' : '인터넷 ') : '') + s.speed
-             + (r.tv === SOLO ? (hasProd ? ' 단독' : ' ' + SOLO) : ' + ' + r.tv)
+             + (r.tv === SOLO ? (hasProd ? ' 단독' : ' ' + SOLO) : ' + ' + r.tv + (stbName(s) ? '(' + stbName(s) + ')' : ''))
              + (s.carrier === 'lg' ? ' (WiFi 무료)' : (r.wifi != null ? (s.wifi ? ' (WiFi 포함)' : ' (WiFi 미포함)') : ''));
     var WL = r.tv === SOLO ? '인터넷' : '인터넷·TV';           /* 인터넷 단독이면 TV 문구 없이 */
     items.push({ label: WL + ' 기본요금', sub: desc, amt: regular, kind: 'base' });
@@ -2622,10 +2627,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   function formValues(){
     var c = compute(S); if (!c.ok) c = compute(S, 'none');       /* 고른 결합이 지금 안 되면 결합 없이 (선택은 그대로 둠) */
     var r = c.row, fam = isFamilyProduct(S), hasProd = D.wired[S.carrier].products.length > 1;
-    var prod = (hasProd && fam ? '패밀리인터넷' : '인터넷') + ' ' + S.speed + (r.tv === SOLO ? ' 단독' : ' + ' + r.tv);
+    var prod = (hasProd && fam ? '패밀리인터넷' : '인터넷') + ' ' + S.speed + (r.tv === SOLO ? ' 단독' : ' + ' + r.tv + (stbName(S) ? '(' + stbName(S) + ')' : ''));
     c.items.forEach(function(it){
       if (/TV 추가/.test(it.label)) prod += ' / TV 추가 1대(' + it.sub.replace(/ · /g, '·') + ')';
-      else if (/셋탑/.test(it.label)) prod += ' / ' + it.sub.replace(/ \(올 요금제 할인 반영\)$/, '');
     });
     var ap = S.carrier === 'lg' ? 'O' : (r.wifi != null ? (S.wifi ? 'O' : 'X') : '');      /* AP(WI-FI) 신청여부 O / X · LG는 WiFi 무료 포함 */
     var before = compute(S, 'none').wired, bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '') : '';
