@@ -213,9 +213,20 @@
   .pin-btn.on { color: #fff; background: #C2410C; border-color: #C2410C; }
   .pin-btn.on:hover { background: #9A3412; }
   /* 주소검색 (카카오 우편번호) */
-  .addr-btn { flex: none; align-self: center; margin: 0 6px 0 2px; font-family: inherit; font-size: 11.5px; font-weight: 800; line-height: 1.4;
+  .addr-btn { flex: none; align-self: center; margin: 0 8px 0 6px; font-family: inherit; font-size: 11.5px; font-weight: 800; line-height: 1.4;
               color: #fff; background: #1F4E8C; border: 1px solid #1F4E8C; border-radius: 14px; padding: 2px 10px; cursor: pointer; }
   .addr-btn:hover { background: #143C64; }
+  .ff-row.has-addr .ff-addr { flex: 0 1 auto; min-width: 0; max-width: calc(100% - 96px); cursor: pointer; }
+  .ff-row.has-addr .ff-addr:not(:placeholder-shown) { cursor: text; }
+  .ff-row.has-addr .ff-detail { flex: 1 1 12em; min-width: 10em; }
+  .ff-in::placeholder { color: #9AA9B8; font-weight: 500; }
+  @media (max-width: 640px) {
+    .ff-row.has-addr .ff-fix { flex-basis: 100%; }
+    /* 좁은 화면 : 주소는 한 줄 전체 → 아랫줄에 [주소검색][상세주소] */
+    .ff-row.has-addr .ff-addr { flex: 1 1 100%; max-width: 100%; width: auto !important; }
+    .ff-row.has-addr .addr-btn { margin: 3px 8px 0 0; }
+    .ff-row.has-addr .ff-detail { flex: 1 1 0; min-width: 0; margin-top: 3px; }
+  }
   #addrModal { position: fixed; inset: 0; z-index: 2147483100; background: rgba(20,33,61,.55); display: none; align-items: center; justify-content: center; padding: 16px; }
   #addrModal.on { display: flex; }
   #addrModal .am-box { width: 100%; max-width: 520px; height: min(640px, 86vh); background: #fff; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
@@ -1531,7 +1542,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (row.classList.contains('ff-static')) { out.push(row.textContent); return; }
       var s = '';
       Array.prototype.forEach.call(row.children, function(el){
-        if (el.tagName === 'BUTTON') return;              /* 고정/해제 버튼은 복사 내용에서 제외 */
+        if (el.tagName === 'BUTTON') return;              /* 고정 · 주소검색 버튼은 복사 내용에서 제외 */
+        if (el.classList.contains('ff-detail')){ if (el.value) s += (/\S$/.test(s) ? ' ' : '') + el.value; return; }   /* 상세주소는 주소 뒤에 한 칸 띄고 */
         s += el.classList.contains('ff-fix') ? el.textContent : el.value;
       });
       out.push(s);
@@ -1712,34 +1724,50 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     }
     return a + (extra.length ? ' (' + extra.join(', ') + ')' : '');
   }
-  function openAddr(inp){
+  var kakaoBroken = false;
+  function openAddr(inp, detail){
     var m = addrModal(), body = m.querySelector('.am-body');
     body.innerHTML = '<div class="am-msg">주소 검색을 불러오는 중…</div>'; m.classList.add('on');
     loadKakao(function(ok){
       if (!m.classList.contains('on')) return;
-      if (!ok){ body.innerHTML = '<div class="am-msg">주소 검색 서비스를 불러오지 못했습니다.<br>인터넷 연결을 확인한 뒤 다시 시도하거나, 주소를 직접 입력해 주세요.</div>'; return; }
+      if (!ok){ kakaoBroken = true; body.innerHTML = '<div class="am-msg">주소 검색 서비스를 불러오지 못했습니다.<br>인터넷 연결을 확인한 뒤 다시 시도하거나, 주소를 직접 입력해 주세요.</div>'; return; }
+      kakaoBroken = false;
       body.innerHTML = '';
       new window.kakao.Postcode({
         width: '100%', height: '100%',
         oncomplete: function(d){
-          inp.value = addrText(d) + ' ';
+          inp.value = addrText(d);
           inp.dispatchEvent(new Event('input', { bubbles: true }));
           closeAddr();
-          inp.focus({ preventScroll: true });
-          var n = inp.value.length; try { inp.setSelectionRange(n, n); } catch (err) {}
+          var to = detail || inp; to.focus({ preventScroll: true });                     /* 바로 상세주소 입력 */
+          var n = to.value.length; try { to.setSelectionRange(n, n); } catch (err) {}
           inp.classList.remove('ff-filled'); void inp.offsetWidth; inp.classList.add('ff-filled');
           setTimeout(function(){ inp.classList.remove('ff-filled'); }, 3200);
         }
       }).embed(body);
     });
   }
+  /* 설치주소 : [주소(검색 결과) | 주소검색] [상세주소] — 주소칸은 내용 길이만큼, 비어 있으면 눌러도 검색창 */
+  function addrFit(inp){
+    var t = inp.value || inp.placeholder, w = 0;
+    for (var i = 0; i < t.length; i++) w += /[\u3131-\uD79D]/.test(t[i]) ? 1 : 0.62;
+    inp.style.width = (w + 1.6) + 'em';
+  }
   Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row'), function(row){
     var fx = row.querySelector('.ff-fix'), inp = row.querySelector('input.ff-in');
     if (!fx || !inp || fx.textContent.indexOf('■설치주소') !== 0) return;
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'addr-btn'; b.textContent = '주소검색'; b.title = '카카오 우편번호 검색 — 고르면 주소가 바로 들어가고 뒤에 상세주소만 입력';
-    row.insertBefore(b, inp); inp.placeholder = '검색 후 동·호수 입력';
-    b.addEventListener('click', function(){ openAddr(inp); });
+    row.classList.add('has-addr'); inp.classList.add('ff-addr'); inp.placeholder = '주소검색을 눌러주세요';
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'addr-btn'; b.textContent = '주소검색'; b.title = '카카오 우편번호 검색 — 고르면 주소가 바로 들어감';
+    var dt = document.createElement('input'); dt.type = 'text'; dt.className = 'ff-in ff-detail'; dt.spellcheck = false; dt.autocomplete = 'off'; dt.placeholder = '상세주소 (동/호수 등)';
+    inp.parentNode.insertBefore(b, inp.nextSibling); row.appendChild(dt);
+    b.addEventListener('click', function(){ openAddr(inp, dt); });
+    inp.addEventListener('click', function(){ if (!inp.value && !kakaoBroken) openAddr(inp, dt); });   /* 빈칸을 눌러도 검색 */
+    inp.addEventListener('input', function(){ addrFit(inp); });
+    addrFit(inp);
   });
+  /* 초기화 뒤 폭 다시 맞춤 */
+  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); }, 0); });
+
 
   p6.addEventListener('click', function(e){
     if (e.target.closest && e.target.closest('.tabbar .tab')) setTimeout(fitAll, 60);
