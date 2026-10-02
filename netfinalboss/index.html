@@ -1704,11 +1704,16 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     ktPremium: { minPlan: 77000, rate: 0.25 },
     usimFee: 7700,
     /* 통신사를 고르면 기본으로 선택되는 주력 TV 요금제 (요금제 이름 앞부분) */
-    mainTv: { kt: 'NEW모든G', sk: '스탠다드' },
+    mainTv: { kt: 'NEW모든G', sk: '스탠다드', skt: '스탠다드', skb: '스탠다드' },
     maxLines: 10
   };
 
-  var NAMES = { kt: 'KT', sk: 'SK', lg: 'LG', sky: 'SKY' };
+  var NAMES = { kt: 'KT', sk: 'SK', skt: 'SKT', skb: 'SKB', lg: 'LG', sky: 'SKY' };
+  /* 계산기 통신사 버튼 · SKT / SKB 는 요금표·요금제·결합 모두 SK 와 같고 가입 통신사만 다름 */
+  var CARRIERS = ['kt', 'skt', 'skb', 'lg', 'sky'];
+  var MSG_NAME = { kt: 'KT', sk: 'SK', skt: 'SKT', skb: 'SKB', lg: 'LG', sky: '스카이라이프' };   /* 견적서·결과의 통신사 이름 */
+  function isSK(c){ return c === 'sk' || c === 'skt' || c === 'skb'; }
+  function dataKey(c){ return isSK(c) ? 'sk' : c; }      /* 1번 · 2번 표 이름 */
   var SOLO = '인터넷 단독';
 
   /* ── 공통 ─────────────────────────────────────────────── */
@@ -1887,6 +1892,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (!F || !F.net || !F.phone || F.net.length !== F.th.length) throw new Error('1번 KT 정액 결합 할인표를 읽지 못했습니다');
     if (!T || !T.groups.length || T.groups.some(function(g){ return !g.net || !g.phone || g.net.length !== T.th.length; })) throw new Error('1번 KT 총액 결합 할인표를 읽지 못했습니다');
     if (!E || !E.rows.length || E.rows.some(function(r){ return r.amt.length !== E.th.length; })) throw new Error('1번 LG 참쉬운 가족결합 표를 읽지 못했습니다');
+    ['skt', 'skb'].forEach(function(k){ D.wired[k] = D.wired.sk; D.usim[k] = D.usim.sk; RULES.tvAdd[k] = RULES.tvAdd.sk; RULES.stb[k] = RULES.stb.sk; });
   }
 
   /* ── 선택지 ───────────────────────────────────────────── */
@@ -1894,10 +1900,15 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   function speeds(s){ var o = []; product(s).rows.forEach(function(r){ if (o.indexOf(r.speed) < 0) o.push(r.speed); }); return o; }
   function tvs(s){ return product(s).rows.filter(function(r){ return r.speed === s.speed; }); }
   function row(s){ return tvs(s).filter(function(r){ return r.tv === s.tv; })[0] || null; }
-  function isFamilyProduct(s){ return (s.carrier === 'kt' || s.carrier === 'sk') && /패밀리/.test(product(s).name); }
+  function isFamilyProduct(s){ return (s.carrier === 'kt' || isSK(s.carrier)) && /패밀리/.test(product(s).name); }
   /* 상품 구분 버튼 이름 (일반 / 패밀리) · 견적서 이름 (인터넷 / 패밀리인터넷) */
   function productChip(p){ return /패밀리/.test(p.name) ? '패밀리' : '일반'; }
-  var FAMILY_NOTE = { kt: '패밀리 : 30일 이내 결합 필수 / 총액 결합할인과 중복 불가', sk: '패밀리 : 1:1 결합 (T는 T끼리 · B는 B끼리) / 요즘가족 결합과 중복 불가' };
+  var FAMILY_NOTE = { kt: '패밀리 : 30일 이내 결합 필수 / 총액 결합할인과 중복 불가', sk: '패밀리 : 1:1 결합 (T는 T끼리 · B는 B끼리) / 요즘가족 결합과 중복 불가',
+    skt: '패밀리 : 1:1 결합 (T는 T끼리) / 요즘가족 결합과 중복 불가 · 패밀리 결합 신청은 접수 시 진행',
+    skb: '패밀리 : 1:1 결합 (B는 B끼리) / 요즘가족 결합과 중복 불가 · SKB 패밀리 결합은 고객이 고객센터에 직접 신청' };
+  /* 결합 신청 범위 — 우리는 T 대리점 : SKT 는 가족 회선까지, SKB 는 대표자 1회선만 */
+  var JOIN_NOTE = { skt: 'SKT 가입 : 가족 휴대폰 회선까지 결합 신청 진행 가능',
+    skb: 'SKB 가입 : 결합 신청은 유선 명의자와 같은 대표자 휴대폰 1회선만 진행 — 추가 가족 회선은 고객이 고객센터에 직접 신청' };
   function hasWifiChoice(s){ var r = row(s); return !!r && r.wifi != null; }
 
   function tvAddOpts(s){
@@ -1922,7 +1933,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var o = stbOpts(s)[s.stb]; if (!o) return 0;
     var a = o[1];
     /* SK 사운드맥스 : 1기가+올 4,400원 할인 / 500M+올 2,200원 할인 */
-    if (s.carrier === 'sk' && /사운드맥스/.test(o[0]) && /^All/.test(s.tv)){
+    if (isSK(s.carrier) && /사운드맥스/.test(o[0]) && /^All/.test(s.tv)){
       if (speedKey(s.speed) === '1G') a -= 4400; else if (speedKey(s.speed) === '500M') a -= 2200;
     }
     return a;
@@ -1931,6 +1942,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   var BUNDLES = {
     kt:  [['none', '결합 안 함'], ['fixed', '정액 결합'], ['total', '총액 결합'], ['psingle', '프리미엄 싱글'], ['pfamily', '프리미엄 가족']],
     sk:  [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
+    skt: [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
+    skb: [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
     lg:  [['none', '결합 안 함'], ['lgeasy', '참쉬운 가족결합']],
     sky: [['none', '결합 안 함']]
   };
@@ -1957,7 +1970,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var noOf = function(i){ return lineObjs[i].no; };
     var n = lineObjs.length;
     var hasProd = W.products.length > 1;          /* KT · SK : 인터넷 / 패밀리인터넷 */
-    var desc = NAMES[s.carrier] + ' ' + (hasProd ? (isFamilyProduct(s) ? '패밀리인터넷 ' : '인터넷 ') : '') + s.speed
+    var desc = MSG_NAME[s.carrier] + ' ' + (hasProd ? (isFamilyProduct(s) ? '패밀리인터넷 ' : '인터넷 ') : '') + s.speed
              + (r.tv === SOLO ? (hasProd ? ' 단독' : ' ' + SOLO) : ' + ' + r.tv)
              + (s.carrier === 'lg' ? ' (WiFi 무료)' : (r.wifi != null ? (s.wifi ? ' (WiFi 포함)' : ' (WiFi 미포함)') : ''));
     var WL = r.tv === SOLO ? '인터넷' : '인터넷·TV';           /* 인터넷 단독이면 TV 문구 없이 */
@@ -2201,10 +2214,10 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (!q){ box.hidden = true; box.innerHTML = ''; return; }
     var hits = findPlans(S.carrier, q);
     box.innerHTML = hits.length
-      ? '<div class="ln-hits-h">' + NAMES[S.carrier] + ' 요금제 ' + hits.length + '개 · 눌러서 선택</div>' + hits.map(function(p){
+      ? '<div class="ln-hits-h">' + NAMES[dataKey(S.carrier)] + ' 요금제 ' + hits.length + '개 · 눌러서 선택</div>' + hits.map(function(p){
           return '<button type="button" class="ln-hit" data-plan="' + esc(p.name) + '"><span class="nm">' + markQ(p.name, q) + '</span><span class="pr">' + won(p.price) + '</span>'
             + '<small>' + esc((p.cat ? p.cat.replace(/\s*요금제$/, '') + ' · ' : '') + p.band + (p.data ? ' · ' + fmtData(p.data) : '')) + '</small></button>'; }).join('')
-      : '<div class="ln-hits-none">「' + esc(q) + '」이(가) 들어간 ' + NAMES[S.carrier] + ' 요금제가 없습니다</div>';
+      : '<div class="ln-hits-none">「' + esc(q) + '」이(가) 들어간 ' + NAMES[dataKey(S.carrier)] + ' 요금제가 없습니다</div>';
     box.hidden = false;
   }
   function pickPlan(lnEl, name){
@@ -2235,7 +2248,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
   function renderForm(){
     normalize();
-    chips('carrier', ['kt', 'sk', 'lg', 'sky'].map(function(k){ return { v: k, t: NAMES[k] }; }), S.carrier);
+    chips('carrier', CARRIERS.map(function(k){ return { v: k, t: NAMES[k] }; }), S.carrier);
 
     var prods = D.wired[S.carrier].products;
     show('product', prods.length > 1);
@@ -2270,7 +2283,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
     show('mobile', S.carrier !== 'sky');
     renderLines();
-    note('mobile', S.carrier === 'sky' ? '' : '2번 ' + NAMES[S.carrier] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
+    note('mobile', S.carrier === 'sky' ? '' : '2번 ' + NAMES[dataKey(S.carrier)] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
 
     renderResult();
   }
@@ -2293,7 +2306,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     }), eff);
     var bn = S.carrier === 'sky' ? 'SKY는 가이드에 결합 할인 정보가 없습니다.'
            : S.carrier === 'lg' ? '투게더 결합은 대상 요금제(5G 시그니처·프리미어 라인)가 2번 유심 요금제에 없어 계산에서 제외했습니다.'
-           : S.carrier === 'sk' ? (isFamilyProduct(S) ? 'SK 패밀리 인터넷은 요즘가족 결합과 중복할 수 없습니다 (1:1 결합 · T는 T끼리 · B는 B끼리).' : '인터넷+TV 번들 요금은 우리집 결합 할인이 이미 반영된 금액입니다. 요즘가족 결합 시 WiFi는 +1,100원입니다.')
+           : isSK(S.carrier) ? (isFamilyProduct(S) ? NAMES[S.carrier] + ' 패밀리 인터넷은 요즘가족 결합과 중복할 수 없습니다. ' + FAMILY_NOTE[S.carrier].replace(/^.*· /, '') + '.'
+                                                   : '인터넷+TV 번들 요금은 우리집 결합 할인이 이미 반영된 금액입니다. 요즘가족 결합 시 WiFi는 +1,100원입니다.')
+                                + (JOIN_NOTE[S.carrier] ? '<br><b style="color:' + (S.carrier === 'skb' ? '#A32D2D' : '#1F4E8C') + ';">' + JOIN_NOTE[S.carrier] + '</b>' : '')
            : '';
     note('bundle', bn);
 
@@ -2362,7 +2377,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (c.usim) once.push('유심비 <b>' + won(c.usim) + '</b> <span style="color:#6B7C8F;">(' + won(RULES.usimFee) + ' × ' + (c.usim / RULES.usimFee) + '회선)</span>');
     if (once.length) h += '<div class="cr-box"><div class="h">1회 청구</div>' + once.join('<br>') + '</div>';
 
-    var gifts = c.row.gifts.filter(function(g){ return g.lo != null || g.hi != null; });
+    var gifts = c.row.gifts.filter(function(g){ return (g.lo != null || g.hi != null) && !(S.carrier === 'skt' && /SKB/.test(g.label)) && !(S.carrier === 'skb' && /SKT/.test(g.label)); });
     h += '<div class="cr-box"><div class="h">경품가이드 (단위: 만원)</div>' + (gifts.length ? gifts.map(function(g){ return (g.label ? g.label + ' : ' : '') + '하한 <b>' + man(g.lo) + '</b> ~ 상한 <b>' + man(g.hi) + '</b>'; }).join('<br>') : '요금표에 경품가이드 없음') + '</div>';
     if (c.notes.length) h += '<div class="cr-box"><div class="h">참고</div>' + c.notes.map(esc).join('<br>') + '</div>';
     h += '</div>';
@@ -2540,7 +2555,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   if (fab) fab.addEventListener('click', function(){
     /* 1번·2번에서 보고 있던 통신사로 바로 연결 */
     var pg = document.querySelector('.page.active'), k = null;
-    if (pg && (pg.id === 'p2' || pg.id === 'p3')){ var t = pg.querySelector('.tab.active'); if (t && NAMES[t.getAttribute('data-k')]) k = t.getAttribute('data-k'); }
+    if (pg && (pg.id === 'p2' || pg.id === 'p3')){ var t = pg.querySelector('.tab.active'); if (t && NAMES[t.getAttribute('data-k')]) k = t.getAttribute('data-k'); if (k === 'sk') k = 'skt'; }
     /* 입력한 상담 값이 있으면 절대 지우지 않음 — 통신사는 ① 통신사 칸에서 직접 변경 */
     if (k && k !== S.carrier && !touched()){ S.carrier = k; S.product = 0; S.tv = ''; S.bundle = 'none'; resetBundleOpts(); S.stb = 0; S.tvAdd = 0; renderForm(); }
     window.goPage('p7');
