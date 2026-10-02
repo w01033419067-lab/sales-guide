@@ -534,8 +534,12 @@ tbody tr:last-child td { border-bottom: none; }
   .cr-form { margin-top: 6px; width: 100%; font-family: inherit; font-size: 13px; font-weight: 800; color: #7A2A08; background: #FFF3E0; border: 1.5px solid #D99A1E; border-radius: 8px; padding: 8px 10px; cursor: pointer; }
   .cr-form:hover { background: #FFE2B8; }
   .cr-form-tip { margin-top: 4px; font-size: 11px; color: #6B7C8F; line-height: 1.5; }
-  .ff-in.ff-filled { animation: ffFill 3s ease-out; }
-  @keyframes ffFill { 0%, 60% { background: #FFE58A; } 100% { background: transparent; } }
+  /* 계산기에서 채운 칸 : 약 5초 진한 노랑 → 이후 연한 노랑 유지 (양식 고정 문구와 구분) */
+  .ff-in.ff-auto { background: #FFF7DA; }
+  .ff-in.ff-filled { animation: ffFill 5.7s ease-out; }
+  @keyframes ffFill { 0%, 88% { background: #FFE58A; } 100% { background: transparent; } }
+  .ff-in.ff-auto.ff-filled { animation-name: ffFillKeep; }
+  @keyframes ffFillKeep { 0%, 88% { background: #FFE58A; } 100% { background: #FFF7DA; } }
   .cr-warn { font-size: 11.5px; color: #A32D2D; font-weight: 700; line-height: 1.6; padding: 0 2px; }
 
   /* 모바일: 결과가 화면 밖에 있을 때 하단에 월 합계 바 */
@@ -2651,6 +2655,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     ins.forEach(function(x, i){
       x.value = vals[i]; x.dispatchEvent(new Event('input', { bubbles: true }));      /* 「작성 중」 표시 · 여러 줄 칸 높이 맞춤 */
       x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled');
+      x.classList.toggle('ff-auto', !!vals[i]);                                          /* 채운 칸은 연한 노랑 유지 */
     });
     window.goPage('p6', 'wired');
     setTimeout(function(){
@@ -2658,8 +2663,15 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       window.scrollTo({ top: ins[0].getBoundingClientRect().top + window.pageYOffset - navH - 140, behavior: 'smooth' });
       ins.forEach(function(x){ if (x.tagName === 'TEXTAREA'){ x.dispatchEvent(new Event('input', { bubbles: true })); } });
     }, 80);
-    setTimeout(function(){ ins.forEach(function(x){ x.classList.remove('ff-filled'); }); }, 3200);
+    clearTimeout(toWiredForm.t);                                                         /* 연달아 눌러도 매번 5초 */
+    toWiredForm.t = setTimeout(function(){ ins.forEach(function(x){ x.classList.remove('ff-filled'); }); }, 5900);
   }
+  /* 연한 노랑 : 칸을 비우거나 양식을 초기화하면 없어짐 */
+  document.addEventListener('input', function(e){ var t = e.target; if (t.classList && t.classList.contains('ff-auto') && !t.value) t.classList.remove('ff-auto'); });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest || !e.target.closest('#p6 .reset-btn')) return;
+    setTimeout(function(){ Array.prototype.forEach.call(document.querySelectorAll('#p6 .ff-auto'), function(x){ if (x.value === x.defaultValue) x.classList.remove('ff-auto'); }); }, 0);
+  });
 
   /* ── 이벤트 ───────────────────────────────────────────── */
   function parseWon(v){ var n = num(String(v).replace(/,/g, '')); return n && n > 0 ? Math.round(n) : null; }
