@@ -206,6 +206,18 @@
            border: none; border-bottom: 1px dashed #CBDDEC; border-radius: 0;
            padding: 0 4px; margin: 0; outline: none; }
   .ff-in:focus { background: #F1F8FF; border-bottom-color: #2E75B6; }
+  /* 유치자 정보 고정 / 해제 */
+  .pin-btn { flex: none; align-self: center; margin-left: 6px; font-family: inherit; font-size: 11.5px; font-weight: 800; line-height: 1.4;
+             color: #1F4E8C; background: #fff; border: 1px solid #8FB0D3; border-radius: 14px; padding: 2px 10px; cursor: pointer; }
+  .pin-btn:hover { background: #E6EFF9; }
+  .pin-btn.on { color: #fff; background: #C2410C; border-color: #C2410C; }
+  .pin-btn.on:hover { background: #9A3412; }
+  .ff-in.is-pinned { background: #FFF6E0; border-bottom: 1px solid #D99A1E; color: #7A2A08; cursor: default; }
+  .ff-row.has-pin .ff-in { min-width: 0; }
+  @media (max-width: 640px) {   /* 좁은 화면: 항목명은 윗줄, 입력칸 + 버튼은 아랫줄 한 줄로 */
+    .ff-row.has-pin .ff-fix { flex-basis: 100%; }
+    .ff-row.has-pin .ff-in { flex: 1 1 0; }
+  }
   /* 문장 중간에 들어가는 짧은 입력칸 — 뒤 문구가 밀리지 않게 폭을 고정 */
   .ff-in.ff-sm { flex: 0 0 auto; width: 7em; min-width: 4.5em; }
   .ff-in.ff-md { flex: 0 0 auto; width: 13em; min-width: 8em; }
@@ -1499,6 +1511,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (row.classList.contains('ff-static')) { out.push(row.textContent); return; }
       var s = '';
       Array.prototype.forEach.call(row.children, function(el){
+        if (el.tagName === 'BUTTON') return;              /* 고정/해제 버튼은 복사 내용에서 제외 */
         s += el.classList.contains('ff-fix') ? el.textContent : el.value;
       });
       out.push(s);
@@ -1608,6 +1621,39 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     setTimeout(function(){ btn.textContent = o; }, 1200);
     if (list[0]) list[0].focus({ preventScroll: true });
   });
+
+  /* 유치자 정보 고정 — 이 기기 브라우저에만 저장 (미리보기·운영 따로) · 고정값은 초기화해도 남음 */
+  var PIN_KEY = 'wg.pin.recruiter:' + (/\/preview\//.test(location.pathname) ? 'preview' : 'main');
+  function pinGet(){ try { return window.localStorage.getItem(PIN_KEY) || ''; } catch (err) { return ''; } }
+  function pinSet(v){ try { if (v) window.localStorage.setItem(PIN_KEY, v); else window.localStorage.removeItem(PIN_KEY); return true; } catch (err) { return false; } }
+  var pinRows = Array.prototype.filter.call(p6.querySelectorAll('.ff-row'), function(row){
+    var fx = row.querySelector('.ff-fix'); return fx && /^●유치자 상호\/성함\/연락처/.test(fx.textContent) && row.querySelector('input.ff-in');
+  });
+  function pinRender(v){
+    pinRows.forEach(function(row){
+      var inp = row.querySelector('input.ff-in'), btn = row.querySelector('.pin-btn');
+      if (v){ inp.value = v; inp.defaultValue = v; }          /* 고정값이 기준 — 두 양식 모두 같은 값 */
+      else inp.defaultValue = '';
+      inp.readOnly = !!v; inp.classList.toggle('is-pinned', !!v);
+      btn.classList.toggle('on', !!v); btn.textContent = v ? '해제' : '고정';
+      btn.title = v ? '고정 해제 — 다시 입력할 수 있음' : '이 기기에 저장 — 다음에도 자동 입력 · 초기화해도 남음';
+      mark(inp);
+    });
+  }
+  pinRows.forEach(function(row){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'pin-btn'; row.appendChild(b); row.classList.add('has-pin');
+  });
+  p6.addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('.pin-btn') : null;
+    if (!btn) return;
+    var inp = btn.parentNode.querySelector('input.ff-in');
+    if (btn.classList.contains('on')){ pinSet(''); pinRender(''); inp.focus({ preventScroll: true }); return; }
+    var v = inp.value.trim();
+    if (!v){ window.alert('유치자 상호/성함/연락처를 먼저 입력한 뒤 「고정」을 눌러주세요.'); inp.focus({ preventScroll: true }); return; }
+    if (!pinSet(v)) window.alert('이 브라우저에서는 저장할 수 없어 이번 접속 동안만 고정됩니다. (시크릿 창 등)');
+    pinRender(v);
+  });
+  pinRender(pinGet());
 
   p6.addEventListener('click', function(e){
     if (e.target.closest && e.target.closest('.tabbar .tab')) setTimeout(fitAll, 60);
