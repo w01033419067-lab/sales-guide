@@ -2462,6 +2462,12 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     }
     if (c.usim) once.push(' · 유심비 ' + won(c.usim) + (c.usim / RULES.usimFee > 1 ? ' (' + won(RULES.usimFee) + '×' + (c.usim / RULES.usimFee) + '회선)' : ''));   /* 회선당 금액 × 회선 수 */
     if (once.length){ L.push(''); L.push('■ 1회 청구'); once.forEach(function(x){ L.push(x); }); }
+    /* SKB : 우리는 대표자 1회선만 결합 진행 — 추가 가족 회선 · 패밀리 결합은 고객이 직접 신청 */
+    if (S.carrier === 'skb' && (c.n >= 2 || isFamilyProduct(S))){
+      L.push(''); L.push('■ 결합 신청 안내');
+      if (c.n >= 2){ L.push(' · 대표자 휴대폰 1회선 : 접수 시 함께 진행'); L.push(' · 추가 가족 회선 : 고객센터에 직접 신청'); }
+      if (isFamilyProduct(S)) L.push(' · 패밀리 결합 : 고객센터에 직접 신청');
+    }
     L.push('');
     L.push('■ 약정 : ' + c.wl + ' 3년' + (c.lines.some(function(l){ return l.isNew; }) ? ' / 유심 1년' : ''));
     if (S.gift) L.push('■ 사은품 : ' + S.gift + '만원');      /* 입력하지 않으면 줄 자체를 뺌 */
