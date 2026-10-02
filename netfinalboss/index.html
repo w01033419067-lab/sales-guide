@@ -439,6 +439,10 @@ tbody tr:last-child td { border-bottom: none; }
   .ln-plan { flex: 1 1 180px; }
   .ln-price { width: 130px; }
   .ln-find { margin-top: 6px; }
+  .tv-pick { margin: 2px 0 6px 70px; font-size: 12px; color: #3A4A5E; }
+  .tv-pick b { color: #143C64; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tv-pick .stb-tag { display: inline-block; font-size: 11.5px; font-weight: 800; background: #fff; border: 1.5px solid; border-radius: 6px; padding: 0 6px; margin: 0 2px; }
+  #calcTvAdd optgroup { color: #6B7C8F; font-style: normal; }
   .ln-find .ln-q { width: 100%; max-width: none; text-align: left; padding-left: 30px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7C8F' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 9px center; }
   .ln-hits { margin-top: 4px; max-height: 248px; overflow-y: auto; border: 1px solid #BFD3EA; border-radius: 8px; background: #fff; box-shadow: 0 4px 12px rgba(20,60,100,.10); }
   .ln-hits-h, .ln-hits-none { font-size: 11.5px; color: #6B7C8F; padding: 6px 10px; }
@@ -582,6 +586,7 @@ tbody tr:last-child td { border-bottom: none; }
 </table>
 <div class="note" style="margin-top:8px;">패밀리: 30일 이내 결합 필수 / 총액 결합할인과 중복 불가</div>
 <div class="note" style="margin-top:4px;">TV 추가시(지니3): 베이직 +11,770원 / 라이트 +12,320원 / 에센스 +13,200원 / NEW모든G +25,740원</div>
+<div class="note" style="margin-top:4px;">TV 추가시(지니A): 베이직 +10,670원 / 라이트 +11,220원 / 에센스 +12,100원 / NEW모든G +24,640원</div>
 </div>
 <hr style="border:none;border-top:2px solid #A9CCE8;margin:14px 0;"/>
 <div>
@@ -1040,6 +1045,7 @@ tbody tr:last-child td { border-bottom: none; }
 <div class="cf-block" data-b="tvopt"><div class="cf-h">⑤ TV 옵션 <small>셋탑 · TV 추가</small></div>
 <div class="cf-row"><label class="lbl" for="calcStb">셋탑</label><select class="calc-sel" id="calcStb"></select></div>
 <div class="cf-row"><label class="lbl" for="calcTvAdd">TV 추가</label><select class="calc-sel" id="calcTvAdd"></select></div>
+<div class="tv-pick" hidden></div>
 <div class="cf-note" data-n="tvopt"></div></div>
 <div class="cf-block" data-b="mobile"><div class="cf-h">⑥ 결합 휴대폰 <small>유심 신규 또는 기존 휴대폰</small></div><div class="calc-lines"></div><button class="add-line" type="button">+ 휴대폰 회선 추가</button><div class="cf-note" data-n="mobile"></div></div>
 <div class="cf-block"><div class="cf-h">⑦ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-note" data-n="bundle"></div></div>
@@ -1586,7 +1592,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     /* 각 통신사 「TV 추가시」 — 추가 TV는 메인 TV와 다른 요금제로 가입할 수 있으므로 전부 선택 가능
        세 번째 값: 'giga' = 100M 초과만 / '100M' = 100M만 (LG 광랜은 UHD 2대 이상 불가 → 추단 실속형) */
     tvAdd: {
-      kt:  { stb: '지니3', list: [['베이직', 11770], ['라이트', 12320], ['에센스', 13200], ['NEW모든G', 25740]] },
+      /* 지니A 셋탑은 지니3 대비 −1,100원 (1번 셋탑 안내 「지니A 요금표 −1,100원」) — 4번째 값 = 셋탑 이름 */
+      kt:  { stb: '지니3', list: [['베이직', 11770], ['라이트', 12320], ['에센스', 13200], ['NEW모든G', 25740],
+                                 ['베이직', 10670, null, '지니A'], ['라이트', 11220, null, '지니A'], ['에센스', 12100, null, '지니A'], ['NEW모든G', 24640, null, '지니A']] },
       sk:  { stb: '스마트3', list: [['이코노미', 8250], ['스탠다드', 9900], ['ALL', 11550]] },
       lg:  { stb: '', list: [['실속형 (UHD3)', 9900, 'giga'], ['실속형 (UHD4)', 12100, 'giga'], ['프리미엄 (UHD3)', 11550, 'giga'], ['실속형 (100M 추단)', 11000, '100M']] },
       sky: { stb: '', list: [['IPTV 베이직', 7700], ['IPTV 플러스', 8250]] }
@@ -1805,7 +1813,17 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var R = RULES.tvAdd[s.carrier]; if (!R) return [];
     var slow = mbps(s.speed) <= 100;
     return R.list.filter(function(x){ return !x[2] || (x[2] === '100M' ? slow : !slow); })
-      .map(function(x){ return [x[0] + (R.stb ? ' · ' + R.stb + ' 셋탑' : ''), x[1]]; });
+      .map(function(x){ var stb = x[3] || R.stb; return [x[0] + (stb ? ' · ' + stb + ' 셋탑' : ''), x[1], stb || '']; });
+  }
+  /* TV 추가 셋탑 글씨색 */
+  function stbColor(name){ return /지니A/.test(name) ? '#C2410C' : '#1F4E8C'; }
+  function syncTvPick(){
+    var sel = $('#calcTvAdd'), box = $('.tv-pick'); if (!sel || !box) return;
+    var o = tvAddOpts(S)[S.tvAdd - 1], multi = tvAddOpts(S).some(function(x){ return /지니A/.test(x[2]); });
+    sel.style.color = o && multi ? stbColor(o[2]) : '';
+    sel.style.fontWeight = o && multi ? '700' : '';
+    box.hidden = !(o && o[2]);
+    if (o && o[2]) box.innerHTML = '추가 TV : ' + esc(o[0].split(' · ')[0]) + ' <span class="stb-tag" style="color:' + stbColor(o[2]) + ';border-color:' + stbColor(o[2]) + ';">' + esc(o[2]) + ' 셋탑</span> <b>+' + won(o[1]) + '</b>';
   }
   function stbOpts(s){ var r = row(s); return (!r || r.tv === SOLO) ? [] : (RULES.stb[s.carrier] || []); }
   function stbAmount(s){
@@ -2143,8 +2161,15 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     show('tvopt', r && r.tv !== SOLO);
     $('#calcStb').innerHTML = so.map(function(o, i){ return '<option value="' + i + '"' + (i === S.stb ? ' selected' : '') + '>' + esc(o[0]) + (o[1] ? ' (' + (o[1] > 0 ? '+' : '') + won(o[1]) + ')' : '') + '</option>'; }).join('');
     $('#calcStb').disabled = so.length <= 1;
-    $('#calcTvAdd').innerHTML = '<option value="0">추가 안 함</option>' + ta.map(function(o, i){ return '<option value="' + (i + 1) + '"' + (i + 1 === S.tvAdd ? ' selected' : '') + '>' + esc(o[0]) + ' (+' + won(o[1]) + ')</option>'; }).join('');
+    /* 셋탑이 여러 종류면 셋탑별로 묶고 글씨색을 달리 함 (KT 지니3 / 지니A) */
+    var stbKinds = ta.map(function(o){ return o[2]; }).filter(function(v, i, a){ return v && a.indexOf(v) === i; }), grpTv = null, tvHtml = '<option value="0">추가 안 함</option>';
+    ta.forEach(function(o, i){
+      if (stbKinds.length > 1 && o[2] !== grpTv){ if (grpTv !== null) tvHtml += '</optgroup>'; tvHtml += '<optgroup label="' + esc(o[2]) + ' 셋탑">'; grpTv = o[2]; }
+      tvHtml += '<option value="' + (i + 1) + '"' + (i + 1 === S.tvAdd ? ' selected' : '') + (stbKinds.length > 1 ? ' style="color:' + stbColor(o[2]) + ';"' : '') + '>' + esc(o[0]) + ' (+' + won(o[1]) + ')</option>';
+    });
+    $('#calcTvAdd').innerHTML = tvHtml + (grpTv !== null ? '</optgroup>' : '');
     $('#calcTvAdd').disabled = !ta.length;
+    syncTvPick();
     note('tvopt', r && r.tv !== SOLO ? (S.carrier === 'lg' && mbps(S.speed) <= 100 ? 'LG 광랜(100M)은 UHD 2대 이상 진행 불가 — 추가 TV는 실속형 추단(11,000원)만 가능합니다.' : '추가 TV는 메인 TV와 다른 요금제로 고를 수 있습니다.') : '');
 
     show('mobile', S.carrier !== 'sky');
@@ -2278,7 +2303,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     c.items.forEach(function(it){
       /* TV 추가 → 「TV 추가(베이직)」, 셋탑 → 「지니A 셋탑」 처럼 무엇인지 보이게 */
       var nm = it.kind === 'base' ? '' : /결합/.test(it.label) ? '결합 '
-             : it.kind === 'add' && /TV 추가/.test(it.label) ? 'TV 추가(' + it.sub.split(' · ')[0] + ') '
+             : it.kind === 'add' && /TV 추가/.test(it.label) ? 'TV 추가(' + it.sub.split(' · ')[0] + (/지니A/.test(it.sub) ? '·지니A' : '') + ') '
              : /셋탑/.test(it.label) ? it.sub.replace(/ \(올 요금제 할인 반영\)$/, '') + ' ' : it.label + ' ';
       if (it.kind === 'base') parts.push(n0(it.amt));
       else { adj = true; parts.push((it.amt < 0 ? '− ' : '+ ') + nm + n0(Math.abs(it.amt))); }
@@ -2366,7 +2391,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   P7.addEventListener('change', function(e){
     var t = e.target, ln = t.closest('.ln');
     if (t.id === 'calcStb'){ S.stb = +t.value; renderResult(); return; }
-    if (t.id === 'calcTvAdd'){ S.tvAdd = +t.value; renderResult(); return; }
+    if (t.id === 'calcTvAdd'){ S.tvAdd = +t.value; syncTvPick(); renderResult(); return; }
     if (t.id === 'calcRep'){ S.rep = +t.value; renderResult(); return; }
     if (t.id === 'calcPfBase'){ S.pfBase = t.value; renderResult(); return; }
     if (t.id === 'calcSplit'){ if (S.bundle === 'total') S.splitTotal = t.value; else S.splitPf = t.value; renderResult(); return; }
