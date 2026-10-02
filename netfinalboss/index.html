@@ -50,6 +50,8 @@
 
   .note { font-size: 13px; color: #2E75B6; background: #E7F0FA; border-radius: 8px; padding: 8px 12px; margin: 8px 0; display: flex; align-items: flex-start; gap: 6px; }
   .note::before { content: '※'; font-weight: 700; flex-shrink: 0; }
+  /* 2번 유선 요금표 「TV 추가시」 안내 — 진하게 */
+  .note.note-tv { color: #102F55; font-weight: 700; background: #DCE9F5; border-left: 4px solid #1F4E8C; }
 
   ul { padding-left: 1.2rem; }
   ul li { margin-bottom: 5px; font-size: 14px; color: #2a3d1a; }
@@ -606,8 +608,8 @@ tbody tr:last-child td { border-bottom: none; }
 </tbody>
 </table>
 <div class="note" style="margin-top:8px;">패밀리: 30일 이내 결합 필수 / 총액 결합할인과 중복 불가</div>
-<div class="note" style="margin-top:4px;">TV 추가시(지니3): 베이직 +11,770원 / 라이트 +12,320원 / 에센스 +13,200원 / NEW모든G +25,740원</div>
-<div class="note" style="margin-top:4px;">TV 추가시(지니A): 베이직 +10,670원 / 라이트 +11,220원 / 에센스 +12,100원 / NEW모든G +24,640원</div>
+<div class="note note-tv" style="margin-top:4px;">TV 추가시(지니3): 베이직 +11,770원 / 라이트 +12,320원 / 에센스 +13,200원 / NEW모든G +25,740원</div>
+<div class="note note-tv" style="margin-top:4px;">TV 추가시(지니A): 베이직 +10,670원 / 라이트 +11,220원 / 에센스 +12,100원 / NEW모든G +24,640원</div>
 </div>
 <hr style="border:none;border-top:2px solid #A9CCE8;margin:14px 0;"/>
 <div>
@@ -684,7 +686,7 @@ tbody tr:last-child td { border-bottom: none; }
 </tbody>
 </table><div style="background:#EDF3FA;border-left:3px solid #2E75B6;padding:8px 10px;border-radius:6px;font-size:11.5px;color:#1F4E8C;margin-top:8px;line-height:1.6;">※ <b>SKT</b> = SK텔레콤 상품 / <b>SKB</b> = SK브로드밴드 상품 — 요금 및 장비, 결합 등 대부분 동일하나 <b>경품가이드 금액이 다르므로 상품 확인 후 안내.</b></div>
 <div style="background:#FFF6E0;border-left:3px solid #D99A1E;padding:8px 10px;border-radius:6px;font-size:11.5px;color:#7A4A00;margin-top:6px;line-height:1.6;">※ SK 요금은 <b>WiFi 6 공유기 기준</b>입니다. SK브로드밴드 공식 홈페이지는 <b>WiFi 7 통합상품 기준</b>이라 금액이 <b>1,100원씩 높게</b> 보일 수 있습니다 (고객 문의 시 안내).</div>
-<div class="note" style="margin-top:8px;">TV 추가시(스마트3): 이코노미 +8,250원 / 스탠다드 +9,900원 / ALL +11,550원</div>
+<div class="note note-tv" style="margin-top:8px;">TV 추가시(스마트3): 이코노미 +8,250원 / 스탠다드 +9,900원 / ALL +11,550원</div>
 <div style="font-size:12px;font-weight:700;color:#143C64;margin:14px 0 6px;">패밀리 상품</div>
 <table class="price-table">
 <thead><tr><th rowspan="2">속도</th><th rowspan="2">TV</th><th rowspan="2">월요금</th><th rowspan="2">wifi포함</th><th colspan="2" style="background:#2E75B6;color:#fff;font-weight:700;font-size:12px;text-align:center;letter-spacing:-0.2px;white-space:nowrap;border-left:2px solid #BBD4EA;">SKT 경품가이드 (만원)</th><th colspan="2" style="background:#2E75B6;color:#fff;font-weight:700;font-size:12px;text-align:center;letter-spacing:-0.2px;white-space:nowrap;border-left:2px solid #BBD4EA;">SKB 경품가이드 (만원)</th></tr><tr><th style="background:#DCE9F5;color:#1F4E8C;font-weight:700;font-size:11px;text-align:center;white-space:nowrap;border-left:2px solid #BBD4EA;">하한</th><th style="background:#DCE9F5;color:#1F4E8C;font-weight:700;font-size:11px;text-align:center;white-space:nowrap;">상한</th><th style="background:#DCE9F5;color:#1F4E8C;font-weight:700;font-size:11px;text-align:center;white-space:nowrap;border-left:2px solid #BBD4EA;">하한</th><th style="background:#DCE9F5;color:#1F4E8C;font-weight:700;font-size:11px;text-align:center;white-space:nowrap;">상한</th></tr></thead>
@@ -786,7 +788,7 @@ tbody tr:last-child td { border-bottom: none; }
 <tr><td style="white-space:nowrap;">프리미엄VOD(257채널)<span style="display:block;font-size:10px;font-weight:600;color:#6B7C8F;line-height:1.25;margin-top:1px;letter-spacing:-0.2px;">매월 VOD 쿠폰 5,500원</span></td><td style="text-align:center;font-weight:700;">56,100</td><td style="text-align:center;color:#A32D2D;">42,900</td><td style="background:#F1F6FB;text-align:center;font-variant-numeric:tabular-nums;color:#4A7099;font-weight:600;border-left:2px solid #BBD4EA;">35</td><td style="background:#F1F6FB;text-align:center;font-variant-numeric:tabular-nums;color:#143C64;font-weight:800;">47</td></tr>
 </tbody>
 </table>
-<div class="note" style="margin-top:8px;">TV추가시: 실속형(UHD3) +9,900원 / 실속형(UHD4) +12,100원 / 프리미엄(UHD3) +11,550원 / 100M 추단: 실속형 +11,000원</div>
+<div class="note note-tv" style="margin-top:8px;">TV추가시: 실속형(UHD3) +9,900원 / 실속형(UHD4) +12,100원 / 프리미엄(UHD3) +11,550원 / 100M 추단: 실속형 +11,000원</div>
 </div>
 <hr style="border:none;border-top:2px solid #A9CCE8;margin:14px 0;"/>
 <div>
@@ -869,7 +871,7 @@ tbody tr:last-child td { border-bottom: none; }
 <tr><td style="white-space:nowrap;">초이스(IPTV)(209채널)<span style="display:block;font-size:10px;font-weight:600;color:#6B7C8F;line-height:1.25;margin-top:1px;letter-spacing:-0.2px;">+ 유료채널</span></td><td style="text-align:center;">36,300</td><td style="text-align:center;font-weight:700;">36,300</td><td style="background:#F1F6FB;text-align:center;color:#AFC0D0;border-left:2px solid #BBD4EA;">–</td><td style="background:#F1F6FB;text-align:center;color:#AFC0D0;">–</td></tr>
 </tbody>
 </table><div style="background:#EDF3FA;border-left:3px solid #2E75B6;padding:8px 10px;border-radius:6px;font-size:11.5px;color:#1F4E8C;margin-top:8px;line-height:1.6;">※ 기존 <b>KT → SKY 「전환」 가입 시 10만원 수수료 차감</b> 적용.</div>
-<div class="note" style="margin-top:8px;">TV 추가시: IPTV 베이직 +7,700원 / IPTV 플러스 +8,250원</div>
+<div class="note note-tv" style="margin-top:8px;">TV 추가시: IPTV 베이직 +7,700원 / IPTV 플러스 +8,250원</div>
 </div>
 <hr style="border:none;border-top:2px solid #A9CCE8;margin:14px 0;"/>
 <div>
