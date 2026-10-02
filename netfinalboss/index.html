@@ -430,6 +430,9 @@ tbody tr:last-child td { border-bottom: none; }
   .chip:hover { border-color: #2E75B6; }
   .chip.on { background: #1F4E8C; border-color: #1F4E8C; color: #fff; box-shadow: 0 2px 6px rgba(31,78,140,.25); }
   .chip small { display: block; font-size: 10.5px; font-weight: 600; opacity: .8; }
+  .chip .chip-d { display: block; margin-top: 2px; font-size: 10.5px; font-weight: 700; color: #4F6580; letter-spacing: -.2px; }
+  .chip.on .chip-d { color: #DCE8F5; }
+  .chip[data-d][disabled] { opacity: .72; }
   .chip[disabled] { cursor: not-allowed; opacity: .45; }
   .chip.best:not(.on)::after { content: '최저'; margin-left: 5px; font-size: 10px; font-weight: 800; color: #fff; background: #C2410C; padding: 1px 5px; border-radius: 8px; vertical-align: 1px; }
   .chip.on.best::after { content: '최저'; margin-left: 5px; font-size: 10px; font-weight: 800; color: #14213D; background: #F2B84B; padding: 1px 5px; border-radius: 8px; vertical-align: 1px; }
@@ -1712,6 +1715,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   /* 계산기 통신사 버튼 · SKT / SKB 는 요금표·요금제·결합 모두 SK 와 같고 가입 통신사만 다름 */
   var CARRIERS = ['kt', 'skt', 'skb', 'lg', 'sky'];
   var MSG_NAME = { kt: 'KT', sk: 'SK', skt: 'SKT', skb: 'SKB', lg: 'LG', sky: '스카이라이프' };   /* 견적서·결과의 통신사 이름 */
+  var PHONE_NAME = { kt: 'KT', sk: 'SKT', skt: 'SKT', skb: 'SKT', lg: 'LG U+', sky: '' };   /* 결합하는 휴대폰 통신사 */
   function isSK(c){ return c === 'sk' || c === 'skt' || c === 'skb'; }
   function dataKey(c){ return isSK(c) ? 'sk' : c; }      /* 1번 · 2번 표 이름 */
   var SOLO = '인터넷 단독';
@@ -1939,6 +1943,14 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     return a;
   }
 
+  /* 결합 버튼 초간단 설명 (휴대폰 회선 추가 전) */
+  var BUNDLE_DESC = {
+    kt:  { none: '결합 없는 단독 요금', fixed: '인터넷 5,500 + 폰 회선별 3~7천 할인', total: '폰 월정액 합계 클수록 할인 ↑',
+           psingle: '500M↑ + 7.7만↑ 폰 1대 → 25%', pfamily: '7.7만↑ 폰 2대↑ → 대표 외 25%' },
+    sk:  { none: '결합 없는 단독 요금', skfam: '인+티 할인 + 폰 회선수별 최대 2.4만' },
+    lg:  { none: '결합 없는 단독 요금', lgeasy: '인+티 할인 + 폰 회선별 할인' },
+    sky: { none: '결합 할인 없음' }
+  };
   var BUNDLES = {
     kt:  [['none', '결합 안 함'], ['fixed', '정액 결합'], ['total', '총액 결합'], ['psingle', '프리미엄 싱글'], ['pfamily', '프리미엄 가족']],
     sk:  [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
@@ -1991,8 +2003,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
         if (isFamilyProduct(s)) notes.push(FAMILY_NOTE[s.carrier]);
       } else if (b === 'fixed'){
         need(!isFamilyProduct(s), '패밀리는 정액 결합 중복 불가 (할인 0원)');
-        need(n >= 1, '결합할 휴대폰을 추가하세요');
-        var F = W.fixed; bLabel = 'KT 정액 결합';
+        var F = W.fixed;                                  /* 휴대폰 없어도 인터넷 할인은 계산 (휴대폰 요금과 무관) */ bLabel = 'KT 정액 결합';
         netDisc = F.net[tier(F.th, maxList)];
         lineObjs.forEach(function(x, i){ phoneDisc[i] = F.phone[tier(F.th, x.list)]; phoneTag[i] = phoneDisc[i] ? '정액' : ''; });
         notes.push('정액 결합 : 휴대폰 회선마다 요금제 월정액 구간별 할인 (3.7만↑ 3,000 · 6.1만↑ 5,000 · 7.7만↑ 7,000원) + 인터넷 ' + won(netDisc));
@@ -2082,24 +2093,23 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
         if (!want.length && big.length > 2) notes.push('대표회선은 할인이 가장 크게 나오는 회선으로 자동 지정 — 「대표회선」에서 직접 고를 수 있습니다');
       } else if (b === 'skfam'){
         need(!isFamilyProduct(s), '패밀리는 요즘가족 결합 중복 불가');
-        need(n >= 1, '결합할 휴대폰을 추가하세요');
-        bLabel = 'SK 요즘가족 결합';
+        bLabel = 'SK 요즘가족 결합';                      /* 휴대폰 없으면 요가결 인+티 요금만 */
         var cnt = Math.min(n, RULES.skFamilyPhone.length - 1);
         if (mbps(s.speed) <= 100 && cnt > RULES.skFamily100MMaxLines){ cnt = RULES.skFamily100MMaxLines; notes.push('100M는 휴대폰 3회선까지 할인'); }
         phoneTotalDisc = RULES.skFamilyPhone[cnt];
         if (n >= 5 && cnt === RULES.skFamilyPhone.length - 1) notes.push('5회선까지 가능하나 최대 할인 24,000원');
       } else if (b === 'lgeasy'){
-        need(n >= 1, '결합할 휴대폰을 추가하세요');
-        var E = W.easy; bLabel = 'LG 참쉬운 가족결합';
+        var E = W.easy;                                   /* 휴대폰 없으면 참쉬운 인+티 요금만 */ bLabel = 'LG 참쉬운 가족결합';
         var er = E.rows.filter(function(x){ return n >= x.min && n <= x.max; })[0] || E.rows[E.rows.length - 1];
         lineObjs.forEach(function(x, i){ phoneDisc[i] = er.amt[tier(E.th, x.list)]; });
-        notes.push('인터넷 할인 3년 약정 기준 · 휴대폰 ' + n + '회선 구간 적용');
+        if (n) notes.push('인터넷 할인 3년 약정 기준 · 휴대폰 ' + n + '회선 구간 적용');
       }
     } catch (e){
       if (e && e.reason) return { ok: false, reason: e.reason };
       throw e;
     }
 
+    if (b !== 'none' && !n) notes.unshift(PHONE_NAME[s.carrier] + ' 휴대폰 없이 계산 — 인터넷·TV 결합 할인만 반영 (고객이 ' + PHONE_NAME[s.carrier] + ' 휴대폰과 결합할 때 적용) · 휴대폰 할인은 회선을 추가하면 계산');
     if (s.carrier === 'kt'){
       var yNo = [];
       lineObjs.forEach(function(x, i){ if (x.youth && phoneTag[i].indexOf('청소년') < 0) yNo.push(x.no); });
@@ -2132,7 +2142,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
     return { ok: true, bundle: b, bLabel: bLabel, row: r, desc: desc, items: items, wired: wired,
              lines: lines, phoneTotalDisc: phoneTotalDisc, mobile: mobile, total: wired + mobile,
-             notes: notes, install: inst, usim: usim, n: n, split: splitUsed, pfMode: pfModeUsed, wl: WL };
+             notes: notes, install: inst, usim: usim, n: n, split: splitUsed, pfMode: pfModeUsed, wl: WL, noPhone: b !== 'none' && !n };
   }
 
   function installFee(W, kind, day){
@@ -2182,7 +2192,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     box.innerHTML = opts.map(function(o){
       var v = o.v, on = String(v) === String(cur);
       return '<button type="button" class="chip' + (on ? ' on' : '') + (o.best ? ' best' : '') + '" data-v="' + esc(v) + '"'
-        + (o.disabled ? ' disabled title="' + esc(o.why || '') + '"' : '') + '>' + esc(o.t) + (o.s ? '<small>' + esc(o.s) + '</small>' : '') + '</button>';
+        + (o.disabled ? ' disabled title="' + esc(o.why || '') + '"' : '') + (o.d ? ' data-d="1"' : '') + '>' + esc(o.t) + (o.s ? '<small>' + esc(o.s) + '</small>' : '')
+        + (o.d ? '<span class="chip-d">' + esc(o.d) + '</span>' : '') + '</button>';
     }).join('');
   }
   function show(b, on){ var el = $('[data-b="' + b + '"]'); if (el) el.hidden = !on; }
@@ -2300,9 +2311,11 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     /* 고른 결합(S.bundle)은 그대로 두고, 조건이 안 맞는 동안만 결합 없이 계산 → 조건이 맞으면 다시 자동 적용 */
     var c = compute(S), eff = S.bundle;
     if (!c.ok){ eff = 'none'; c = compute(S, 'none'); c.notes.unshift('고른 「' + BUNDLES[S.carrier].filter(function(x){ return x[0] === S.bundle; })[0][1] + '」 : ' + compute(S).reason + ' → 지금은 결합 없이 계산 (조건이 맞으면 자동으로 다시 적용)'); }
+    /* 휴대폰을 아직 안 넣었으면 : 결합마다 특징 한 줄 (상담용) · 최저 표시는 휴대폰을 넣은 뒤에 */
+    var noLines = !S.lines.some(function(ln){ return lineInfo(S, ln).ok; }), BD = BUNDLE_DESC[dataKey(S.carrier)] || {};
     chips('bundle', opts.map(function(o){
-      return { v: o.k, t: o.t, s: o.c.ok ? won(o.c.total) : o.c.reason, disabled: !o.c.ok, why: o.c.reason,
-               best: o.c.ok && avail.length > 1 && o.c.total === best };
+      return { v: o.k, t: o.t, s: o.c.ok ? won(o.c.total) : (noLines ? '휴대폰 추가 시 계산' : o.c.reason), disabled: !o.c.ok, why: o.c.reason,
+               d: noLines ? BD[o.k] : '', best: !noLines && o.c.ok && avail.length > 1 && o.c.total === best };
     }), eff);
     var bn = S.carrier === 'sky' ? 'SKY는 가이드에 결합 할인 정보가 없습니다.'
            : S.carrier === 'lg' ? '투게더 결합은 대상 요금제(5G 시그니처·프리미어 라인)가 2번 유심 요금제에 없어 계산에서 제외했습니다.'
@@ -2415,6 +2428,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     L.push(prod);
     var sub = [dm ? dm[2] : '', bName].filter(Boolean).join(' · ');
     if (sub) L.push(sub);
+    var pn = PHONE_NAME[S.carrier];
+    if (c.noPhone) L.push('※ ' + pn + ' 휴대폰과 결합할 때의 요금입니다');
     L.push('');
     /* 인터넷·TV */
     L.push('■ ' + c.wl + '  월 ' + won(c.wired));
@@ -2427,6 +2442,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
         L.push(' · ' + nm + ' ' + (it.kind === 'base' ? '' : it.amt < 0 ? '−' : '+') + won(Math.abs(it.amt)));
       });
     }
+    if (c.noPhone) L.push('   (' + pn + ' 휴대폰 1회선 이상 결합 조건)');
     /* 휴대폰 : 회선별 (합계로 정해지는 결합 할인은 회선마다 똑같이 나눠 표시) */
     if (c.n){
       var share = c.lines.map(function(){ return 0; });
@@ -2451,7 +2467,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     L.push('');
     L.push('━━━━━━━━━━━━');
     L.push('★ 월 합계 : ' + won(c.total) + ' (부가세 포함)');
-    if (disc) L.push(' · 결합 할인 : 월 ' + won(disc));
+    if (disc) L.push(' · 결합 할인 : 월 ' + won(disc) + (c.noPhone ? ' (' + c.wl + ')' : ''));
+    if (c.noPhone){ L.push(' · 휴대폰 요금은 포함되지 않음'); L.push(' · 휴대폰 결합 할인은 별도'); L.push('   (요금제·회선 수에 따라 다름)'); }
     if (S.cur) L.push(' · 현재 요금 대비 : 월 ' + won(Math.abs(S.cur - c.total)) + (S.cur >= c.total ? ' 절감' : ' 증가'));
     L.push('━━━━━━━━━━━━');
     /* 1회 청구 · 약정 · 사은품 */
