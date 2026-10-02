@@ -212,11 +212,23 @@
   .pin-btn:hover { background: #E6EFF9; }
   .pin-btn.on { color: #fff; background: #C2410C; border-color: #C2410C; }
   .pin-btn.on:hover { background: #9A3412; }
+  /* 주소검색 (카카오 우편번호) */
+  .addr-btn { flex: none; align-self: center; margin: 0 6px 0 2px; font-family: inherit; font-size: 11.5px; font-weight: 800; line-height: 1.4;
+              color: #fff; background: #1F4E8C; border: 1px solid #1F4E8C; border-radius: 14px; padding: 2px 10px; cursor: pointer; }
+  .addr-btn:hover { background: #143C64; }
+  #addrModal { position: fixed; inset: 0; z-index: 2147483100; background: rgba(20,33,61,.55); display: none; align-items: center; justify-content: center; padding: 16px; }
+  #addrModal.on { display: flex; }
+  #addrModal .am-box { width: 100%; max-width: 520px; height: min(640px, 86vh); background: #fff; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+  #addrModal .am-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #1F4E8C; color: #fff; font-size: 14px; font-weight: 800; }
+  #addrModal .am-close { font-family: inherit; font-size: 13px; font-weight: 800; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.6); border-radius: 14px; padding: 2px 10px; cursor: pointer; }
+  #addrModal .am-body { flex: 1; min-height: 0; position: relative; }
+  #addrModal .am-msg { padding: 24px 16px; font-size: 13px; color: #3A4A5E; text-align: center; }
+  @media (max-width: 640px) { #addrModal { padding: 0; } #addrModal .am-box { max-width: none; height: 100%; border-radius: 0; } }
   .ff-in.is-pinned { background: #FFF6E0; border-bottom: 1px solid #D99A1E; color: #7A2A08; cursor: default; }
-  .ff-row.has-pin .ff-in { min-width: 0; }
-  @media (max-width: 640px) {   /* 좁은 화면: 항목명은 윗줄, 입력칸 + 버튼은 아랫줄 한 줄로 */
+  /* 입력칸은 내용 길이만큼만 — 「고정하기」 버튼이 글자 바로 뒤에 붙도록 (폭은 스크립트가 맞춤) */
+  .ff-row.has-pin .ff-in { flex: 0 1 auto; min-width: 0; max-width: calc(100% - 96px); }
+  @media (max-width: 640px) {   /* 좁은 화면: 항목명은 윗줄, 입력칸 + 버튼은 아랫줄 */
     .ff-row.has-pin .ff-fix { flex-basis: 100%; }
-    .ff-row.has-pin .ff-in { flex: 1 1 0; }
   }
   /* 문장 중간에 들어가는 짧은 입력칸 — 뒤 문구가 밀리지 않게 폭을 고정 */
   .ff-in.ff-sm { flex: 0 0 auto; width: 7em; min-width: 4.5em; }
@@ -507,6 +519,11 @@ tbody tr:last-child td { border-bottom: none; }
   .cr-copy { margin-top: 6px; width: 100%; font-family: inherit; font-size: 13px; font-weight: 800; color: #fff; background: #2E75B6; border: none; border-radius: 8px; padding: 8px 10px; cursor: pointer; }
   .cr-copy:hover { background: #1F4E8C; }
   .cr-copy.done { background: #1E6B3A; }
+  .cr-form { margin-top: 6px; width: 100%; font-family: inherit; font-size: 13px; font-weight: 800; color: #7A2A08; background: #FFF3E0; border: 1.5px solid #D99A1E; border-radius: 8px; padding: 8px 10px; cursor: pointer; }
+  .cr-form:hover { background: #FFE2B8; }
+  .cr-form-tip { margin-top: 4px; font-size: 11px; color: #6B7C8F; line-height: 1.5; }
+  .ff-in.ff-filled { animation: ffFill 3s ease-out; }
+  @keyframes ffFill { 0%, 60% { background: #FFE58A; } 100% { background: transparent; } }
   .cr-warn { font-size: 11.5px; color: #A32D2D; font-weight: 700; line-height: 1.6; padding: 0 2px; }
 
   /* 모바일: 결과가 화면 밖에 있을 때 하단에 월 합계 바 */
@@ -1638,11 +1655,18 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (v){ inp.value = v; inp.defaultValue = v; }          /* 고정값이 기준 — 두 양식 모두 같은 값 */
       else inp.defaultValue = '';
       inp.readOnly = !!v; inp.classList.toggle('is-pinned', !!v);
-      btn.classList.toggle('on', !!v); btn.textContent = v ? '해제' : '고정';
+      btn.classList.toggle('on', !!v); btn.textContent = v ? '해제' : '고정하기';
+      pinFit(inp);
       btn.title = v ? '고정 해제 — 다시 입력할 수 있음' : '이 기기에 저장 — 다음에도 자동 입력 · 초기화해도 남음';
       mark(inp);
     });
   }
+  /* 입력칸 폭을 글자 길이에 맞춤 (한글 1칸 · 그 외 0.6칸 기준, 최소 12칸) */
+  function pinFit(inp){
+    var w = 0; for (var i = 0; i < inp.value.length; i++) w += /[\u3131-\uD79D]/.test(inp.value[i]) ? 1 : 0.62;
+    inp.style.width = Math.max(12, w + 1.6) + 'em';
+  }
+  p6.addEventListener('input', function(e){ if (e.target.closest && e.target.closest('.ff-row.has-pin')) pinFit(e.target); });
   pinRows.forEach(function(row){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'pin-btn'; row.appendChild(b); row.classList.add('has-pin');
   });
@@ -1652,11 +1676,70 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var inp = btn.parentNode.querySelector('input.ff-in');
     if (btn.classList.contains('on')){ pinSet(''); pinRender(''); inp.focus({ preventScroll: true }); return; }
     var v = inp.value.trim();
-    if (!v){ window.alert('유치자 상호/성함/연락처를 먼저 입력한 뒤 「고정」을 눌러주세요.'); inp.focus({ preventScroll: true }); return; }
+    if (!v){ window.alert('유치자 상호/성함/연락처를 먼저 입력한 뒤 「고정하기」를 눌러주세요.'); inp.focus({ preventScroll: true }); return; }
     if (!pinSet(v)) window.alert('이 브라우저에서는 저장할 수 없어 이번 접속 동안만 고정됩니다. (시크릿 창 등)');
     pinRender(v);
   });
   pinRender(pinGet());
+
+  /* 설치주소 「주소검색」 — 카카오 우편번호 서비스 (누를 때만 불러옴 · 화면 안 창으로 열어 팝업 차단 없음) */
+  var KAKAO_SRC = 'https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', kakaoState = 0, kakaoWait = [];
+  function loadKakao(cb){
+    if (window.kakao && window.kakao.Postcode){ cb(true); return; }
+    kakaoWait.push(cb); if (kakaoState === 1) return; kakaoState = 1;
+    var sc = document.createElement('script'); sc.src = KAKAO_SRC; sc.async = true;
+    sc.onload = function(){ kakaoState = 0; var ok = !!(window.kakao && window.kakao.Postcode); kakaoWait.splice(0).forEach(function(f){ f(ok); }); };
+    sc.onerror = function(){ kakaoState = 0; sc.parentNode && sc.parentNode.removeChild(sc); kakaoWait.splice(0).forEach(function(f){ f(false); }); };
+    document.head.appendChild(sc);
+  }
+  var modal = null;
+  function addrModal(){
+    if (modal) return modal;
+    modal = document.createElement('div'); modal.id = 'addrModal'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-label', '주소 검색');
+    modal.innerHTML = '<div class="am-box"><div class="am-head"><span>주소 검색</span><button type="button" class="am-close">닫기 ✕</button></div><div class="am-body"></div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){ if (e.target === modal || e.target.closest('.am-close')) closeAddr(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && modal.classList.contains('on')) closeAddr(); });
+    return modal;
+  }
+  function closeAddr(){ if (modal){ modal.classList.remove('on'); modal.querySelector('.am-body').innerHTML = ''; } }
+  /* 선택한 주소 → 「도로명(또는 지번) 주소 (동, 건물명) 」 + 뒤에 상세주소 바로 입력 */
+  function addrText(d){
+    var road = d.userSelectedType !== 'J', a = road ? (d.roadAddress || d.address) : (d.jibunAddress || d.autoJibunAddress || d.address), extra = [];
+    if (road){
+      if (d.bname && /[동로가]$/.test(d.bname)) extra.push(d.bname);
+      if (d.buildingName && d.apartment === 'Y') extra.push(d.buildingName);
+    }
+    return a + (extra.length ? ' (' + extra.join(', ') + ')' : '');
+  }
+  function openAddr(inp){
+    var m = addrModal(), body = m.querySelector('.am-body');
+    body.innerHTML = '<div class="am-msg">주소 검색을 불러오는 중…</div>'; m.classList.add('on');
+    loadKakao(function(ok){
+      if (!m.classList.contains('on')) return;
+      if (!ok){ body.innerHTML = '<div class="am-msg">주소 검색 서비스를 불러오지 못했습니다.<br>인터넷 연결을 확인한 뒤 다시 시도하거나, 주소를 직접 입력해 주세요.</div>'; return; }
+      body.innerHTML = '';
+      new window.kakao.Postcode({
+        width: '100%', height: '100%',
+        oncomplete: function(d){
+          inp.value = addrText(d) + ' ';
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+          closeAddr();
+          inp.focus({ preventScroll: true });
+          var n = inp.value.length; try { inp.setSelectionRange(n, n); } catch (err) {}
+          inp.classList.remove('ff-filled'); void inp.offsetWidth; inp.classList.add('ff-filled');
+          setTimeout(function(){ inp.classList.remove('ff-filled'); }, 3200);
+        }
+      }).embed(body);
+    });
+  }
+  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row'), function(row){
+    var fx = row.querySelector('.ff-fix'), inp = row.querySelector('input.ff-in');
+    if (!fx || !inp || fx.textContent.indexOf('■설치주소') !== 0) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'addr-btn'; b.textContent = '주소검색'; b.title = '카카오 우편번호 검색 — 고르면 주소가 바로 들어가고 뒤에 상세주소만 입력';
+    row.insertBefore(b, inp); inp.placeholder = '검색 후 동·호수 입력';
+    b.addEventListener('click', function(){ openAddr(inp); });
+  });
 
   p6.addEventListener('click', function(e){
     if (e.target.closest && e.target.closest('.tabbar .tab')) setTimeout(fitAll, 60);
@@ -2395,7 +2478,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (c.notes.length) h += '<div class="cr-box"><div class="h">참고</div>' + c.notes.map(esc).join('<br>') + '</div>';
     h += '</div>';
 
-    h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><button type="button" class="cr-copy">안내 문구 복사</button></div></div>';
+    h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><button type="button" class="cr-copy">안내 문구 복사</button>'
+       + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button><div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다</div>' : '')
+       + '</div></div>';
     h += '<div class="cr-warn">※ 결합 할인은 통신사 심사·가입 조건에 따라 달라질 수 있습니다. 최종 요금은 접수 전 통신사 기준으로 다시 확인하세요.</div>';
     $('.calc-result').innerHTML = h;
     var mt = P7.querySelector('.cr-msg textarea');   /* 안내 문구가 잘리지 않게 내용 높이에 맞춤 */
@@ -2491,6 +2576,61 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     return L.join('\n');
   }
 
+  /* ── 6번 유선 접수양식으로 넘기기 ─────────────────────── */
+  var FORM_CARRIER = { kt: 'KT', skt: 'SKT', skb: 'SKB', sk: 'SK', lg: 'LG U+', sky: '스카이라이프' };
+  var FORM_FIELDS = ['■가입통신사', '■신청상품', '■AP(WI-FI)신청여부', '■월요금', '■설치비(기사출동비)', '■고객 현금사은품 금액', '■기타내용'];
+  function wiredForm(){ return document.querySelector('#p6 .tpanel[data-k="wired"] .form-card'); }
+  function formField(card, label){
+    var row = Array.prototype.filter.call(card.querySelectorAll('.ff-row'), function(r){ var fx = r.querySelector('.ff-fix'); return fx && fx.textContent.indexOf(label) === 0; })[0];
+    return row ? row.querySelector('.ff-in') : null;
+  }
+  /* 계산기 선택 → 양식 7칸 내용 */
+  function formValues(){
+    var c = compute(S); if (!c.ok) c = compute(S, 'none');       /* 고른 결합이 지금 안 되면 결합 없이 (선택은 그대로 둠) */
+    var r = c.row, fam = isFamilyProduct(S), hasProd = D.wired[S.carrier].products.length > 1;
+    var prod = (hasProd && fam ? '패밀리인터넷' : '인터넷') + ' ' + S.speed + (r.tv === SOLO ? ' 단독' : ' + ' + r.tv);
+    c.items.forEach(function(it){
+      if (/TV 추가/.test(it.label)) prod += ' / TV 추가 1대(' + it.sub.replace(/ · /g, '·') + ')';
+      else if (/셋탑/.test(it.label)) prod += ' / ' + it.sub.replace(/ \(올 요금제 할인 반영\)$/, '');
+    });
+    var ap = S.carrier === 'lg' ? 'O' : (r.wifi != null ? (S.wifi ? 'O' : 'X') : '');      /* AP(WI-FI) 신청여부 O / X · LG는 WiFi 무료 포함 */
+    var before = compute(S, 'none').wired, bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '') : '';
+    var fee = c.bLabel && before !== c.wired ? '결합 전 ' + won(before) + ' → 결합 후 ' + won(c.wired) + ' (' + bName + ')' : won(c.wired);
+    var inst = c.install ? won(c.install.fee) + (c.install.other == null ? '' : c.install.other === c.install.fee ? ' (주말·야간 동일)' : ' (주말·야간 ' + won(c.install.other) + ')') : '';
+    /* 기타내용 : 결합 · 휴대폰 회선 · 패밀리 정보 */
+    var etc = [];
+    if (c.bLabel){
+      var rep = c.lines.filter(function(l){ return /대표회선/.test(l.tag); })[0];
+      etc.push('결합 : ' + MSG_NAME[S.carrier] + ' ' + bName + (rep ? ' (대표회선 ' + rep.no + '회선)' : ''));
+    }
+    if (c.n){
+      var nNew = c.lines.filter(function(l){ return l.isNew; }).length, nSel = c.lines.filter(function(l){ return l.sel; }).length;
+      etc.push('휴대폰 ' + c.n + '회선 : ' + c.lines.map(function(l){ return l.no + ') ' + (l.isNew ? l.name : '기존 휴대폰 ' + won(l.list)) + (/청소년/.test(l.tag) ? '(청소년)' : ''); }).join(' ')
+        + (nNew ? ' · 유심 신규 ' + nNew + '회선' : '') + (nSel ? ' · 선택약정 ' + nSel + '회선' : ''));
+    } else if (c.bLabel) etc.push('휴대폰 회선 미입력 — 인터넷·TV 결합 할인만 반영 (' + PHONE_NAME[S.carrier] + ' 휴대폰 결합 조건)');
+    if (fam) etc.push(FAMILY_NOTE[S.carrier]);
+    if (S.carrier === 'skb' && (c.n >= 2 || fam)) etc.push('SKB : 대표자 휴대폰 1회선만 접수 시 진행 · 추가 가족 회선' + (fam ? '·패밀리 결합' : '') + '은 고객센터 직접 신청');
+    return [FORM_CARRIER[S.carrier], prod, ap, fee, inst, S.gift ? S.gift + '만원' : '', etc.join('\n')];
+  }
+  function toWiredForm(){
+    var card = wiredForm(); if (!card) return;
+    var ins = FORM_FIELDS.map(function(l){ return formField(card, l); }), vals = formValues();
+    if (ins.some(function(x){ return !x; })){ window.alert('유선 접수양식의 항목을 찾지 못했습니다. 담당자에게 알려주세요.'); return; }
+    var clash = ins.some(function(x, i){ return x.value !== x.defaultValue && x.value !== vals[i]; });
+    if (clash && !window.confirm('유선 접수양식에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?\n(고객명 · 주소 등 나머지 칸과 유치자 정보는 그대로)')) return;
+    ins.forEach(function(x, i){
+      x.value = vals[i]; x.dispatchEvent(new Event('input', { bubbles: true }));      /* 「작성 중」 표시 · 여러 줄 칸 높이 맞춤 */
+      x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled');
+    });
+    window.goPage('p6', 'wired');
+    setTimeout(function(){
+      var navH = (document.getElementById('mainNav') || { offsetHeight: 0 }).offsetHeight;
+      window.scrollTo({ top: ins[0].getBoundingClientRect().top + window.pageYOffset - navH - 140, behavior: 'smooth' });
+      ins.forEach(function(x){ if (x.tagName === 'TEXTAREA'){ x.dispatchEvent(new Event('input', { bubbles: true })); } });
+    }, 80);
+    setTimeout(function(){ ins.forEach(function(x){ x.classList.remove('ff-filled'); }); }, 3200);
+  }
+
   /* ── 이벤트 ───────────────────────────────────────────── */
   function parseWon(v){ var n = num(String(v).replace(/,/g, '')); return n && n > 0 ? Math.round(n) : null; }
   /* 사은품 : 입력한 숫자를 그대로 사용 (숫자·소수점만) */
@@ -2528,6 +2668,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (g) window.scrollTo(0, Math.max(0, g.getBoundingClientRect().top + window.pageYOffset - navH - 60));
       return;
     }
+    if (e.target.closest('.cr-form')){ toWiredForm(); return; }
     var cp = e.target.closest('.cr-copy');
     if (cp){
       var ta = P7.querySelector('.cr-msg textarea'), text = ta.value;
@@ -2598,7 +2739,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   syncFab();
 
   /* 검증용 */
-  window.wgCalc = { data: D, state: S, compute: compute, rules: RULES, render: renderForm, reset: resetAll, touched: touched };
+  window.wgCalc = { data: D, state: S, compute: compute, rules: RULES, render: renderForm, reset: resetAll, touched: touched, formValues: formValues };
 })();
 </script>
 </body>
