@@ -216,16 +216,17 @@
   .addr-btn { flex: none; align-self: center; margin: 0 8px 0 6px; font-family: inherit; font-size: 11.5px; font-weight: 800; line-height: 1.4;
               color: #fff; background: #1F4E8C; border: 1px solid #1F4E8C; border-radius: 14px; padding: 2px 10px; cursor: pointer; }
   .addr-btn:hover { background: #143C64; }
+  /* [주소] [상세주소] [주소검색] — 두 칸 모두 내용 길이만큼, 버튼은 맨 뒤를 따라감 */
   .ff-row.has-addr .ff-addr { flex: 0 1 auto; min-width: 0; max-width: calc(100% - 96px); cursor: pointer; }
   .ff-row.has-addr .ff-addr:not(:placeholder-shown) { cursor: text; }
-  .ff-row.has-addr .ff-detail { flex: 1 1 12em; min-width: 10em; }
+  .ff-row.has-addr .ff-detail { flex: 0 1 auto; min-width: 0; margin-left: 6px; }
   .ff-in::placeholder { color: #9AA9B8; font-weight: 500; }
   @media (max-width: 640px) {
     .ff-row.has-addr .ff-fix { flex-basis: 100%; }
     /* 좁은 화면 : 주소는 한 줄 전체 → 아랫줄에 [주소검색][상세주소] */
     .ff-row.has-addr .ff-addr { flex: 1 1 100%; max-width: 100%; width: auto !important; }
-    .ff-row.has-addr .addr-btn { margin: 3px 8px 0 0; }
-    .ff-row.has-addr .ff-detail { flex: 1 1 0; min-width: 0; margin-top: 3px; }
+    .ff-row.has-addr .ff-detail { flex: 1 1 0; min-width: 0; width: auto !important; margin: 3px 0 0; }
+    .ff-row.has-addr .addr-btn { margin: 3px 0 0 8px; }
   }
   #addrModal { position: fixed; inset: 0; z-index: 2147483100; background: rgba(20,33,61,.55); display: none; align-items: center; justify-content: center; padding: 16px; }
   #addrModal.on { display: flex; }
@@ -1759,14 +1760,15 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     row.classList.add('has-addr'); inp.classList.add('ff-addr'); inp.placeholder = '주소검색을 눌러주세요';
     var b = document.createElement('button'); b.type = 'button'; b.className = 'addr-btn'; b.textContent = '주소검색'; b.title = '카카오 우편번호 검색 — 고르면 주소가 바로 들어감';
     var dt = document.createElement('input'); dt.type = 'text'; dt.className = 'ff-in ff-detail'; dt.spellcheck = false; dt.autocomplete = 'off'; dt.placeholder = '상세주소 (동/호수 등)';
-    inp.parentNode.insertBefore(b, inp.nextSibling); row.appendChild(dt);
+    row.appendChild(dt); row.appendChild(b);
     b.addEventListener('click', function(){ openAddr(inp, dt); });
     inp.addEventListener('click', function(){ if (!inp.value && !kakaoBroken) openAddr(inp, dt); });   /* 빈칸을 눌러도 검색 */
     inp.addEventListener('input', function(){ addrFit(inp); });
-    addrFit(inp);
+    dt.addEventListener('input', function(){ addrFit(dt); });
+    addrFit(inp); addrFit(dt);
   });
   /* 초기화 뒤 폭 다시 맞춤 */
-  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); }, 0); });
+  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr, .ff-detail'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); }, 0); });
 
 
   p6.addEventListener('click', function(e){
