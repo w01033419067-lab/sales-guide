@@ -1699,6 +1699,36 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   });
   pinRender(pinGet());
 
+  /* 유선 접수양식 주민번호 · 연락처 : 숫자만 쳐도 하이픈 자동 (900101-1234567 / 010-1234-5678)
+     숫자·하이픈만 있을 때만 다듬고, 띄어쓰기·글자가 섞이면 그대로 둠 · 지우는 중엔 끝 하이픈을 다시 붙이지 않음 */
+  var FMT = {
+    rrn: function(d, del){ d = d.slice(0, 13); return d.length > 6 ? d.slice(0, 6) + '-' + d.slice(6) : (d.length === 6 && !del ? d + '-' : d); },
+    tel: function(d, del){
+      d = d.slice(0, 11);
+      if (/^02/.test(d)) return d.length <= 2 ? d : d.length <= 5 ? d.slice(0, 2) + '-' + d.slice(2) : d.length <= 9 ? d.slice(0, 2) + '-' + d.slice(2, 5) + '-' + d.slice(5) : d.slice(0, 2) + '-' + d.slice(2, 6) + '-' + d.slice(6, 10);
+      if (d.length <= 3) return d;
+      if (d.length <= 7) return d.slice(0, 3) + '-' + d.slice(3);
+      if (d.length === 10 && !/^010/.test(d)) return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);   /* 011·070 등 10자리 */
+      return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
+    }
+  };
+  function hyphenate(inp, kind, ev){
+    var v = inp.value; if (!/^[\d-]*$/.test(v)) return;            /* 숫자 · 하이픈만일 때만 (띄어쓰기나 글자가 들어가면 메모로 보고 그대로) */
+    var pos = inp.selectionStart == null ? v.length : inp.selectionStart, atEnd = pos >= v.length;
+    var before = v.slice(0, pos).replace(/\D/g, '').length, del = ev && /^delete/.test(ev.inputType || '');
+    var nv = FMT[kind](v.replace(/\D/g, ''), del); if (nv === v) return;
+    inp.value = nv;
+    var p = nv.length; if (!atEnd){ p = 0; for (var c = 0; p < nv.length && c < before; p++) if (/\d/.test(nv[p])) c++; }
+    try { inp.setSelectionRange(p, p); } catch (err) {}
+  }
+  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row'), function(row){
+    var fx = row.querySelector('.ff-fix'), inp = row.querySelector('input.ff-in'); if (!fx || !inp) return;
+    var kind = fx.textContent.indexOf('■주민번호') === 0 ? 'rrn' : fx.textContent.indexOf('■연락처') === 0 ? 'tel' : '';
+    if (!kind) return;
+    inp.setAttribute('inputmode', 'numeric');          /* 자릿수는 형식에서 자름 (글자 메모는 길이 제한 없이) */
+    inp.addEventListener('input', function(e){ hyphenate(inp, kind, e); });
+  });
+
   /* 설치주소 「주소검색」 — 카카오 우편번호 서비스 (누를 때만 불러옴 · 화면 안 창으로 열어 팝업 차단 없음) */
   var KAKAO_SRC = 'https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', kakaoState = 0, kakaoWait = [];
   function loadKakao(cb){
