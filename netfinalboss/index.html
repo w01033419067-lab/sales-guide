@@ -220,6 +220,14 @@
   .ff-row.has-addr .ff-addr { flex: 0 1 auto; min-width: 0; max-width: calc(100% - 96px); cursor: pointer; }
   .ff-row.has-addr .ff-addr:not(:placeholder-shown) { cursor: text; }
   .ff-row.has-addr .ff-detail { flex: 0 1 auto; min-width: 0; margin-left: 6px; }
+  /* 사은계좌 「납부계좌와 동일」 — 입력칸 뒤에 붙어 내용이 길어지면 같이 밀려남 */
+  .ff-row.has-same .ff-in { flex: 0 1 auto; min-width: 0; max-width: 100%; }
+  @media (max-width: 640px) { .ff-row.has-same .ff-fix { flex-basis: 100%; } }
+  .same-chk { flex: none; align-self: center; display: inline-flex; align-items: center; gap: 4px; margin: 0 0 0 6px; font-size: 11.5px; font-weight: 800; line-height: 1.4;
+              color: #1F4E8C; background: #fff; border: 1px solid #8FB0D3; border-radius: 14px; padding: 1px 10px 1px 7px; cursor: pointer; user-select: none; white-space: nowrap; }
+  .same-chk:hover { background: #E6EFF9; }
+  .same-chk input { margin: 0; width: 14px; height: 14px; accent-color: #0F766E; cursor: pointer; }
+  .same-chk.on { color: #fff; background: #0F766E; border-color: #0F766E; }
   .ff-in::placeholder { color: #9AA9B8; font-weight: 500; }
   @media (max-width: 640px) {
     .ff-row.has-addr .ff-fix { flex-basis: 100%; }
@@ -411,6 +419,11 @@ tbody tr:last-child td { border-bottom: none; }
             cursor: pointer; transition: background .15s; flex-shrink: 0; }
 .copy-btn:hover { background: #1F4E8C; }
 .copy-btn.done { background: #2E7D32; }
+.copy-btn.copy-plus { background: #0F766E; }
+.copy-btn.copy-plus:hover { background: #115E59; }
+.copy-btn.copy-plus.done { background: #2E7D32; }
+.form-head { flex-wrap: wrap; }
+.form-actions { margin-left: auto; }
 .form-body { white-space: pre-wrap; word-break: break-word; font-family: inherit;
              font-size: 13px; line-height: 1.95; color: #14213D; margin: 0; padding: 14px 16px; }
 
@@ -1188,7 +1201,7 @@ goPage('p2');
 document.querySelectorAll('.copy-btn').forEach(function(btn){
   btn.addEventListener('click', function(){
     var body = btn.closest('.form-card').querySelector('.form-body');
-    var txt = window.wgFormText ? window.wgFormText(body)
+    var txt = window.wgCopyText ? window.wgCopyText(btn) : window.wgFormText ? window.wgFormText(body)
             : (body.value !== undefined ? body.value : body.textContent);
     function done(){ var o = btn.textContent; btn.textContent='복사됨!'; btn.classList.add('done');
                      setTimeout(function(){ btn.textContent=o; btn.classList.remove('done'); }, 1400); }
@@ -1540,22 +1553,37 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   if (!p6) return;
 
   /* 한 양식의 전체 텍스트를 원본 줄 그대로 재구성 */
-  function formText(body){
+  function formLines(body){
     var out = [];
     Array.prototype.forEach.call(body.querySelectorAll('.ff-row'), function(row){
       if (row.classList.contains('ff-blank')) { out.push(''); return; }
       if (row.classList.contains('ff-static')) { out.push(row.textContent); return; }
       var s = '';
       Array.prototype.forEach.call(row.children, function(el){
-        if (el.tagName === 'BUTTON') return;              /* 고정 · 주소검색 버튼은 복사 내용에서 제외 */
+        if (el.tagName === 'BUTTON' || el.tagName === 'LABEL') return;   /* 고정 · 주소검색 버튼, 납부계좌와 동일 체크는 복사 내용에서 제외 */
         if (el.classList.contains('ff-detail')){ if (el.value) s += (/\S$/.test(s) ? ' ' : '') + el.value; return; }   /* 상세주소는 주소 뒤에 한 칸 띄고 */
         s += el.classList.contains('ff-fix') ? el.textContent : el.value;
       });
       out.push(s);
     });
-    return out.join('\n');
+    return out;
   }
+  function formText(body){ return formLines(body).join('\n'); }
   window.wgFormText = formText;
+  /* 「유선+OSS 복사」 : 유선 양식 ■기타내용까지 → 빈 줄 → OSS 양식 → 빈 줄 → 개인정보 동의 두 줄 (하나의 양식처럼) */
+  function joinText(card, other){
+    var rows = Array.prototype.slice.call(card.querySelectorAll('.form-body .ff-row')), lines = formLines(card.querySelector('.form-body'));
+    var b0 = -1, b1 = -1;
+    rows.forEach(function(r, i){ if (r.classList.contains('ff-blank')){ if (b0 < 0) b0 = i; b1 = i; } });
+    var add = formLines(other.querySelector('.form-body'));
+    if (b0 < 0) return lines.concat([''], add).join('\n');
+    return lines.slice(0, b0).concat([''], add, [''], lines.slice(b1 + 1)).join('\n');
+  }
+  window.wgCopyText = function(btn){
+    var card = btn.closest('.form-card'), body = card.querySelector('.form-body');
+    var other = btn.dataset.join ? p6.querySelector('.form-card[data-form="' + btn.dataset.join + '"]') : null;
+    return other ? joinText(card, other) : formText(body);
+  };
 
   /* 여러 줄 입력칸 높이 자동 조절 — 화면 밖 복제본으로 재서 화면이 튀지 않게 */
   var mirror = null;
@@ -1585,6 +1613,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   }
   function fitAll(){
     Array.prototype.forEach.call(p6.querySelectorAll('textarea.ff-multi'), fit);
+    Array.prototype.forEach.call(p6.querySelectorAll('.ff-row.has-same'), function(r){ r.wgFit && r.wgFit(); });   /* 사은계좌 칸 폭 (숨겨져 있을 땐 못 재서 열 때 다시) */
   }
 
   function mark(el){
@@ -1647,12 +1676,19 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     if (!btn) return;
     var card = btn.closest('.form-card');
     if (!card) return;
-    var list = fields(card);
+    var cards = [card], other = card.dataset.with ? p6.querySelector('.form-card[data-form="' + card.dataset.with + '"]') : null;
+    if (other) cards.push(other);
+    var list = [];
+    cards.forEach(function(cd){ list = list.concat(fields(cd)); });
+    var otherDirty = other && fields(other).some(function(x){ return x.value !== x.defaultValue; });
     var dirty = list.some(function(x){ return x.value !== x.defaultValue; });
     if (!dirty) return;
-    if (!window.confirm('작성한 내용을 모두 지우고 빈 양식으로 되돌립니다.\n계속할까요?')) return;
+    if (!window.confirm('작성한 내용을 모두 지우고 빈 양식으로 되돌립니다.' + (otherDirty ? '\n(아래 OSS 접수양식도 함께 지워집니다)' : '') + '\n계속할까요?')) return;
     list.forEach(function(x){ x.value = x.defaultValue; if (x.tagName === 'TEXTAREA') fit(x); });
-    card.classList.remove('is-edited');
+    cards.forEach(function(cd){
+      cd.classList.remove('is-edited');
+      Array.prototype.forEach.call(cd.querySelectorAll('.same-chk input'), function(c){ c.checked = false; c.parentNode.classList.remove('on'); });
+    });
     var o = btn.textContent;
     btn.textContent = '초기화됨';
     setTimeout(function(){ btn.textContent = o; }, 1200);
@@ -1729,6 +1765,68 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     inp.addEventListener('input', function(e){ hyphenate(inp, kind, e); });
   });
 
+  /* 「납부계좌와 동일」 · 「위 정보와 동일」 — 체크하면 유선 접수양식에 적은 내용을 그대로 불러옴
+     체크 중엔 원래 칸을 고치면 같이 바뀜 · 불러온 칸을 직접 고치면 체크 풀림 · 체크를 풀면 불러온 내용 지움
+     칸은 글자 길이만큼 — 길어지면 버튼이 뒤로 밀리고, 줄 끝에 닿으면 버튼은 줄 끝에 남고 칸 안에서 이어짐 */
+  function findRow(card, label){ return card && Array.prototype.filter.call(card.querySelectorAll('.ff-row'), function(r){ var fx = r.querySelector('.ff-fix'); return fx && fx.textContent.indexOf(label) === 0 && r.querySelector('input.ff-in'); })[0]; }
+  function sameAs(o){
+    var row = o.row, inp = row.querySelector('input.ff-in'), fx = row.querySelector('.ff-fix');
+    var lb = document.createElement('label'); lb.className = 'same-chk'; lb.title = o.title;
+    lb.innerHTML = '<input type="checkbox"/>' + o.label;
+    row.appendChild(lb); row.classList.add('has-same');
+    function fit(){
+      if (!inp.offsetParent) return;
+      var t = inp.value, w = 0; for (var i = 0; i < t.length; i++) w += /[\u3131-\uD79D]/.test(t[i]) ? 1 : 0.62;
+      var px = Math.max(12, w + 1.6) * parseFloat(window.getComputedStyle(inp).fontSize);
+      var rw = row.clientWidth, btn = lb.offsetWidth + 8, own = fx.offsetWidth >= rw - 1;           /* 좁은 화면 : 항목명이 한 줄 차지 */
+      var room = rw - (own ? 0 : fx.offsetWidth) - btn;
+      if (room < 120) room = rw - btn;                                                             /* 남는 자리가 너무 좁으면 아랫줄로 */
+      inp.style.width = Math.max(60, Math.min(px, room)) + 'px';
+    }
+    inp.addEventListener('input', fit); window.addEventListener('resize', fit); fit();
+    if (window.ResizeObserver) new window.ResizeObserver(function(){ fit(); }).observe(row);   /* 탭이 열려 보이게 될 때도 */
+    row.wgFit = fit;
+    var chk = lb.querySelector('input');
+    function flash(){ inp.classList.remove('ff-filled'); void inp.offsetWidth; inp.classList.add('ff-filled'); clearTimeout(flash.t); flash.t = setTimeout(function(){ inp.classList.remove('ff-filled'); }, 5900); }
+    function set(v){ if (inp.value === v) return; inp.value = v; inp.dispatchEvent(new Event('input', { bubbles: true })); }
+    chk.addEventListener('change', function(){
+      if (chk.checked){
+        var v = o.src();
+        if (!v.trim()){ chk.checked = false; window.alert(o.empty); o.focus(); return; }
+        if (o.ask && !o.ask(v)){ chk.checked = false; return; }
+        lb.classList.add('on'); set(v); flash();
+      } else {
+        lb.classList.remove('on');
+        if (inp.value === o.src()) set(inp.defaultValue);
+      }
+    });
+    o.from.addEventListener('input', function(e){ if (chk.checked && e.target !== inp && e.target.classList.contains('ff-in')) set(o.src()); });     /* 유선 양식 칸이 바뀌면 같이 (체크박스 자체 input 은 제외) */
+    inp.addEventListener('input', function(e){ if (chk.checked && e.isTrusted && inp.value !== o.src()){ chk.checked = false; lb.classList.remove('on'); } });
+  }
+  (function(){
+    var wired = p6.querySelector('.form-card[data-form="wired"]'), oss = p6.querySelector('.form-card[data-form="oss"]'); if (!wired) return;
+    function val(label){ var r = findRow(wired, label); return r ? r.querySelector('input.ff-in').value.trim() : ''; }
+    function focusTo(label){ var r = findRow(wired, label); if (r) r.querySelector('input.ff-in').focus({ preventScroll: false }); }
+    /* 사은계좌 ← 자동이체 */
+    var pay = findRow(wired, '■자동이체'), gift = findRow(wired, '■사은계좌');
+    if (pay && gift) sameAs({ row: gift, from: wired, label: '납부계좌와 동일', title: '■자동이체에 적은 계좌를 그대로 불러옴',
+      src: function(){ return pay.querySelector('input.ff-in').value; },
+      empty: '■자동이체를 먼저 입력한 뒤 「납부계좌와 동일」을 눌러주세요.', focus: function(){ focusTo('■자동이체'); },
+      ask: function(v){ return !/카드/.test(v) || window.confirm('자동이체에 「카드」가 적혀 있습니다.\n사은계좌는 은행 계좌만 가능합니다. 그래도 그대로 불러올까요?'); } });
+    /* OSS 해지명의 ← 고객명/연락처/주민번호 (적힌 것만 / 로 이어서) */
+    var who = findRow(oss, '-해지명의');
+    if (who) sameAs({ row: who, from: wired, label: '위 정보와 동일', title: '유선 접수양식의 고객명/연락처/주민번호를 그대로 불러옴',
+      src: function(){ var r = val('■주민번호'), d = r.replace(/\D/g, '').slice(0, 7);      /* 주민번호는 앞 7자리까지 (900101-1) */
+        if (/^[\d-]*$/.test(r)) r = d.length > 6 ? d.slice(0, 6) + '-' + d.slice(6) : d;
+        return [val('■고객명'), val('■연락처'), r].filter(Boolean).join('/'); },
+      empty: '유선 접수양식의 ■고객명 · ■연락처 · ■주민번호를 먼저 입력한 뒤 「위 정보와 동일」을 눌러주세요.', focus: function(){ focusTo('■고객명'); } });
+    /* OSS 해지 주소 ← 설치주소 + 상세주소 (상세주소 칸은 아래 주소검색에서 만들어져 그때그때 찾음) */
+    var where = findRow(oss, '-해지 주소');
+    if (where) sameAs({ row: where, from: wired, label: '위 정보와 동일', title: '유선 접수양식의 설치주소를 그대로 불러옴',
+      src: function(){ var r = findRow(wired, '■설치주소'); if (!r) return ''; var a = r.querySelector('input.ff-in').value.trim(), d = r.querySelector('.ff-detail'); d = d ? d.value.trim() : ''; return a + (a && d ? ' ' : '') + d; },
+      empty: '유선 접수양식의 ■설치주소를 먼저 입력한 뒤 「위 정보와 동일」을 눌러주세요.', focus: function(){ var r = findRow(wired, '■설치주소'); if (r) r.querySelector('.addr-btn, input.ff-in').focus(); } });
+  })();
+
   /* 설치주소 「주소검색」 — 카카오 우편번호 서비스 (누를 때만 불러옴 · 화면 안 창으로 열어 팝업 차단 없음) */
   var KAKAO_SRC = 'https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', kakaoState = 0, kakaoWait = [];
   function loadKakao(cb){
@@ -1802,7 +1900,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     addrFit(inp); addrFit(dt);
   });
   /* 초기화 뒤 폭 다시 맞춤 */
-  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr, .ff-detail'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); }, 0); });
+  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr, .ff-detail'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); Array.prototype.forEach.call(p6.querySelectorAll('.ff-row.has-same'), function(r){ r.wgFit && r.wgFit(); }); }, 0); });
 
 
   p6.addEventListener('click', function(e){
