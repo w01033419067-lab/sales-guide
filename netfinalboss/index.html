@@ -1815,6 +1815,11 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       src: function(){ return pay.querySelector('input.ff-in').value; },
       empty: '■자동이체를 먼저 입력한 뒤 「납부계좌와 동일」을 눌러주세요.', focus: function(){ focusTo('■자동이체'); },
       ask: function(v){ return !/카드/.test(v) || window.confirm('자동이체에 「카드」가 적혀 있습니다.\n사은계좌는 은행 계좌만 가능합니다. 그래도 그대로 불러올까요?'); } });
+    /* OSS 기존통신사 ← 이전통신사 */
+    var prev = findRow(oss, '-기존통신사');
+    if (prev) sameAs({ row: prev, from: wired, label: '위 정보와 동일', title: '유선 접수양식의 이전통신사를 그대로 불러옴',
+      src: function(){ var r = findRow(wired, '■이전통신사'); return r ? r.querySelector('input.ff-in').value : ''; },
+      empty: '유선 접수양식의 ■이전통신사를 먼저 입력한 뒤 「위 정보와 동일」을 눌러주세요.', focus: function(){ focusTo('■이전통신사'); } });
     /* OSS 해지명의 ← 고객명/연락처/주민번호 (적힌 것만 / 로 이어서) */
     var who = findRow(oss, '-해지명의');
     if (who) sameAs({ row: who, from: wired, label: '위 정보와 동일', title: '유선 접수양식의 고객명/연락처/주민번호를 그대로 불러옴',
