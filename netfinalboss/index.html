@@ -255,9 +255,9 @@
   .ff-in.ff-md { flex: 0 0 auto; width: 13em; min-width: 8em; }
   textarea.ff-multi { resize: vertical; overflow: hidden; white-space: pre-wrap;
                       flex: 1 1 100%; min-height: 26px; }
-  .ff-wide { display: block; }
-  .ff-wide .ff-fix { display: inline; }
-  .ff-wide textarea.ff-multi { display: block; width: 100%; margin-top: 2px; }
+  .ff-wide { display: block; position: relative; }
+  .ff-wide .ff-fix { position: absolute; left: 0; top: 0; z-index: 1; padding-right: 4px; background: #fff; pointer-events: none; }
+  .ff-wide textarea.ff-multi { display: block; width: 100%; margin-top: 0; }   /* 첫 줄 들여쓰기(text-indent)는 스크립트가 항목명 폭만큼 */
   .form-card.is-edited .form-head { background: #FFF6E5; }
   /* 배지는 처음부터 자리를 차지하되 보이지만 않게 해, 붙고 떼일 때
      머리 높이가 변하며 본문이 밀리는 일이 없도록 한다 */
@@ -1606,6 +1606,8 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   }
   function fit(ta){
     if (!ta.offsetParent) return;
+    var lab = ta.parentNode.classList.contains('ff-wide') ? ta.parentNode.querySelector('.ff-fix') : null;
+    if (lab) ta.style.textIndent = Math.ceil(lab.getBoundingClientRect().width) + 'px';   /* 항목명 바로 뒤부터 입력 */
     var m = sizer(ta);
     m.value = ta.value + '\n';
     var need = m.scrollHeight;
@@ -1911,6 +1913,20 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   }, true);
   window.addEventListener('resize', fitAll);
   fitAll();
+
+  /* 유선 · OSS 양식 : 기본 문구와 다르게 채운 칸은 연한 노랑 (계산기에서 넘어온 칸과 같은 색) → 배경 없는 칸이 미기재
+     「(없으면 기재X)」 · 「웨이브넷지급」 · 「*동의」 처럼 처음부터 적혀 있는 문구는 그대로면 배경 없음 */
+  var FILL_CARDS = '.form-card[data-form="wired"], .form-card[data-form="oss"]';
+  function paint(x){
+    if (!x.classList || !x.classList.contains('ff-in') || !x.closest(FILL_CARDS)) return;
+    x.classList.toggle('ff-auto', x.value.trim() !== '' && x.value !== x.defaultValue);
+  }
+  function paintAll(){ Array.prototype.forEach.call(p6.querySelectorAll('.form-card[data-form="wired"] .ff-in, .form-card[data-form="oss"] .ff-in'), paint); }
+  p6.addEventListener('input', function(e){ paint(e.target); });
+  p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn, .pin-btn')) setTimeout(paintAll, 0); });   /* 초기화 · 유치자 고정/해제 뒤 다시 */
+  paintAll();
+  /* 여러 줄 칸 : 탭 · 메뉴 어느 길로 보이게 되어도 들여쓰기 · 높이 다시 */
+  if (window.ResizeObserver){ var ro = new window.ResizeObserver(function(es){ es.forEach(function(en){ fit(en.target); }); }); Array.prototype.forEach.call(p6.querySelectorAll('textarea.ff-multi'), function(ta){ ro.observe(ta); }); }
 })();
 </script>
 <button aria-label="요금계산기 열기" id="calcFab" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2"/><rect x="8" y="5.5" width="8" height="3.5" rx=".6"/><path d="M8.5 12.5h.01M12 12.5h.01M15.5 12.5h.01M8.5 15.8h.01M12 15.8h.01M15.5 15.8h.01M8.5 19h.01M12 19h.01M15.5 19h.01"/></svg><span class="cfb-tx">요금계산</span></button>
