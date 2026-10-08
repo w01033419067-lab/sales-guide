@@ -148,6 +148,14 @@
   .carrier th[style*="background:#2E75B6"] { background: var(--brg) !important; border-color: var(--brg); }
   .carrier th[style*="background:#DCE9F5"] { background: var(--brl) !important; color: var(--brt) !important; }
 
+  /* 통신사 안 「유선요금표 | 결합」 나눠 보기 */
+  .subbar { display: inline-flex; max-width: 100%; margin: 0 0 14px; border: 1.5px solid var(--br); border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .subtab { font-family: inherit; font-size: 13.5px; font-weight: 800; line-height: 1.3; padding: 9px 22px; background: #fff; color: var(--br); border: 0; cursor: pointer; white-space: nowrap; }
+  .subtab + .subtab { border-left: 1.5px solid var(--br); }
+  .subtab:hover { background: var(--brl); }
+  .subtab.on { background: var(--brtab); color: #fff; }
+  .sub-off { display: none !important; }
+  @media (max-width: 600px) { .subbar { display: flex; } .subtab { flex: 1 1 0; padding: 9px 8px; font-size: 13px; } }
   .tab[data-k="kt"]  { color: #262021; }
   .tab[data-k="sk"]  { color: #C24310; }
   .tab[data-k="lg"]  { color: #A50034; }
@@ -1198,6 +1206,43 @@ document.querySelectorAll('.tab').forEach(function(t){
 });
 goPage('p2');
 </script><script>
+/* 2번 요금표 : 통신사마다 「○○ 유선요금표 | ○○ 결합」 버튼으로 나눠 보기 (SKY는 결합이 없어 그대로)
+   표는 그대로 두고 보이기만 바꿈 — 요금계산기는 숨겨진 표도 그대로 읽음
+   통신사 탭을 누르면 항상 그 통신사 유선요금표부터 (KT 결합 → LG 탭 → LG 유선요금표) */
+(function(){
+  var p2 = document.getElementById('p2'); if (!p2) return;
+  var cur = 'wired', panels = [];
+  function paint(panel){
+    Array.prototype.forEach.call(panel.querySelectorAll('.sub-pane'), function(d){ d.classList.toggle('sub-off', d.getAttribute('data-sub') !== cur); });
+    Array.prototype.forEach.call(panel.querySelectorAll('.subtab'), function(b){ var on = b.getAttribute('data-sub') === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+  }
+  function set(k){ cur = k; panels.forEach(paint); }
+  Array.prototype.forEach.call(p2.querySelectorAll('.tpanel.carrier'), function(panel){
+    var w = panel.querySelector('[id$="-wired"].anchor-target'), c = panel.querySelector('[id$="-combo"].anchor-target');
+    if (!w || !c || w.parentNode.parentNode !== panel || c.parentNode.parentNode !== panel) return;
+    w.parentNode.classList.add('sub-pane'); w.parentNode.setAttribute('data-sub', 'wired');
+    c.parentNode.classList.add('sub-pane'); c.parentNode.setAttribute('data-sub', 'combo');
+    var bar = document.createElement('div'); bar.className = 'subbar'; bar.setAttribute('role', 'tablist');
+    [['wired', w.textContent.trim()], ['combo', c.textContent.trim()]].forEach(function(x){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'subtab'; b.setAttribute('role', 'tab'); b.setAttribute('data-sub', x[0]); b.textContent = x[1]; bar.appendChild(b);
+    });
+    bar.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('.subtab') : null; if (!b) return;
+      set(b.getAttribute('data-sub'));
+      var nav = document.getElementById('mainNav'), top = bar.getBoundingClientRect().top - (nav ? nav.offsetHeight : 0) - 10;
+      if (top < 0) window.scrollBy(0, top);                                   /* 아래에서 눌렀으면 버튼이 보이게 */
+    });
+    panel.insertBefore(bar, panel.firstChild);
+    panels.push(panel); paint(panel);
+  });
+  if (typeof window.goTab === 'function'){
+    var _goTab = window.goTab;
+    window.goTab = function(pid, k){ _goTab(pid, k); if (pid === 'p2') set('wired'); };
+  }
+  /* 문서 검색으로 숨겨진 쪽 내용을 고르면 그쪽으로 바꿔서 보여줌 */
+  window.wgRevealSub = function(el){ var d = el && el.closest ? el.closest('.sub-pane') : null; if (d) set(d.getAttribute('data-sub')); };
+})();
+</script><script>
 document.querySelectorAll('.copy-btn').forEach(function(btn){
   btn.addEventListener('click', function(){
     var body = btn.closest('.form-card').querySelector('.form-body');
@@ -1329,6 +1374,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     wrap.classList.remove('open');
     input.blur();
     if (typeof goPage === 'function') goPage(hit.e.page, hit.e.tab);
+    if (window.wgRevealSub) window.wgRevealSub(hit.e.el);
     var sp = hit.e.el.closest ? hit.e.el.closest('.sc-spanel') : null;
     if (sp){
       var adv = sp.closest('.sc-adv'), sk = sp.getAttribute('data-s');
