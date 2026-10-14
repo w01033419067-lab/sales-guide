@@ -799,6 +799,115 @@ td, .fee-table td.c-item, .cr-tbl td, .ln-sum, .tv-pick, .cf-note, .calc-tip, .c
   .chip { font-size: 13px; padding: 7px 11px; }
 }
 </style>
+<style id="wgTheme2">
+/* ════════════════════════════════════════════════════════════════
+   디자인 2안 — 가이드북 스타일
+   · PC : 왼쪽 세로 메뉴 (지금 보는 메뉴의 하위 항목까지 펼침)
+   · 흰 카드 + 그림자 → 연회색 면 + 얇은 테두리 (떠 보이지 않게 · 흰 면적이 줄어 워터마크도 덜 도드라짐)
+   · 메뉴 항목마다 옅은 테두리
+   ════════════════════════════════════════════════════════════════ */
+:root { --bg: #ECEFF3; --surface: #F8F9FB; --edge: #D9DFE6; --edge2: #E4E8ED; }
+body { background: var(--bg); }
+
+/* 본문 면 : 그림자 없이 얇은 테두리로 바닥에 붙은 느낌 */
+.section { background: var(--surface); border: 1px solid var(--edge); box-shadow: none; border-radius: 14px; }
+.section-header { background: transparent; border-bottom: 1px solid var(--edge2); }
+.section-header .num { border-radius: 8px; }
+.form-card, .cf-block, .cr-card, .ln { box-shadow: none; }
+.form-card { border-color: var(--edge); }
+.cr-card { border-color: var(--edge); }
+
+/* 위쪽 가로 메뉴 (휴대폰 · 태블릿 · 좁은 PC) : 항목마다 옅은 테두리 */
+nav, #mainNav { background: rgba(247, 248, 250, .96); border-bottom: 1px solid var(--edge); }
+nav a, .nav-item > .nav-toggle { background: #fff; border: 1px solid var(--edge); }
+nav a:hover, .nav-item > .nav-toggle:hover, .nav-item.open > .nav-toggle { background: #fff; border-color: #B9C3CF; color: var(--t1); }
+#mainNav a.on, #mainNav .nav-item.on > .nav-toggle { background: var(--pri-soft); border-color: #B7C9E2; color: var(--pri); }
+nav a.nav-calc { border-color: #F2B92E; }
+#gsInput { background-color: #fff; border: 1px solid var(--edge); }
+#gsInput:focus { background-color: #fff;   /* 옛 :focus 규칙이 돋보기 아이콘을 지우던 것 되살림 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231E4C8F' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 11px 50%; }
+.dropdown a { border: 0; background: transparent; }
+
+/* ── PC : 왼쪽 세로 메뉴 ───────────────────────── */
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+  body { padding-left: 268px; }
+  header { position: fixed; left: 0; top: 0; z-index: 120; width: 268px; height: 88px; padding: 0 22px; display: flex; align-items: center; }
+  header h1 { font-size: 18px; line-height: 1.35; letter-spacing: -0.03em; }
+  #mainNav { position: fixed; left: 0; top: 88px; bottom: 0; z-index: 110; width: 268px;
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 5px;
+    padding: 14px 14px 28px; overflow-y: auto; overscroll-behavior: contain;
+    background: #F7F8FA; border-bottom: 0; border-right: 1px solid var(--edge); box-shadow: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none; transform: none !important; }
+  #mainNav::-webkit-scrollbar { width: 6px; } #mainNav::-webkit-scrollbar-thumb { background: #C9D0D8; border-radius: 3px; }
+  #gsWrap { order: -1; flex: none; min-width: 0; margin: 0 0 8px; }
+  #gsInput { padding-top: 9px; padding-bottom: 9px; }
+  #gsResults { position: fixed; left: 280px; top: 100px; right: auto; width: min(640px, calc(100vw - 310px)); max-height: 72vh; }
+  .nav-item { display: block; position: static; }
+  nav a, .nav-item > .nav-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left;
+    padding: 10px 13px; border-radius: 10px; line-height: 1.35; white-space: normal; }
+  .nav-toggle .caret { transition: transform .15s; }
+  .nav-item.xo > .nav-toggle .caret { transform: rotate(180deg); }
+  .dropdown { position: static; display: none; flex-direction: column; min-width: 0; margin: 3px 0 4px 10px; padding: 2px 0 2px 10px;
+    background: transparent; border: 0; border-left: 2px solid var(--edge); border-radius: 0; box-shadow: none; }
+  .nav-item.xo > .dropdown { display: flex; }   /* 펼침 · 접힘은 항목마다 따로 (다른 메뉴를 눌러도 펼쳐 둔 건 그대로) */
+  .dropdown a { padding: 6px 10px; border-radius: 8px; color: var(--t3); }
+  .dropdown a:hover { background: #E9EDF2; color: var(--t1); }
+  nav a.nav-calc { margin-top: 6px; justify-content: center; }
+  main { max-width: 1000px; padding: 28px 32px 72px; }
+  .calc-result { top: 16px; max-height: calc(100vh - 40px); }
+  .anchor-target, .section { scroll-margin-top: 20px; }
+  .dropdown a.on { background: var(--pri-soft); color: var(--pri); font-weight: 700; }
+  /* 요금계산 · 맨위로 버튼 : 본문 바로 옆 (자리가 모자라면 본문 오른쪽 여백 안) */
+  #toTop, #calcFab { right: max(16px, calc((100vw - 268px) / 2 - 566px)); }
+}
+@media (min-width: 1200px) and (max-width: 1459px) and (hover: hover) and (pointer: fine) {
+  main { padding-right: 92px; }
+  #toTop, #calcFab { right: 18px; }
+}
+</style>
+<script id="wgTheme2Js">
+/* 디자인 2안 : 왼쪽 메뉴에서 지금 보고 있는 하위 항목(KT · SK … / 유선 · OSS …) 표시 */
+document.addEventListener('DOMContentLoaded', function(){
+  var nav = document.getElementById('mainNav'); if (!nav || typeof window.goTab !== 'function') return;
+  function mark(){
+    Array.prototype.forEach.call(nav.querySelectorAll('.dropdown a[data-page]'), function(a){
+      var pg = document.getElementById(a.getAttribute('data-page')), t = pg && pg.querySelector('.tab.active');
+      a.classList.toggle('on', !!(pg && pg.classList.contains('active') && t && t.getAttribute('data-k') === a.getAttribute('data-tab')));
+    });
+  }
+  /* PC 왼쪽 메뉴 : 항목 누르면 펼침 ↔ 접힘 (여러 개 펼쳐 둘 수 있음 · 새로고침하면 모두 접힘) */
+  var side = window.matchMedia('(min-width: 1200px) and (hover: hover) and (pointer: fine)'), KEY = 'wg.nav.open';
+  function items(){ return Array.prototype.slice.call(nav.querySelectorAll('.nav-item')); }
+  function save(){}                                                               /* 펼침 상태는 기억하지 않음 — 새로고침하면 모두 접힘 */
+  try { localStorage.removeItem(KEY); } catch (e) {}                              /* 예전에 기억해 둔 값 정리 */
+  function openFor(pid){ items().forEach(function(i){ if (i.querySelector('.nav-toggle').getAttribute('data-page') === pid && !i.classList.contains('xo')){ i.classList.add('xo'); save(); } }); }
+  nav.addEventListener('click', function(e){
+    if (!side.matches) return;                                                    /* 휴대폰 · 태블릿은 기존 방식 그대로 */
+    var t = e.target.closest ? e.target.closest('.nav-toggle') : null; if (!t || !nav.contains(t)) return;
+    e.stopPropagation(); e.preventDefault();                                      /* 기존 「다른 메뉴 누르면 접힘」 동작 대신 */
+    var it = t.parentNode, pid = t.getAttribute('data-page'), cur = it.classList.contains('on');
+    if (it.classList.contains('xo') && cur) it.classList.remove('xo');           /* 보고 있는 메뉴를 다시 누르면 접기 */
+    else { it.classList.add('xo'); if (!cur) window.goPage(pid); }                /* 펼치면서 그 메뉴로 이동 */
+    save();
+  }, true);
+  var _goTab = window.goTab; window.goTab = function(pid, k){ _goTab(pid, k); mark(); };
+  var _goPage = window.goPage; window.goPage = function(pid, k){ _goPage(pid, k); if (side.matches && k) openFor(pid); mark(); };
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.tab')) setTimeout(mark, 0); });
+  mark();
+  /* PC : 「/」 또는 Ctrl+K 로 문서 검색칸에 바로 들어감 (입력칸에 쓰는 중엔 그대로) */
+  var gs = document.getElementById('gsInput');
+  if (gs){
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) gs.placeholder = '문서 전체 검색  ( / )';
+    document.addEventListener('keydown', function(e){
+      var t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      if ((e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) || ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K'))){
+        e.preventDefault(); gs.focus(); gs.select();
+      }
+    });
+  }
+});
+</script>
 </head>
 <body>
 <header>
@@ -1381,6 +1490,8 @@ function goPage(pid, k){
   if(k) goTab(pid, k);
   window.scrollTo(0, 0);
 }
+/* 화면 위를 가리는 메뉴 높이 (가로 메뉴일 때만 · 왼쪽 세로 메뉴면 0) — 스크롤 위치 맞출 때 씀 */
+window.wgNavH = function(){ var n = document.getElementById('mainNav'); if (!n) return 0; var r = n.getBoundingClientRect(); return r.width > r.height ? n.offsetHeight : 0; };
 function closeMenus(){ document.querySelectorAll('.nav-item.open').forEach(function(el){ el.classList.remove('open'); }); }
 
 document.querySelectorAll('#mainNav a[data-page]').forEach(function(a){
@@ -1424,7 +1535,7 @@ goPage('p2');
     bar.addEventListener('click', function(e){
       var b = e.target.closest ? e.target.closest('.subtab') : null; if (!b) return;
       set(b.getAttribute('data-sub'));
-      var nav = document.getElementById('mainNav'), top = bar.getBoundingClientRect().top - (nav ? nav.offsetHeight : 0) - 10;
+      var top = bar.getBoundingClientRect().top - (window.wgNavH ? window.wgNavH() : 0) - 10;
       if (top < 0) window.scrollBy(0, top);                                   /* 아래에서 눌렀으면 버튼이 보이게 */
     });
     panel.insertBefore(bar, panel.firstChild);
@@ -3053,7 +3164,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     });
     window.goPage('p6', 'wired');
     setTimeout(function(){
-      var navH = (document.getElementById('mainNav') || { offsetHeight: 0 }).offsetHeight;
+      var navH = (window.wgNavH ? window.wgNavH() : 0);
       window.scrollTo({ top: ins[0].getBoundingClientRect().top + window.pageYOffset - navH - 140, behavior: 'smooth' });
       ins.forEach(function(x){ if (x.tagName === 'TEXTAREA'){ x.dispatchEvent(new Event('input', { bubbles: true })); } });
     }, 80);
@@ -3093,14 +3204,14 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var del = e.target.closest('.ln-del');
     if (del){ S.lines.splice(+del.closest('.ln').getAttribute('data-i'), 1); S.rep = 0; if (/^line:/.test(S.splitTotal)) S.splitTotal = 'eq'; renderLines(); renderResult(); return; }
     if (e.target.closest('.calc-bar')){
-      var navH = (document.getElementById('mainNav') || { offsetHeight: 0 }).offsetHeight;
+      var navH = (window.wgNavH ? window.wgNavH() : 0);
       window.scrollTo({ top: $('.calc-result').getBoundingClientRect().top + window.pageYOffset - navH - 8, behavior: 'smooth' });
       return;
     }
     if (e.target.closest('.calc-reset')){
       if (touched() && !window.confirm('입력한 상담 내용이 모두 지워집니다. 새 상담을 시작할까요?')) return;
       resetAll();
-      var g = P7.querySelector('.calc-grid'), navH = (document.getElementById('mainNav') || { offsetHeight: 0 }).offsetHeight;
+      var g = P7.querySelector('.calc-grid'), navH = (window.wgNavH ? window.wgNavH() : 0);
       if (g) window.scrollTo(0, Math.max(0, g.getBoundingClientRect().top + window.pageYOffset - navH - 60));
       return;
     }
