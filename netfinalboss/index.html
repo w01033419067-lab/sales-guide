@@ -2112,7 +2112,12 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var v = inp.value; if (!/^[\d-]*$/.test(v)) return;            /* 숫자 · 하이픈만일 때만 (띄어쓰기나 글자가 들어가면 메모로 보고 그대로) */
     var pos = inp.selectionStart == null ? v.length : inp.selectionStart, atEnd = pos >= v.length;
     var before = v.slice(0, pos).replace(/\D/g, '').length, del = ev && /^delete/.test(ev.inputType || '');
-    var nv = FMT[kind](v.replace(/\D/g, ''), del); if (nv === v) return;
+    var d = v.replace(/\D/g, ''), nv = FMT[kind](d, del);
+    /* 하이픈을 직접 친 경우 : 하이픈이 들어갈 자리(010 뒤 · 010-1234 뒤 등)면 그대로 받아줌 — 엉뚱한 자리는 빼고 형식대로 */
+    if (ev && ev.data && ev.data.indexOf('-') >= 0 && atEnd && /-$/.test(v) && !/-$/.test(nv)){
+      var nx = FMT[kind](d + '0', false); if (nx.charAt(nv.length) === '-') nv += '-';
+    }
+    if (nv === v) return;
     inp.value = nv;
     var p = nv.length; if (!atEnd){ p = 0; for (var c = 0; p < nv.length && c < before; p++) if (/\d/.test(nv[p])) c++; }
     try { inp.setSelectionRange(p, p); } catch (err) {}
