@@ -865,6 +865,12 @@ nav a.nav-calc { border-color: #F2B92E; }
   main { padding-right: 92px; }
   #toTop, #calcFab { right: 18px; }
 }
+
+/* 보고 있는 메뉴 표시 — 남색으로 꽉 채우고 흰 글씨 · 하위 항목은 왼쪽 남색 막대 + 굵게 */
+#mainNav a.on, #mainNav .nav-item.on > .nav-toggle { background: #1E4C8F; border-color: #1E4C8F; color: #fff; font-weight: 800; box-shadow: 0 2px 8px rgba(30, 76, 143, .28); }
+#mainNav .nav-item.on > .nav-toggle .caret { opacity: 1; }
+#mainNav a.nav-calc.on { background: #F5A800; border-color: #D08E00; color: #2E1C00; font-weight: 800; box-shadow: 0 2px 8px rgba(208, 142, 0, .35); }
+#mainNav .dropdown a.on { background: #DCE8F7; color: #143A70; font-weight: 800; box-shadow: inset 3px 0 0 #1E4C8F; border-radius: 0 8px 8px 0; }
 </style>
 <script id="wgTheme2Js">
 /* 디자인 2안 : 왼쪽 메뉴에서 지금 보고 있는 하위 항목(KT · SK … / 유선 · OSS …) 표시 */
