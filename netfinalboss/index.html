@@ -2117,9 +2117,10 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var p = nv.length; if (!atEnd){ p = 0; for (var c = 0; p < nv.length && c < before; p++) if (/\d/.test(nv[p])) c++; }
     try { inp.setSelectionRange(p, p); } catch (err) {}
   }
-  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row'), function(row){
+  /* 유선 접수양식 + KT · SK · LG 유심 양식의 「주민번호」 · 「연락처」 칸 (항목명이 기호 뒤 바로 주민번호/연락처로 시작하는 칸만 — 유치자 · 해지명의 줄은 제외) */
+  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row, .tpanel[data-k="ktu"] .ff-row, .tpanel[data-k="sku"] .ff-row, .tpanel[data-k="lgu"] .ff-row'), function(row){
     var fx = row.querySelector('.ff-fix'), inp = row.querySelector('input.ff-in'); if (!fx || !inp) return;
-    var kind = fx.textContent.indexOf('■주민번호') === 0 ? 'rrn' : fx.textContent.indexOf('■연락처') === 0 ? 'tel' : '';
+    var m = /^[^0-9A-Za-z가-힣]*(주민번호|연락처)\s*:/.exec(fx.textContent), kind = m ? (m[1] === '주민번호' ? 'rrn' : 'tel') : '';
     if (!kind) return;
     inp.setAttribute('inputmode', 'numeric');          /* 자릿수는 형식에서 자름 (글자 메모는 길이 제한 없이) */
     inp.addEventListener('input', function(e){ hyphenate(inp, kind, e); });
