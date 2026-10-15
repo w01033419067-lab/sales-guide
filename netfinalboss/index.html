@@ -234,13 +234,17 @@
   .usim-btn:hover { background: #EBF1FA; }
   .usim-line { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 800; color: #fff; background: #C2410C; border-radius: 8px; padding: 1px 9px; vertical-align: 1px; }
   .usim-line[hidden] { display: none; }
-  .usim-lines { flex-basis: 100%; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: -2px; }
+  .usim-lines { flex-basis: 100%; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: -2px; }
   .usim-lines[hidden] { display: none; }
   .usim-lines .ul-h { font-size: 12px; font-weight: 800; color: #4E5968; margin-right: 2px; }
   .usim-lines button { font-family: inherit; min-width: 28px; height: 26px; font-size: 13px; font-weight: 800; color: #1E4C8F; background: #fff; border: 1.5px solid #B7C9E2; border-radius: 8px; cursor: pointer; padding: 0 6px; }
   .usim-lines button:hover { border-color: #1E4C8F; }
   .usim-lines button.on { color: #fff; background: #1E4C8F; border-color: #1E4C8F; }
+  .usim-lines button.ul-del { margin-left: 6px; font-size: 12px; color: #A32D2D; border-color: #E7B9B9; padding: 0 9px; }
+  .usim-lines button.ul-del:hover { background: #FDF1F1; border-color: #A32D2D; }
   .usim-btn[disabled] { opacity: .45; cursor: not-allowed; }
+  /* 양식 머리 버튼 : 좁은 화면에서 버튼이 많으면 다음 줄로 (오른쪽 끝 「복사」가 잘리지 않게) */
+  .form-actions { flex-wrap: wrap; justify-content: flex-end; flex-shrink: 1; min-width: 0; max-width: 100%; }
   /* 사은계좌 「납부계좌와 동일」 — 입력칸 뒤에 붙어 내용이 길어지면 같이 밀려남 */
   .ff-row.has-same .ff-in { flex: 0 1 auto; min-width: 0; max-width: 100%; }
   @media (max-width: 640px) { .ff-row.has-same .ff-fix { flex-basis: 100%; } }
@@ -2401,10 +2405,22 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
         if (payLb && payLb.hidden !== (cur < 1)){ payLb.hidden = cur < 1; if (giftRow.wgFit) giftRow.wgFit(); }
         bar.hidden = count < 2; bar.innerHTML = '<span class="ul-h">회선</span>';
         for (var i = 0; i < count; i++){ var b = document.createElement('button'); b.type = 'button'; b.textContent = i + 1; b.setAttribute('data-n', i); if (i === cur) b.className = 'on'; b.title = (i + 1) + '회선 양식 보기'; bar.appendChild(b); }
+        if (cur >= 1){ var d = document.createElement('button'); d.type = 'button'; d.className = 'ul-del'; d.textContent = '✕ ' + (cur + 1) + '회선 삭제'; d.title = '지금 보고 있는 ' + (cur + 1) + '회선만 없앰 (잘못 추가했을 때) · 다른 회선은 그대로'; bar.appendChild(d); }
         b2.disabled = count >= MAX; b2.title = count >= MAX ? '최대 ' + MAX + '회선까지 작성할 수 있습니다' : '가족동판 : 지금 회선은 그대로 두고 다음 회선 작성 (최대 ' + MAX + '회선)';
       }
       function go(n){ if (n === cur) return; slots[cur] = snap(); cur = n; load(slots[n]); render(); }
-      bar.addEventListener('click', function(e){ var b = e.target.closest ? e.target.closest('button[data-n]') : null; if (b) go(+b.getAttribute('data-n')); });
+      bar.addEventListener('click', function(e){ var b = e.target.closest ? e.target.closest('button[data-n]') : null; if (b) go(+b.getAttribute('data-n')); else if (e.target.closest && e.target.closest('.ul-del')) drop(); });
+      /* 지금 보고 있는 회선만 없앰 (2회선부터 · 대표회선은 「초기화」로) — 뒤 회선은 한 칸씩 당겨지고 앞 회선을 보여줌
+         고객정보 등 직접 적은 내용이 있으면 한 번 확인 (요금제는 계산기에서 자동으로 들어오니 제외) */
+      function drop(){
+        if (cur < 1) return;
+        var typed = Array.prototype.some.call(card.querySelectorAll('.form-body .ff-row'), function(r){
+          var fx = r.querySelector('.ff-fix'), x = r.querySelector('.ff-in');
+          return fx && x && !K('요금제').test(fx.textContent) && CLEAR.some(function(re){ return re.test(fx.textContent); }) && x.value.trim() && x.value !== x.defaultValue;
+        });
+        if (typed && !window.confirm((cur + 1) + '회선에 작성한 내용을 지우고 ' + (cur + 1) + '회선을 없앱니다.\n(다른 회선은 그대로) 계속할까요?')) return;
+        slots.splice(cur, 1); count--; cur--; load(slots[cur]); render();
+      }
       function planFor(n){ var q = window.wgUsimQueue; return q && q.tab === tab ? q.plans[n] : null; }
       function fillPlan(n){
         var pl = planFor(n); if (!pl) return;
@@ -3424,7 +3440,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var news = c.lines.filter(function(l){ return l.isNew && l.name; }); if (!news.length) return '';
     var card = document.querySelector('#p6 .tpanel[data-k="' + tab + '"] .form-card'); if (!card || !card.wgCalcFill) return '';
     var bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '').replace(/ 결합$/, '결합') : '';     /* 통신사명 빼고 (프리미엄 싱글결합 · 요즘가족결합 · 참쉬운 가족결합) */
-    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: l.name, sel: !!l.sel }; }), bundle: bName };
+    /* 요금제 뒤에 2번 유심 요금표의 요금제 군 (유심 양식에서만) : 베이직80(69K 이상) · 라이트 79(69이상) · 데이터플랜MAX(85군) */
+    function withBand(name){ var p = D.usim[dataKey(S.carrier)].filter(function(x){ return x.name === name; })[0], g = p && p.band ? p.band.replace(/\*+$/, '').trim() : ''; return g ? name + '(' + g + ')' : name; }
+    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: withBand(l.name), sel: !!l.sel }; }), bundle: bName };
     card.wgCalcFill();                                                                     /* 유심 양식 1회선에 요금제 · 선택약정 · 결합종류 */
     var nm = { ktu: 'KT', sku: 'SK', lgu: 'LG' }[tab];
     return '휴대폰 유심 신규 ' + news.length + '회선의 요금제' + (bName ? ' · 결합종류' : '') + '를 「' + nm + ' 유심」 양식에도 채웠습니다.'
