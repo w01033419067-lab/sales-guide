@@ -228,12 +228,26 @@
   .ff-row.has-addr .ff-addr { flex: 0 1 auto; min-width: 0; max-width: calc(100% - 96px); cursor: pointer; }
   .ff-row.has-addr .ff-addr:not(:placeholder-shown) { cursor: text; }
   .ff-row.has-addr .ff-detail { flex: 0 1 auto; min-width: 0; margin-left: 6px; }
+  .ff-row.has-addr .same-chk { margin-left: 0; }   /* [주소][상세주소][주소검색][유선과 동일] */
+  /* 유심 양식 머리 버튼 · 회선 표시 */
+  .usim-btn { font-family: inherit; font-size: 12.5px; font-weight: 800; color: #1E4C8F; background: #fff; border: 1.5px solid #1E4C8F; border-radius: 10px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+  .usim-btn:hover { background: #EBF1FA; }
+  .usim-line { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 800; color: #fff; background: #C2410C; border-radius: 8px; padding: 1px 9px; vertical-align: 1px; }
+  .usim-line[hidden] { display: none; }
+  .usim-lines { flex-basis: 100%; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: -2px; }
+  .usim-lines[hidden] { display: none; }
+  .usim-lines .ul-h { font-size: 12px; font-weight: 800; color: #4E5968; margin-right: 2px; }
+  .usim-lines button { font-family: inherit; min-width: 28px; height: 26px; font-size: 13px; font-weight: 800; color: #1E4C8F; background: #fff; border: 1.5px solid #B7C9E2; border-radius: 8px; cursor: pointer; padding: 0 6px; }
+  .usim-lines button:hover { border-color: #1E4C8F; }
+  .usim-lines button.on { color: #fff; background: #1E4C8F; border-color: #1E4C8F; }
+  .usim-btn[disabled] { opacity: .45; cursor: not-allowed; }
   /* 사은계좌 「납부계좌와 동일」 — 입력칸 뒤에 붙어 내용이 길어지면 같이 밀려남 */
   .ff-row.has-same .ff-in { flex: 0 1 auto; min-width: 0; max-width: 100%; }
   @media (max-width: 640px) { .ff-row.has-same .ff-fix { flex-basis: 100%; } }
   .same-chk { flex: none; align-self: center; display: inline-flex; align-items: center; gap: 4px; margin: 0 0 0 6px; font-size: 11.5px; font-weight: 800; line-height: 1.4;
               color: #1F4E8C; background: #fff; border: 1px solid #8FB0D3; border-radius: 14px; padding: 1px 10px 1px 7px; cursor: pointer; user-select: none; white-space: nowrap; }
   .same-chk:hover { background: #E6EFF9; }
+  .same-chk[hidden] { display: none; }
   .same-chk input { margin: 0; width: 14px; height: 14px; accent-color: #0F766E; cursor: pointer; }
   .same-chk.on { color: #fff; background: #0F766E; border-color: #0F766E; }
   .ff-in::placeholder { color: #9AA9B8; font-weight: 500; }
@@ -505,12 +519,19 @@ tbody tr:last-child td { border-bottom: none; }
   .ln-type { flex: 0 0 auto; width: auto; }
   .ln-plan { flex: 1 1 180px; }
   .ln-price { width: 130px; }
-  .ln-find { margin-top: 6px; }
+  /* 요금제 검색 : 남색 「요금제 검색」 꼬리표 + 파란 테두리 칸 — 그냥 지나치지 않게 */
+  .ln-find { margin-top: 7px; }
+  .ln-find-box { display: flex; align-items: stretch; border: 1.5px solid #2E75B6; border-radius: 8px; background: #fff; overflow: hidden; cursor: text; }
+  .ln-find-box:focus-within { box-shadow: 0 0 0 3px rgba(46,117,182,.2); }
+  .ln-find-tag { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 0 11px 0 9px; background: #1F4E8C; color: #fff; font-size: 12.5px; font-weight: 800; white-space: nowrap; }
+  .ln-find-tag svg { width: 14px; height: 14px; flex: none; }
   .tv-pick { margin: 2px 0 6px 70px; font-size: 12px; color: #3A4A5E; }
   .tv-pick b { color: #143C64; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tv-pick .stb-tag { display: inline-block; font-size: 11.5px; font-weight: 800; background: #fff; border: 1.5px solid; border-radius: 6px; padding: 0 6px; margin: 0 2px; }
   #calcTvAdd optgroup { color: #6B7C8F; font-style: normal; }
-  .ln-find .ln-q { width: 100%; max-width: none; text-align: left; padding-left: 30px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7C8F' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 9px center; }
+  .ln-find .ln-q { flex: 1 1 auto; width: auto; max-width: none; min-width: 0; text-align: left; border: 0; border-radius: 0; padding: 7px 10px; background: #F3F8FD; }
+  .ln-find .ln-q:focus { box-shadow: none; background: #fff; }
+  .ln-find .ln-q::placeholder { color: #4F6B8A; }
   .ln-hits { margin-top: 4px; max-height: 248px; overflow-y: auto; border: 1px solid #BFD3EA; border-radius: 8px; background: #fff; box-shadow: 0 4px 12px rgba(20,60,100,.10); }
   .ln-hits-h, .ln-hits-none { font-size: 11.5px; color: #6B7C8F; padding: 6px 10px; }
   .ln-hits-h { position: sticky; top: 0; background: #F3F8FD; border-bottom: 1px solid #E1ECF7; font-weight: 700; }
@@ -2144,7 +2165,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       if (!inp.offsetParent) return;
       var t = inp.value, w = 0; for (var i = 0; i < t.length; i++) w += /[\u3131-\uD79D]/.test(t[i]) ? 1 : 0.62;
       var px = Math.max(12, w + 1.6) * parseFloat(window.getComputedStyle(inp).fontSize);
-      var rw = row.clientWidth, btn = lb.offsetWidth + 8, own = fx.offsetWidth >= rw - 1;           /* 좁은 화면 : 항목명이 한 줄 차지 */
+      var rw = row.clientWidth, btn = Array.prototype.reduce.call(row.querySelectorAll('.same-chk'), function(a, l){ return a + (l.offsetWidth ? l.offsetWidth + 8 : 0); }, 0), own = fx.offsetWidth >= rw - 1;           /* 좁은 화면 : 항목명이 한 줄 차지 */
       var room = rw - (own ? 0 : fx.offsetWidth) - btn;
       if (room < 120) room = rw - btn;                                                             /* 남는 자리가 너무 좁으면 아랫줄로 */
       inp.style.width = Math.max(60, Math.min(px, room)) + 'px';
@@ -2257,9 +2278,10 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     for (var i = 0; i < t.length; i++) w += /[\u3131-\uD79D]/.test(t[i]) ? 1 : 0.62;
     inp.style.width = (w + 1.6) + 'em';
   }
-  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row'), function(row){
+  /* 유선 ■설치주소 + KT · SK · LG 유심 양식 「유심수령주소」 */
+  Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="wired"] .ff-row, .tpanel[data-k="ktu"] .ff-row, .tpanel[data-k="sku"] .ff-row, .tpanel[data-k="lgu"] .ff-row'), function(row){
     var fx = row.querySelector('.ff-fix'), inp = row.querySelector('input.ff-in');
-    if (!fx || !inp || fx.textContent.indexOf('■설치주소') !== 0) return;
+    if (!fx || !inp || !(fx.textContent.indexOf('■설치주소') === 0 || /유심수령주소/.test(fx.textContent))) return;
     row.classList.add('has-addr'); inp.classList.add('ff-addr'); inp.placeholder = '주소검색을 눌러주세요';
     var b = document.createElement('button'); b.type = 'button'; b.className = 'addr-btn'; b.textContent = '주소검색'; b.title = '카카오 우편번호 검색 — 고르면 주소가 바로 들어감';
     var dt = document.createElement('input'); dt.type = 'text'; dt.className = 'ff-in ff-detail'; dt.spellcheck = false; dt.autocomplete = 'off'; dt.placeholder = '상세주소 (동/호수 등)';
@@ -2270,6 +2292,192 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     dt.addEventListener('input', function(){ addrFit(dt); });
     addrFit(inp); addrFit(dt);
   });
+  /* 유심수령주소 「유선과 동일」 — 체크하면 유선 접수양식의 설치주소 · 상세주소를 그대로 불러옴 (체크 중엔 유선 주소를 고치면 같이 바뀜)
+     유심 쪽 주소를 직접 고치거나 주소검색으로 바꾸면 체크 풀림 · 체크를 풀면 불러온 주소 지움 */
+  (function(){
+    var wcard = p6.querySelector('.form-card[data-form="wired"]'); if (!wcard) return;
+    var wrow = Array.prototype.filter.call(wcard.querySelectorAll('.ff-row.has-addr'), function(r){ return r.querySelector('.ff-fix').textContent.indexOf('■설치주소') === 0; })[0]; if (!wrow) return;
+    var wa = wrow.querySelector('.ff-addr'), wd = wrow.querySelector('.ff-detail');
+    Array.prototype.forEach.call(p6.querySelectorAll('.tpanel[data-k="ktu"] .ff-row.has-addr, .tpanel[data-k="sku"] .ff-row.has-addr, .tpanel[data-k="lgu"] .ff-row.has-addr'), function(row){
+      var ua = row.querySelector('.ff-addr'), ud = row.querySelector('.ff-detail');
+      var lb = document.createElement('label'); lb.className = 'same-chk'; lb.title = '유선 접수양식의 설치주소 · 상세주소를 그대로 불러옴';
+      lb.innerHTML = '<input type="checkbox"/>유선과 동일'; row.appendChild(lb);
+      var chk = lb.querySelector('input');
+      function same(){ return ua.value === wa.value && ud.value === wd.value; }
+      function set(a, d){ var ch = [ua.value !== a, ud.value !== d]; ua.value = a; ud.value = d;     /* 두 칸 다 바꾼 뒤 알림 (중간 상태에서 체크가 풀리지 않게) */
+        if (ch[0]) ua.dispatchEvent(new Event('input', { bubbles: true })); if (ch[1]) ud.dispatchEvent(new Event('input', { bubbles: true })); }
+      function flash(){ [ua, ud].forEach(function(x){ x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled'); }); clearTimeout(flash.t); flash.t = setTimeout(function(){ ua.classList.remove('ff-filled'); ud.classList.remove('ff-filled'); }, 5900); }
+      chk.addEventListener('change', function(){
+        if (chk.checked){
+          if (!wa.value.trim()){ chk.checked = false; window.alert('유선 접수양식의 ■설치주소를 먼저 입력한 뒤 「유선과 동일」을 눌러주세요.'); return; }
+          lb.classList.add('on'); set(wa.value, wd.value); flash();
+        } else {
+          lb.classList.remove('on');
+          if (same()) set(ua.defaultValue, '');
+        }
+      });
+      wcard.addEventListener('input', function(e){ if (chk.checked && (e.target === wa || e.target === wd)) set(wa.value, wd.value); });   /* 유선 주소가 바뀌면 같이 */
+      [ua, ud].forEach(function(x){ x.addEventListener('input', function(){ if (chk.checked && !same()){ chk.checked = false; lb.classList.remove('on'); } }); });
+    });
+  })();
+  /* KT · SK · LG 유심 양식 — 「유선 정보 불러오기」 · 「추가 회선 작성」(최대 5회선 · 회선끼리 이동) · 자동이체 / 사은계좌 「유선과 동일」
+     대표회선 : 유선 양식의 고객명 · 주민번호 · 연락처 · 자동이체 · 사은계좌 · 설치주소 + 본인인증 통신사(→ 기존통신사) + SK 유선 접수일자(오늘)
+                요금계산기에서 넘어온 요금제 · 선택약정 · 결합종류가 있으면 다시 채움 (초기화 후에도)
+     추가 회선 : 지금 회선은 그대로 두고 다음 회선을 만듦 — 회선 · 명의자마다 다른 칸만 비우고 수령주소 · 선택약정 · 결합 정보 등은 이어받음
+     「1 | 2 | 3」 으로 앞서 쓴 회선으로 이동 · 복사는 보고 있는 회선만 · 초기화하면 추가 회선까지 모두 지움 */
+  (function(){
+    var wcard = p6.querySelector('.form-card[data-form="wired"]'); if (!wcard) return;
+    var MAX = 5;
+    function row(card, re){ return Array.prototype.filter.call(card.querySelectorAll('.ff-row'), function(r){ var fx = r.querySelector('.ff-fix'); return fx && re.test(fx.textContent) && r.querySelector('.ff-in'); })[0]; }
+    function inp(card, re){ var r = row(card, re); return r ? r.querySelector('.ff-in') : null; }
+    function wv(label){ var r = findRow(wcard, label); return r ? r.querySelector('input.ff-in').value : ''; }
+    function put(x, v){ if (!x || x.value === v) return; x.value = v; x.dispatchEvent(new Event('input', { bubbles: true })); }
+    function flash(x){ if (!x) return; x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled'); setTimeout(function(){ x.classList.remove('ff-filled'); }, 5900); }
+    /* 유선 신청상품 간단히 : 「인터넷 1G + NEW모든G(250여ch)(지니3)」 → 「1G+모든G」 · 「인터넷 500M 단독」 → 「500M 단독」 */
+    function shortProd(v){
+      v = (v || '').trim(); if (!v) return '';
+      var fam = /^패밀리/.test(v), add = /TV 추가/.test(v), main = v.split(' / ')[0], m = /(\d+(?:\.\d+)?)\s*([GM])\b/i.exec(main);
+      if (!m) return v;                                                                     /* 직접 쓴 글이면 그대로 */
+      var sp = m[1] + m[2].toUpperCase(), rest = main.slice(m.index + m[0].length).trim(), out;
+      if (!rest || /^단독/.test(rest)) out = sp + ' 단독';
+      else out = sp + '+' + rest.replace(/^\+\s*/, '').split('(')[0].replace(/^NEW\s*/i, '').trim();
+      return (fam ? '패밀리 ' : '') + out + (add ? ' (TV 추가 1대)' : '');
+    }
+    function today(){ var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+    function authCarrier(){ var r = findRow(wcard, '■본인인증'), x = r && r.querySelector('input.ff-in'); return x && x.value.trim() && x.value !== x.defaultValue ? x.value.trim() : ''; }
+    var K = function(word){ return new RegExp('^[^0-9A-Za-z가-힣]*\\s*' + word); };     /* 기호 뒤 바로 그 낱말로 시작하는 항목 */
+    /* 결합종류 칸 : 한 줄 칸은 그대로 바꾸고, 여러 줄 칸(KT 구성원 함께 적는 칸)은 첫 줄만 결합 이름으로 */
+    function setBundle(x, name){
+      if (!x || !name) return;
+      if (x.tagName !== 'TEXTAREA' || !x.value.trim()) return put(x, name);
+      var ls = x.value.split('\n'); if (/결합/.test(ls[0])) ls[0] = name; else ls.unshift(name); put(x, ls.join('\n'));
+    }
+    ['ktu', 'sku', 'lgu'].forEach(function(tab){
+      var card = p6.querySelector('.tpanel[data-k="' + tab + '"] .form-card'); if (!card) return;
+      var same = {};
+      [['자동이체', '■자동이체'], ['사은계좌', '■사은계좌']].forEach(function(x){
+        var r = row(card, K(x[0])); if (!r || !r.querySelector('input.ff-in')) return;
+        sameAs({ row: r, from: wcard, label: '유선과 동일', title: '유선 접수양식의 ' + x[1].slice(1) + ' 내용을 그대로 불러옴',
+          src: function(){ return wv(x[1]); }, empty: '유선 접수양식의 ' + x[1] + '를 먼저 입력한 뒤 「유선과 동일」을 눌러주세요.', focus: function(){} });
+        same[x[0]] = r.querySelector('.same-chk input');
+      });
+      /* 2~5회선 : 사은계좌 「납부계좌와 동일」 — 이 회선의 자동이체 계좌를 그대로 (추가 회선은 유선과 납부계좌가 다를 수 있음) · 1회선에선 숨김 */
+      var payIn = inp(card, K('자동이체')), giftRow = row(card, K('사은계좌')), payLb = null;
+      if (payIn && giftRow && giftRow.querySelector('input.ff-in')){
+        sameAs({ row: giftRow, from: card, label: '납부계좌와 동일', title: '이 회선의 ■자동이체에 적은 계좌를 그대로 불러옴',
+          src: function(){ return payIn.value; },
+          empty: '이 회선의 ■자동이체를 먼저 입력한 뒤 「납부계좌와 동일」을 눌러주세요.', focus: function(){ payIn.focus(); },
+          ask: function(v){ return !/카드/.test(v) || window.confirm('자동이체에 「카드」가 적혀 있습니다.\n사은계좌는 은행 계좌만 가능합니다. 그래도 그대로 불러올까요?'); } });
+        var gl = giftRow.querySelectorAll('.same-chk'); payLb = gl[gl.length - 1]; payLb.hidden = true;
+        var payChk = payLb.querySelector('input'), wChk = same['사은계좌'];
+        if (wChk){                                                                                       /* 「유선과 동일」 과 둘 중 하나만 */
+          payChk.addEventListener('change', function(){ if (payChk.checked && wChk.checked){ wChk.checked = false; wChk.parentNode.classList.remove('on'); } });
+          wChk.addEventListener('change', function(){ if (wChk.checked && payChk.checked){ payChk.checked = false; payLb.classList.remove('on'); } });
+        }
+        same['사은계좌납부'] = payChk;
+      }
+      var addrChk = card.querySelector('.ff-row.has-addr .same-chk input');
+      var oldCarrier = tab === 'lgu' ? inp(card, K('기존통신사')) : card.querySelector('.ff-row input.ff-in.ff-sm');   /* KT · SK : 둘째 줄 「(기존통신사)」 칸 */
+      var all = Array.prototype.slice.call(card.querySelectorAll('.form-body .ff-in')), chks = Array.prototype.slice.call(card.querySelectorAll('.form-body .same-chk input'));
+      /* 회선 저장 · 불러오기 */
+      var slots = [], cur = 0, count = 1;
+      function snap(){ return { v: all.map(function(x){ return x.value; }), c: chks.map(function(c){ return c.checked; }) }; }
+      function refresh(){
+        Array.prototype.forEach.call(card.querySelectorAll('.ff-addr, .ff-detail'), addrFit);
+        Array.prototype.forEach.call(card.querySelectorAll('.ff-row.has-same'), function(r){ r.wgFit && r.wgFit(); });
+        Array.prototype.forEach.call(card.querySelectorAll('textarea.ff-multi'), fit);
+        all.forEach(function(x){ x.classList.remove('ff-filled'); paint(x); }); mark(all[0]);
+      }
+      function load(s){ all.forEach(function(x, i){ x.value = s.v[i]; }); chks.forEach(function(c, i){ c.checked = s.c[i]; c.parentNode.classList.toggle('on', s.c[i]); }); refresh(); }
+      /* 머리 : 몇 번째 회선 · 버튼 · 회선 이동 */
+      var badge = document.createElement('span'); badge.className = 'usim-line'; badge.hidden = true; card.querySelector('.form-title').appendChild(badge);
+      var acts = card.querySelector('.form-actions'), rst = acts.querySelector('.reset-btn');
+      var b1 = document.createElement('button'); b1.type = 'button'; b1.className = 'usim-btn'; b1.textContent = '유선 정보 불러오기'; b1.title = '유선 접수양식의 고객정보 · 설치주소 · 본인인증 통신사를 한 번에 (대표회선)';
+      var b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'usim-btn'; b2.textContent = '추가 회선 작성'; b2.title = '가족동판 : 지금 회선은 그대로 두고 다음 회선 작성 (최대 ' + MAX + '회선)';
+      acts.insertBefore(b1, rst); acts.insertBefore(b2, rst);
+      var bar = document.createElement('div'); bar.className = 'usim-lines'; bar.hidden = true; card.querySelector('.form-head').appendChild(bar);
+      function render(){
+        badge.textContent = (cur + 1) + '회선 작성 중'; badge.hidden = count < 2;
+        if (payLb && payLb.hidden !== (cur < 1)){ payLb.hidden = cur < 1; if (giftRow.wgFit) giftRow.wgFit(); }
+        bar.hidden = count < 2; bar.innerHTML = '<span class="ul-h">회선</span>';
+        for (var i = 0; i < count; i++){ var b = document.createElement('button'); b.type = 'button'; b.textContent = i + 1; b.setAttribute('data-n', i); if (i === cur) b.className = 'on'; b.title = (i + 1) + '회선 양식 보기'; bar.appendChild(b); }
+        b2.disabled = count >= MAX; b2.title = count >= MAX ? '최대 ' + MAX + '회선까지 작성할 수 있습니다' : '가족동판 : 지금 회선은 그대로 두고 다음 회선 작성 (최대 ' + MAX + '회선)';
+      }
+      function go(n){ if (n === cur) return; slots[cur] = snap(); cur = n; load(slots[n]); render(); }
+      bar.addEventListener('click', function(e){ var b = e.target.closest ? e.target.closest('button[data-n]') : null; if (b) go(+b.getAttribute('data-n')); });
+      function planFor(n){ var q = window.wgUsimQueue; return q && q.tab === tab ? q.plans[n] : null; }
+      function fillPlan(n){
+        var pl = planFor(n); if (!pl) return;
+        var p = inp(card, K('요금제')), s = inp(card, /선택약정/); put(p, pl.name); flash(p); if (s){ put(s, pl.sel ? '12개월' : '미적용'); flash(s); }
+      }
+      function fillBundle(){ var q = window.wgUsimQueue; if (!q || q.tab !== tab || !q.bundle) return; var x = inp(card, /결합\s*종류/); setBundle(x, q.bundle); flash(x); }
+      /* 유선 정보 불러오기 */
+      var PERSON = [['고객명', '■고객명'], ['주민번호', '■주민번호'], ['연락처', '■연락처']];
+      b1.addEventListener('click', function(){
+        var vals = PERSON.map(function(x){ return wv(x[1]); });
+        if (!vals.some(function(v){ return v.trim(); }) && !wv('■자동이체').trim() && !wv('■사은계좌').trim()){
+          window.alert('유선 접수양식에 고객명 · 주민번호 · 연락처 등을 먼저 입력한 뒤 「유선 정보 불러오기」를 눌러주세요.'); return;
+        }
+        var ins = PERSON.map(function(x){ return inp(card, K(x[0])); });
+        var clash = ins.some(function(x, i){ return x && x.value && x.value !== x.defaultValue && x.value !== vals[i]; });
+        if (clash && !window.confirm('유심 양식에 이미 적힌 고객정보가 있습니다.\n유선 접수양식의 정보로 바꿀까요?')) return;
+        ins.forEach(function(x, i){ if (x && vals[i]){ put(x, vals[i]); flash(x); } });
+        ['자동이체', '사은계좌'].forEach(function(k){ var c = same[k]; if (c && !c.checked && wv('■' + k).trim()) c.click(); });
+        var wa = wcard.querySelector('.ff-row.has-addr .ff-addr');
+        if (addrChk && !addrChk.checked && wa && wa.value.trim()) addrChk.click();
+        var ac = authCarrier(); if (ac && oldCarrier){ put(oldCarrier, ac); flash(oldCarrier); }          /* 유선 본인인증 통신사 → 기존통신사 */
+        /* 유선 가입상품 간단히 (1G+모든G · 500M 단독) → KT 유선 서비스번호 / SK 유선 접수일자 날짜 뒤 / LG 기타 첫 줄 */
+        var sp = shortProd(wv('■신청상품'));
+        if (tab === 'sku'){
+          var dt = inp(card, /접수일자/);
+          if (dt){ var base = dt.value.trim(), tail = dt.dataset.auto ? ' / ' + dt.dataset.auto : '';
+            if (tail && base.slice(-tail.length) === tail) base = base.slice(0, -tail.length);           /* 예전에 불러온 상품은 바꿔 끼움 */
+            if (!base) base = today();                                                                     /* 유선 접수일자 : 오늘 (고칠 수 있음) */
+            put(dt, sp ? base + ' / ' + sp : base); dt.dataset.auto = sp; flash(dt); }
+        } else if (tab === 'ktu'){
+          var sv = inp(card, /유선 서비스번호/);
+          if (sv && sp && (!sv.value.trim() || sv.value === sv.dataset.auto)){ put(sv, sp); sv.dataset.auto = sp; flash(sv); }
+        } else {
+          var et = inp(card, K('기타'));
+          if (et && sp){ var ls = et.value ? et.value.split('\n') : [];
+            if (et.dataset.auto && ls[0] === et.dataset.auto) ls[0] = sp; else if (ls.indexOf(sp) < 0) ls.unshift(sp);
+            put(et, ls.join('\n')); et.dataset.auto = sp; flash(et); fit(et); }
+        }
+        fillPlan(cur); if (cur === 0) fillBundle();                                                     /* 계산기 요금제 · 결합 다시 */
+      });
+      /* 추가 회선 작성 */
+      var CLEAR = [K('고객명'), K('주민번호'), K('연락처'), K('자동이체'), K('사은계좌'), K('요금제'), K('사은품'), K('기존통신사'), K('단말기'), K('IMEI'), K('EID')];
+      b2.addEventListener('click', function(){
+        if (count >= MAX){ window.alert('최대 ' + MAX + '회선까지 작성할 수 있습니다.'); return; }
+        slots[cur] = snap();
+        ['자동이체', '사은계좌', '사은계좌납부'].forEach(function(k){ var c = same[k]; if (c && c.checked){ c.checked = false; c.parentNode.classList.remove('on'); } });
+        Array.prototype.forEach.call(card.querySelectorAll('.form-body .ff-row'), function(r){
+          var fx = r.querySelector('.ff-fix'), x = r.querySelector('.ff-in');
+          if (fx && x && CLEAR.some(function(re){ return re.test(fx.textContent); })){ put(x, x.defaultValue); x.classList.remove('ff-filled'); }
+        });
+        if (oldCarrier && tab !== 'lgu'){ put(oldCarrier, oldCarrier.defaultValue); oldCarrier.classList.remove('ff-filled'); }
+        cur = count; count++; slots[cur] = null; render(); fillPlan(cur);
+        var nm = inp(card, K('고객명')); if (nm){ nm.focus({ preventScroll: true }); nm.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      });
+      /* 초기화 : 추가 회선이 있으면 모든 회선을 한 번에 지움 */
+      rst.addEventListener('click', function(e){
+        if (count < 2) return;                                                                          /* 1회선뿐이면 원래 초기화 그대로 */
+        e.stopImmediatePropagation(); e.preventDefault();
+        if (!window.confirm('1~' + count + '회선 작성 내용을 모두 지우고 빈 양식으로 되돌립니다.\n계속할까요?')) return;
+        all.forEach(function(x){ x.value = x.defaultValue; }); chks.forEach(function(c){ c.checked = false; c.parentNode.classList.remove('on'); });
+        slots = []; cur = 0; count = 1; refresh(); render();
+        var o = rst.textContent; rst.textContent = '초기화됨'; setTimeout(function(){ rst.textContent = o; }, 1200);
+      }, true);
+      /* 요금계산기에서 넘어올 때 : 1회선으로 가서 요금제 · 선택약정 · 결합종류 · 이미 만든 회선의 요금제도 맞춤 */
+      card.wgCalcFill = function(){
+        if (cur !== 0) go(0);
+        fillPlan(0); fillBundle();
+        var pIdx = all.indexOf(inp(card, K('요금제')));
+        for (var k = 1; k < count; k++){ var pl = planFor(k); if (pl && slots[k] && pIdx >= 0) slots[k].v[pIdx] = pl.name; }
+      };
+      render();
+    });
+  })();
   /* 초기화 뒤 폭 다시 맞춤 */
   p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn')) setTimeout(function(){ Array.prototype.forEach.call(p6.querySelectorAll('.ff-addr, .ff-detail'), function(x){ x.classList.remove('ff-filled'); addrFit(x); }); Array.prototype.forEach.call(p6.querySelectorAll('.ff-row.has-same'), function(r){ r.wgFit && r.wgFit(); }); }, 0); });
 
@@ -2284,13 +2492,13 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   fitAll();
 
   /* 유선 · OSS 양식 : 기본 문구와 다르게 채운 칸은 연한 노랑 (계산기에서 넘어온 칸과 같은 색) → 배경 없는 칸이 미기재
-     「(없으면 기재X)」 · 「웨이브넷지급」 · 「*동의」 처럼 처음부터 적혀 있는 문구는 그대로면 배경 없음 */
-  var FILL_CARDS = '.form-card[data-form="wired"], .form-card[data-form="oss"]';
+     「(없으면 기재X)」 · 「웨이브넷 지급」 · 「*동의」 처럼 처음부터 적혀 있는 문구는 그대로면 배경 없음 */
+  var FILL_CARDS = '.form-card[data-form="wired"], .form-card[data-form="oss"], .tpanel[data-k="ktu"] .form-card, .tpanel[data-k="sku"] .form-card, .tpanel[data-k="lgu"] .form-card';
   function paint(x){
     if (!x.classList || !x.classList.contains('ff-in') || !x.closest(FILL_CARDS)) return;
     x.classList.toggle('ff-auto', x.value.trim() !== '' && x.value !== x.defaultValue);
   }
-  function paintAll(){ Array.prototype.forEach.call(p6.querySelectorAll('.form-card[data-form="wired"] .ff-in, .form-card[data-form="oss"] .ff-in'), paint); }
+  function paintAll(){ Array.prototype.forEach.call(p6.querySelectorAll('.form-card[data-form="wired"] .ff-in, .form-card[data-form="oss"] .ff-in, .tpanel[data-k="ktu"] .ff-in, .tpanel[data-k="sku"] .ff-in, .tpanel[data-k="lgu"] .ff-in'), paint); }
   p6.addEventListener('input', function(e){ paint(e.target); });
   p6.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.reset-btn, .pin-btn')) setTimeout(paintAll, 0); });   /* 초기화 · 유치자 고정/해제 뒤 다시 */
   paintAll();
@@ -2795,8 +3003,20 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   function resetBundleOpts(){ S.rep = 0; S.pfBase = 'auto'; S.splitTotal = 'eq'; S.splitPf = 'ctb'; }
   /* 상담 값을 입력했는지 — 휴대폰 회선 · 현재 요금 · 사은품 중 하나라도 있으면 입력한 것으로 봄 */
   function touched(){ return S.lines.length > 0 || !!S.cur || !!S.gift; }
+  /* 통신사 바꾸기 — 통신사마다 고른 내용을 기억해 두고, 다시 오면 그대로 (통신사끼리 비교)
+     처음 가는 통신사는 속도 · TV · WiFi 만 이어받고 휴대폰 회선 · 결합은 비어 있는 상태로 (회선은 그 통신사 요금제로 새로 추가)
+     현재 요금 · 사은품은 통신사와 상관없이 그대로 · 「새 상담 시작」을 누르면 모두 지움 */
+  var MEMO = {}, KEEP = ['product', 'speed', 'tv', 'wifi', 'stb', 'tvAdd', 'lines', 'bundle', 'rep', 'pfBase', 'splitTotal', 'splitPf'];
+  function snapCarrier(){ var o = {}; KEEP.forEach(function(k){ o[k] = k === 'lines' ? S.lines.map(function(l){ return JSON.parse(JSON.stringify(l)); }) : S[k]; }); return o; }
+  function switchCarrier(v){
+    MEMO[S.carrier] = snapCarrier();
+    S.carrier = v;
+    if (MEMO[v]){ var m = MEMO[v]; KEEP.forEach(function(k){ S[k] = k === 'lines' ? m.lines.map(function(l){ return JSON.parse(JSON.stringify(l)); }) : m[k]; }); return; }
+    S.product = 0; S.stb = 0; S.tvAdd = 0; S.lines = []; S.bundle = 'none'; resetBundleOpts();      /* 속도 · TV · WiFi 는 그대로 두고 normalize 가 맞춤 */
+  }
   /* 새 상담 : 처음 열었을 때 상태로 */
   function resetAll(){
+    MEMO = {};
     S.carrier = 'kt'; S.product = 0; S.speed = ''; S.tv = ''; S.wifi = true; S.stb = 0; S.tvAdd = 0;
     S.lines = []; S.bundle = 'none'; resetBundleOpts(); S.day = 'wd'; S.cur = null; S.gift = null;
     ['#calcCur', '#calcGift'].forEach(function(sel){ var el = P7.querySelector(sel); if (el) el.value = ''; });
@@ -2855,8 +3075,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var w = String(q).trim().split(/\s+/)[0] || '', i = w ? name.toLowerCase().indexOf(w.toLowerCase()) : -1;
     return i < 0 ? esc(name) : esc(name.slice(0, i)) + '<mark>' + esc(name.slice(i, i + w.length)) + '</mark>' + esc(name.slice(i + w.length));
   }
+  var FIND_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
   function showHits(inp){
-    var box = inp.parentNode.querySelector('.ln-hits'), q = inp.value.trim();
+    var box = inp.closest('.ln-find').querySelector('.ln-hits'), q = inp.value.trim();
     if (!q){ box.hidden = true; box.innerHTML = ''; return; }
     var hits = findPlans(S.carrier, q);
     box.innerHTML = hits.length
@@ -2880,7 +3101,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
             ? '<select class="calc-sel ln-plan">' + planOptions(S.carrier, ln.plan) + '</select>'
             : '<input class="calc-num ln-price" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="현재 휴대폰 요금" value="' + (ln.price ? ln.price.toLocaleString('ko-KR') : '') + '"/>')
         + '<button type="button" class="ln-del" aria-label="' + (i + 1) + '회선 삭제">삭제</button></div>'
-        + (ln.type === 'new' ? '<div class="ln-find"><input class="calc-num ln-q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="요금제 검색 · 예: 베이직, 80, 넷플릭스" aria-label="' + (i + 1) + '회선 요금제 검색"/><div class="ln-hits" hidden></div></div>' : '')
+        + (ln.type === 'new' ? '<div class="ln-find"><label class="ln-find-box"><span class="ln-find-tag">' + FIND_ICON + '요금제 검색</span><input class="calc-num ln-q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="예: 베이직, 80, 넷플릭스" aria-label="' + (i + 1) + '회선 요금제 검색"/></label><div class="ln-hits" hidden></div></div>' : '')
         + '<div class="ln-bot">'
         + (ln.type === 'new'
             ? '<label class="calc-chk"><input type="checkbox" class="ln-sel"' + (ln.sel ? ' checked' : '') + '/>선택약정 25%</label>'
@@ -2929,7 +3150,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
     show('mobile', S.carrier !== 'sky');
     renderLines();
-    note('mobile', S.carrier === 'sky' ? '' : '2번 ' + NAMES[dataKey(S.carrier)] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
+    note('mobile', S.carrier === 'sky' ? '' : '<b>회선마다 「요금제 검색」에 이름 · 숫자를 치면 요금제를 바로 찾을 수 있습니다</b><br>2번 ' + NAMES[dataKey(S.carrier)] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
 
     renderResult();
   }
@@ -3031,7 +3252,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     h += '</div>';
 
     h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><button type="button" class="cr-copy">안내 문구 복사</button>'
-       + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button><div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다</div>' : '')
+       + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button><div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다' + (USIM_TAB[S.carrier] ? ' · 유심 신규 회선이 있으면 요금제 · 결합종류를 유심 양식에도 채웁니다' : '') + '</div>' : '')
        + '</div></div>';
     h += '<div class="cr-warn">※ 결합 할인은 통신사 심사·가입 조건에 따라 달라질 수 있습니다. 최종 요금은 접수 전 통신사 기준으로 다시 확인하세요.</div>';
     $('.calc-result').innerHTML = h;
@@ -3174,7 +3395,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled');
       x.classList.toggle('ff-auto', !!vals[i]);                                          /* 채운 칸은 연한 노랑 유지 */
     });
+    var usimNote = toUsimForm();
     window.goPage('p6', 'wired');
+    if (usimNote) infoToast(usimNote);
     setTimeout(function(){
       var navH = (window.wgNavH ? window.wgNavH() : 0);
       window.scrollTo({ top: ins[0].getBoundingClientRect().top + window.pageYOffset - navH - 140, behavior: 'smooth' });
@@ -3183,6 +3406,31 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     clearTimeout(toWiredForm.t);                                                         /* 연달아 눌러도 매번 5초 */
     toWiredForm.t = setTimeout(function(){ ins.forEach(function(x){ x.classList.remove('ff-filled'); }); }, 5900);
   }
+  /* ── 휴대폰 유심 신규 회선이 있으면 그 통신사 유심 양식에 요금제 · 선택약정 · 결합종류 채움 ──
+     1회선 요금제는 바로 · 2회선부터는 유심 양식의 「추가 회선 작성」을 누를 때 차례로 채움 (window.wgUsimQueue) */
+  var USIM_TAB = { kt: 'ktu', skt: 'sku', skb: 'sku', sk: 'sku', lg: 'lgu' };
+  /* 안내 토스트 (남색 · 6초) — 확인창처럼 멈추지 않게 */
+  function infoToast(m){
+    var t = document.getElementById('wgInfoToast');
+    if (!t){ t = document.createElement('div'); t.id = 'wgInfoToast'; t.setAttribute('role', 'status');
+      t.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translateX(-50%);max-width:min(92vw,520px);background:#143A70;color:#fff;font-size:14px;font-weight:700;line-height:1.6;padding:12px 18px;border-radius:12px;box-shadow:0 12px 30px rgba(0,25,70,.3);z-index:9999;white-space:pre-line;text-align:center;transition:opacity .2s;opacity:0;pointer-events:none;';
+      document.body.appendChild(t); }
+    t.textContent = m; t.style.opacity = '1'; clearTimeout(infoToast.t); infoToast.t = setTimeout(function(){ t.style.opacity = '0'; }, 6000);
+  }
+  function toUsimForm(){
+    window.wgUsimQueue = null;
+    var tab = USIM_TAB[S.carrier]; if (!tab) return '';
+    var c = compute(S); if (!c.ok) c = compute(S, 'none');
+    var news = c.lines.filter(function(l){ return l.isNew && l.name; }); if (!news.length) return '';
+    var card = document.querySelector('#p6 .tpanel[data-k="' + tab + '"] .form-card'); if (!card || !card.wgCalcFill) return '';
+    var bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '').replace(/ 결합$/, '결합') : '';     /* 통신사명 빼고 (프리미엄 싱글결합 · 요즘가족결합 · 참쉬운 가족결합) */
+    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: l.name, sel: !!l.sel }; }), bundle: bName };
+    card.wgCalcFill();                                                                     /* 유심 양식 1회선에 요금제 · 선택약정 · 결합종류 */
+    var nm = { ktu: 'KT', sku: 'SK', lgu: 'LG' }[tab];
+    return '휴대폰 유심 신규 ' + news.length + '회선의 요금제' + (bName ? ' · 결합종류' : '') + '를 「' + nm + ' 유심」 양식에도 채웠습니다.'
+      + (news.length > 1 ? '\n2회선부터는 ' + nm + ' 유심 양식에서 「추가 회선 작성」을 누르면 요금제가 차례로 들어갑니다.' : '');
+  }
+
   /* 연한 노랑 : 칸을 비우거나 양식을 초기화하면 없어짐 */
   document.addEventListener('input', function(e){ var t = e.target; if (t.classList && t.classList.contains('ff-auto') && !t.value) t.classList.remove('ff-auto'); });
   document.addEventListener('click', function(e){
@@ -3198,7 +3446,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var chip = e.target.closest('.chip');
     if (chip && !chip.disabled){
       var f = chip.parentNode.getAttribute('data-f'), v = chip.getAttribute('data-v');
-      if (f === 'carrier'){ if (S.carrier !== v){ S.carrier = v; S.product = 0; S.tv = ''; S.lines = []; S.bundle = 'none'; resetBundleOpts(); S.stb = 0; S.tvAdd = 0; } }
+      if (f === 'carrier'){ if (S.carrier !== v) switchCarrier(v); }
       else if (f === 'product') S.product = +v;
       else if (f === 'speed'){ if (S.carrier === 'lg' && (mbps(v) <= 100) !== (mbps(S.speed) <= 100)) S.tvAdd = 0; S.speed = v; }
       else if (f === 'tv') S.tv = v;
@@ -3208,7 +3456,10 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       return;
     }
     if (e.target.closest('.add-line')){
-      if (S.lines.length < RULES.maxLines){ S.lines.push({ type: 'new', plan: '', price: null, sel: true, youth: false }); renderLines(); renderResult(); }
+      if (S.lines.length < RULES.maxLines){
+        S.lines.push({ type: 'new', plan: '', price: null, sel: true, youth: false }); renderLines(); renderResult();
+        var qs = P7.querySelectorAll('.ln-q'); if (qs.length && window.matchMedia('(hover: hover) and (pointer: fine)').matches) qs[qs.length - 1].focus({ preventScroll: true });   /* PC : 새 회선 검색칸에 바로 입력 (휴대폰은 자판이 올라와 가리므로 그대로) */
+      }
       return;
     }
     var hit = e.target.closest('.ln-hit');
