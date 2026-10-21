@@ -1,2 +1,5 @@
+User-agent: kakaotalk-scrap
+Allow: /
+
 User-agent: *
 Disallow: /
