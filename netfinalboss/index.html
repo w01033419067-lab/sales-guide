@@ -6,6 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>인터넷끝판왕 요금 계산기</title>
 <meta name="robots" content="noindex,nofollow"/>
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans KR', sans-serif; background: #f4f8f1; color: #14213D; font-size: 15px; line-height: 1.7; }
@@ -943,6 +944,190 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+<style id="wgHomeCss">
+/* ── 제목 앞 웨이브넷 엠블럼 ── */
+header h1 { display: flex; align-items: center; gap: 10px; }
+.wg-emblem { flex: none; width: 34px; height: 34px; border-radius: 9px; background: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.wg-emblem svg { width: 24px; height: auto; display: block; }
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+  header { padding: 0 16px; }
+  header h1 { gap: 9px; font-size: 16px; white-space: nowrap; }
+  header .wg-emblem { width: 30px; height: 30px; border-radius: 8px; }
+  header .wg-emblem svg { width: 21px; }
+}
+
+/* ── PC 왼쪽 메뉴 : 큰 제목은 연한 남색 칸 · 펼친 메뉴는 흰 카드로 묶어 하위 항목과 구분 ── */
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+  #mainNav > a:not(.nav-calc), #mainNav .nav-item > .nav-toggle { background: #E8EEF6; border: 1px solid #D2DCEA; color: #143A70; font-weight: 800; }
+  #mainNav > a:not(.nav-calc):hover, #mainNav .nav-item > .nav-toggle:hover { background: #DCE6F3; border-color: #BFCFE4; }
+  #mainNav .nav-item.xo { background: #fff; border: 1px solid #D2DCEA; border-radius: 13px; padding: 3px; margin: 0 -4px; box-shadow: 0 1px 4px rgba(15,38,72,.06); }
+  #mainNav .nav-item.xo > .nav-toggle { border-color: transparent; }
+  #mainNav .nav-item.xo > .dropdown { margin: 6px 4px 4px 14px; padding: 0 0 0 10px; border-left: 2px solid #D2DCEA; gap: 1px; }
+  #mainNav .dropdown a { font-size: 13px; font-weight: 600; color: #4E5968; padding: 6px 10px; }
+  #mainNav .dropdown a:hover { background: #F2F5F9; color: #12171F; }
+  /* 보고 있는 메뉴는 그대로 남색 · 하위는 연한 남색 + 왼쪽 막대 */
+  #mainNav > a.on:not(.nav-calc), #mainNav .nav-item.on > .nav-toggle { background: #1E4C8F; border-color: #1E4C8F; color: #fff; }
+  #mainNav .dropdown a.on { background: #DCE8F7; color: #143A70; font-weight: 800; }
+}
+
+/* ── 홈 (p0) ── */
+#p0 .section-body { padding: 22px; }
+#p0 button { font-family: inherit; }
+.hx-hero { position: relative; overflow: hidden; border-radius: 20px; padding: 34px 32px 30px; color: #fff;
+  background: radial-gradient(120% 140% at 100% 0%, #2F6FC4 0%, rgba(47,111,196,0) 55%), linear-gradient(135deg, #0E2648 0%, #173F7A 60%, #1E4C8F 100%); }
+.hx-hero .hx-mark { position: absolute; right: -10px; bottom: -18px; width: 230px; opacity: .13; pointer-events: none; }
+.hx-hero .hx-mark polygon { fill: #fff; }
+.hx-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .14em; color: #8FC3F2; }
+.hx-hero h2 { margin: 10px 0 10px; font-size: 30px; line-height: 1.3; font-weight: 900; letter-spacing: -.035em; color: #fff; }
+.hx-hero p { margin: 0; font-size: 15px; line-height: 1.6; color: #C9DBF3; }
+.hx-hero p b { color: #FFD666; font-weight: 800; }
+.hx-cta { position: relative; margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; }
+.hx-btn { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 18px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; border: 0; transition: transform .15s, background .15s; }
+.hx-btn:active { transform: scale(.98); }
+.hx-btn.pri { background: #FFC83D; color: #2B1B00; box-shadow: 0 6px 18px rgba(255,200,61,.35); }
+.hx-btn.pri:hover { background: #FFD45F; }
+.hx-btn.ghost { background: rgba(255,255,255,.12); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+.hx-btn.ghost:hover { background: rgba(255,255,255,.2); }
+
+.hx-sec { margin-top: 18px; background: #fff; border: 1px solid #DDE4EE; border-radius: 20px; padding: 18px 20px 20px; box-shadow: 0 2px 10px rgba(15,38,72,.05); }
+.hx-sec-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 -20px 16px; padding: 0 20px 14px; border-bottom: 1px solid #EDF0F4; }
+.hx-sec-t { display: flex; align-items: center; gap: 10px; }
+.hx-ico { flex: none; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.hx-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hx-ico.b { background: #E6EEF9; color: #1E4C8F; }
+.hx-ico.y { background: #FFF0C7; color: #B26A00; }
+.hx-ico.g { background: #E5F5EE; color: #12805C; }
+.hx-sec-h h3 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.03em; color: #12171F; }
+.hx-sec-h span { font-size: 13px; color: #6B7684; }
+
+/* 바로가기 */
+.hx-menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.hx-tile { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 14px; border-radius: 14px; background: #F7F9FC; border: 1px solid #E8ECF1; cursor: pointer; text-align: left; font-size: 14px; color: #12171F; transition: box-shadow .15s, transform .15s, border-color .15s; }
+.hx-tile:hover { background: #fff; border-color: #C9D6E8; box-shadow: 0 8px 22px rgba(15,38,72,.08); transform: translateY(-2px); }
+.hx-tile i { flex: none; width: 38px; height: 38px; border-radius: 11px; background: #fff; color: #1E4C8F; display: flex; align-items: center; justify-content: center; }
+.hx-tile i svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.hx-tile small { display: block; font-size: 11px; font-weight: 800; color: #8B95A1; letter-spacing: .04em; }
+.hx-tile b { display: block; font-size: 14px; font-weight: 800; line-height: 1.35; word-break: keep-all; }
+.hx-tile.calc { grid-column: span 2; background: linear-gradient(135deg, #FFF4D1, #FFE7A3); border-color: #F5D27A; }
+.hx-tile.calc i { background: #F5A800; color: #fff; }
+
+/* 1분 사용법 */
+.hx-guide { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.hx-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.hx-step { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid transparent; background: transparent; cursor: pointer; text-align: left; font-size: 14px; color: #4E5968; transition: background .15s, border-color .15s; }
+.hx-step:hover { background: #F2F4F7; }
+.hx-step .no { flex: none; width: 28px; height: 28px; border-radius: 50%; background: #E5E8EC; color: #6B7684; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; transition: background .15s, color .15s; }
+.hx-step b { display: block; font-size: 15px; font-weight: 800; color: #333D4B; }
+.hx-step em { display: block; font-style: normal; font-size: 12px; color: #8B95A1; margin-top: 1px; }
+.hx-step.on { background: #F3F7FD; border-color: #D6E2F2; box-shadow: 0 6px 18px rgba(15,38,72,.07); }
+.hx-step.on .no { background: #1E4C8F; color: #fff; }
+.hx-step.on b { color: #12171F; }
+.hx-step.key .no { box-shadow: 0 0 0 2px #FFC83D; }
+
+.hx-stage { position: relative; border-radius: 20px; background: linear-gradient(180deg, #F3F6FA 0%, #E9EFF7 100%); padding: 22px; display: flex; flex-direction: column; min-height: 400px; }
+.hx-screen { position: relative; flex: 1; border-radius: 16px; background: #fff; box-shadow: 0 12px 34px rgba(15,38,72,.10), 0 0 0 1px rgba(15,38,72,.05); padding: 34px 20px 20px; overflow: hidden; }
+.hx-screen::before { content: ""; position: absolute; left: 14px; top: 13px; width: 8px; height: 8px; border-radius: 50%; background: #FF6B5E; box-shadow: 14px 0 0 #FFC542, 28px 0 0 #3DCB6B; }
+.hx-screen .hx-ex { position: absolute; right: 14px; top: 9px; font-size: 11px; font-weight: 800; color: #A0A9B4; }
+.hx-scene { display: none; }
+.hx-scene.on { display: block; animation: hxIn .35s ease; }
+@keyframes hxIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.hx-cap { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hx-cap-t b { display: block; font-size: 17px; font-weight: 900; color: #12171F; letter-spacing: -.02em; }
+.hx-cap-t span { display: block; margin-top: 3px; font-size: 14px; color: #4E5968; line-height: 1.55; word-break: keep-all; }
+.hx-pager { flex: none; display: flex; align-items: center; gap: 6px; }
+.hx-pager button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff; color: #1E4C8F; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 2px 8px rgba(15,38,72,.12); }
+.hx-pager button:disabled { opacity: .35; cursor: default; }
+.hx-pager span { min-width: 38px; text-align: center; font-size: 13px; font-weight: 800; color: #6B7684; }
+
+/* 화면 예시 부품 */
+.mk-l { font-size: 12px; font-weight: 800; color: #6B7684; margin: 12px 0 7px; }
+.mk-l:first-child { margin-top: 0; }
+.mk-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mk-chip { font-size: 13px; font-weight: 700; color: #4E5968; background: #F2F4F7; border-radius: 9px; padding: 7px 12px; }
+.mk-chip.on { background: #1E4C8F; color: #fff; }
+.mk-tap { position: relative; }
+.mk-tap::after { content: ""; position: absolute; inset: -4px; border-radius: 12px; border: 2px solid #FFC83D; animation: hxPulse 1.6s ease-out infinite; }
+@keyframes hxPulse { 0% { opacity: 1; transform: scale(.96); } 100% { opacity: 0; transform: scale(1.08); } }
+.mk-line { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; border: 1px solid #E5E8EC; margin-bottom: 8px; font-size: 13px; color: #333D4B; }
+.mk-line .n { font-weight: 900; color: #1E4C8F; }
+.mk-line .tag { font-size: 12px; font-weight: 800; border-radius: 6px; padding: 2px 7px; background: #E8F3FF; color: #1B64DA; }
+.mk-line .tag.old { background: #F2F4F7; color: #4E5968; }
+.mk-line .r { margin-left: auto; font-weight: 800; color: #12171F; }
+.mk-add { display: inline-block; font-size: 13px; font-weight: 800; color: #1E4C8F; border: 1.5px dashed #9DB6DA; border-radius: 10px; padding: 8px 14px; margin-top: 4px; }
+.mk-bundle { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 12px; border: 1px solid #E5E8EC; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: #4E5968; }
+.mk-bundle b { font-size: 15px; color: #12171F; }
+.mk-bundle.best { border: 2px solid #1E4C8F; background: #F3F7FD; color: #12171F; }
+.mk-bundle .best-tag { font-size: 11px; font-weight: 900; color: #fff; background: #1E4C8F; border-radius: 6px; padding: 2px 7px; margin-left: 6px; }
+.mk-chat { max-width: 300px; background: #FEE500; border-radius: 4px 16px 16px 16px; padding: 13px 15px; font-size: 13px; line-height: 1.75; color: #191919; }
+.mk-chat b { font-weight: 900; }
+.mk-copy { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 13px; font-weight: 800; color: #fff; background: #1E4C8F; border-radius: 10px; padding: 9px 14px; }
+.mk-form { display: grid; gap: 6px; }
+.mk-row { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: center; gap: 8px; font-size: 13px; }
+.mk-row .k { font-weight: 800; color: #4E5968; white-space: nowrap; }
+.mk-row .v { border-radius: 8px; padding: 7px 10px; background: #F7F8FA; color: #12171F; font-weight: 700; min-height: 18px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.mk-row .v.auto { background: #FFF3B0; animation: hxFill .5s ease both; }
+.mk-row:nth-child(2) .v.auto { animation-delay: .08s; } .mk-row:nth-child(3) .v.auto { animation-delay: .16s; } .mk-row:nth-child(4) .v.auto { animation-delay: .24s; }
+@keyframes hxFill { from { background: #F7F8FA; color: transparent; } to { background: #FFF3B0; } }
+.mk-row .v.me { background: #fff; box-shadow: inset 0 0 0 1.5px #1E4C8F; color: #A0A9B4; font-weight: 600; }
+.mk-go-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.mk-go { font-size: 13px; font-weight: 800; color: #2B1B00; background: #FFC83D; border-radius: 10px; padding: 8px 13px; }
+.mk-badge { display: inline-block; font-size: 12px; font-weight: 900; color: #7A4B00; background: #FFE7A3; border-radius: 999px; padding: 3px 10px; }
+
+/* 자주 묻는 것 */
+.hx-faq { display: grid; gap: 8px; }
+.hx-faq details { background: #F7F9FC; border: 1px solid #E8ECF1; border-radius: 14px; padding: 0 16px; }
+.hx-faq summary { list-style: none; cursor: pointer; padding: 15px 0; font-size: 15px; font-weight: 800; color: #12171F; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hx-faq summary::-webkit-details-marker { display: none; }
+.hx-faq summary::after { content: "+"; flex: none; font-size: 20px; font-weight: 600; color: #8B95A1; transition: transform .2s; }
+.hx-faq details[open] summary::after { transform: rotate(45deg); }
+.hx-faq details p { margin: -4px 0 15px; font-size: 14px; color: #4E5968; line-height: 1.7; word-break: keep-all; }
+.hx-ui { display: inline-block; font-size: 13px; font-weight: 800; color: #1E4C8F; background: #EEF3FA; border-radius: 6px; padding: 0 6px; white-space: nowrap; }
+
+/* 계산기 안내 → 1분 사용법 */
+.calc-manual { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 800; color: #1E4C8F; background: #fff; border: 1px solid #B9CCE6; border-radius: 8px; padding: 3px 10px; cursor: pointer; font-family: inherit; }
+.calc-manual:hover { border-color: #1E4C8F; }
+
+@media (max-width: 900px) {
+  .hx-guide { grid-template-columns: 1fr; }
+  .hx-steps { flex-direction: row; overflow-x: auto; gap: 6px; padding-bottom: 2px; scrollbar-width: none; }
+  .hx-steps::-webkit-scrollbar { display: none; }
+  .hx-steps li { flex: none; }
+  .hx-step { width: auto; padding: 8px 12px 8px 8px; gap: 8px; border-radius: 999px; background: #F2F4F7; }
+  .hx-step em { display: none; }
+  .hx-step b { font-size: 14px; white-space: nowrap; }
+  .hx-step .no { width: 24px; height: 24px; font-size: 12px; }
+  .hx-step.on { background: #12171F; border-color: #12171F; box-shadow: none; }
+  .hx-step.on b { color: #fff; }
+  .hx-step.on .no { background: #fff; color: #12171F; }
+  .hx-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  #p0 .section-body { padding: 14px; }
+  .hx-sec { padding: 14px 14px 16px; border-radius: 18px; }
+  .hx-sec-h { margin: 0 -14px 14px; padding: 0 14px 12px; }
+  .hx-hero { padding: 26px 20px 22px; border-radius: 18px; }
+  .hx-hero h2 { font-size: 25px; }
+  .hx-hero .hx-mark { width: 170px; }
+  .hx-btn { height: 46px; flex: 1 1 auto; justify-content: center; }
+  .hx-stage { padding: 14px; min-height: 0; border-radius: 18px; }
+  .hx-screen { padding: 32px 14px 16px; }
+  .hx-cap { flex-direction: column; align-items: stretch; }
+  .hx-pager { justify-content: flex-end; }
+  .hx-sec { padding: 14px 12px 14px; }
+  .hx-sec-h { margin: 0 -12px 12px; padding: 0 12px 12px; }
+  .hx-menu { gap: 8px; }
+  .hx-tile { min-height: 56px; padding: 9px 9px; gap: 8px; }
+  .hx-tile i { width: 28px; height: 28px; border-radius: 9px; }
+  .hx-tile i svg { width: 17px; height: 17px; }
+  .hx-tile b { font-size: 13px; }
+  .mk-row { grid-template-columns: 92px minmax(0, 1fr); }
+  .wg-emblem { width: 30px; height: 30px; border-radius: 8px; }
+  .wg-emblem svg { width: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx-scene.on, .mk-tap::after, .mk-row .v.auto { animation: none; }
+}
+</style>
 </head>
 <body>
 <header>
@@ -1763,6 +1948,35 @@ document.addEventListener('click', closeMenus);
 document.querySelectorAll('.tab').forEach(function(t){
   t.addEventListener('click', function(){ goTab(t.closest('.page').id, t.dataset.k); });
 });
+/* 홈 : 바로가기 · 1분 사용법(단계 누르기 · 이전/다음) */
+(function(){
+  var CAP = [["통신사 → 속도 → TV 순서로 눌러요","WiFi · 셋탑 같은 옵션도 같은 화면에서 고를 수 있어요."],["결합할 휴대폰을 추가해요","유심 신규는 요금제를 검색하고, 기존 휴대폰은 지금 요금만 넣으면 돼요."],["가장 유리한 결합을 골라요","결합마다 월 합계가 바로 보여요. 누르면 적용돼요."],["안내 문구를 복사해서 보내요","월 요금 · 할인 · 설치비가 정리된 문구를 카톡 · 문자에 붙여넣기만 하면 끝."],["「유선 접수양식 작성 →」을 눌러요","계산한 내용이 접수양식 7칸에 자동으로 들어가요. 고객정보만 넣고 복사하세요."]], cur = 0;
+  function show(i){
+    var g = document.getElementById('hm-manual'); if (!g) return;
+    cur = Math.max(0, Math.min(CAP.length - 1, i));
+    g.querySelectorAll('.hx-step').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-step') === cur); });
+    g.querySelectorAll('.hx-scene').forEach(function(sc){ sc.classList.toggle('on', +sc.getAttribute('data-scene') === cur); });
+    g.querySelector('.hx-cap-t b').textContent = CAP[cur][0]; g.querySelector('.hx-cap-t span').textContent = CAP[cur][1];
+    g.querySelector('.hx-pager span').textContent = (cur + 1) + ' / ' + CAP.length;
+    g.querySelector('[data-pg="-1"]').disabled = cur === 0; g.querySelector('[data-pg="1"]').disabled = cur === CAP.length - 1;
+    var on = g.querySelector('.hx-step.on'), bar = g.querySelector('.hx-steps');
+    if (on && bar && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: on.parentNode.offsetLeft - 8, behavior: 'smooth' });
+  }
+  document.addEventListener('click', function(e){
+    if (!e.target.closest) return;
+    var st = e.target.closest('.hx-step'); if (st){ show(+st.getAttribute('data-step')); return; }
+    var pg = e.target.closest('[data-pg]'); if (pg){ show(cur + +pg.getAttribute('data-pg')); return; }
+    var b = e.target.closest('[data-go]'); if (!b) return;
+    var to = b.getAttribute('data-go');
+    if (to === 'hm-manual'){
+      if (!document.getElementById('p0').classList.contains('active')) goPage('p0');
+      var m = document.getElementById('hm-manual'), navH = window.wgNavH ? window.wgNavH() : 0;
+      setTimeout(function(){ window.scrollTo({ top: m.getBoundingClientRect().top + window.pageYOffset - navH - 16, behavior: 'smooth' }); }, 30);
+      return;
+    }
+    goPage(to);
+  });
+})();
 goPage('p2');
 </script><script>
 /* 2번 요금표 : 통신사마다 「○○ 유선요금표 | ○○ 결합」 버튼으로 나눠 보기 (SKYLIFE는 결합이 없어 그대로)
@@ -1861,7 +2075,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       var host = p.closest(BLOCK); if (!host) continue;
       if (seen.indexOf(host) !== -1) continue;
       seen.push(host);
-      var page = host.closest('.page'); if (!page) continue;
+      var page = host.closest('.page'); if (!page || page.id === 'p0') continue;
       var txt = (host.textContent || '').replace(/\s+/g, ' ').trim();
       if (txt.length < 2) continue;
       if (txt.length > 300) txt = txt.slice(0, 300);
@@ -2056,6 +2270,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
 
   var l1 = '인터넷끝판왕 요금계산기';
   var l2 = '';
+  var MARK = false;   /* 웨이브넷 엠블럼 (워터마크 · 오른쪽 아래 표시) */
 
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -2063,8 +2278,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + TW + '" height="' + TH + '">'
     + '<g transform="rotate(-28 ' + CX + ' ' + CY + ')" fill="#14213D" text-anchor="middle"'
     + ' font-family="Noto Sans KR, sans-serif">'
-    + '<text x="' + CX + '" y="' + (CY - 5.5) + '" font-size="16" font-weight="700">' + esc(l1) + '</text>'
-    + '<text x="' + CX + '" y="' + (CY + 15.5) + '" font-size="11.5" font-weight="500"'
+    + (MARK ? '<g transform="translate(' + (CX - 16) + ' ' + (CY - 44) + ') scale(.24)"><polygon fill="#12376A" points="0,0 34,0 60,62 86,0 106,0 68,90 50,90"/><polygon fill="#3BA9E6" points="113,0 134,0 93,90 72,90"/></g>' : '')
+    + '<text x="' + CX + '" y="' + (CY - 5.5 + (MARK ? 8 : 0)) + '" font-size="16" font-weight="700">' + esc(l1) + '</text>'
+    + '<text x="' + CX + '" y="' + (CY + 15.5 + (MARK ? 8 : 0)) + '" font-size="11.5" font-weight="500"'
     + ' letter-spacing="1.2">' + esc(l2) + '</text>'
     + '</g></svg>';
   var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -2092,6 +2308,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     var narrow = window.matchMedia && window.matchMedia('(max-width:640px)').matches;
     badge.textContent = narrow ? ('무단 배포 금지 · ' + stamp)
                                : (l1 + ' · 무단 배포 금지 · ' + stamp);
+    if (MARK) badge.insertAdjacentHTML('afterbegin', '<svg viewBox="0 0 134 90" style="width:15px;height:auto;vertical-align:-1px;margin-right:5px;"><polygon fill="#12376A" points="0,0 34,0 60,62 86,0 106,0 68,90 50,90"/><polygon fill="#3BA9E6" points="113,0 134,0 93,90 72,90"/></svg>');
   }
   fitBadge();
   window.addEventListener('resize', fitBadge);
