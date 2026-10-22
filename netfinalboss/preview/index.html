@@ -4107,7 +4107,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
         fillPlan(cur); if (cur === 0){ fillBundle(); fillMembers(); }                                                     /* 계산기 요금제 · 결합 다시 */
       });
       /* 추가 회선 작성 */
-      var CLEAR = [K('고객명'), K('속성'), K('식별번호'), K('명의자연락처'), K('기타연락처'), K('본인인증'), K('번호이동인증'), K('자동이체'), K('사은계좌'), K('요금제'), K('동판사은품명'), K('총 현금'), K('단말기'), K('IMEI'), K('EID'), K('유심')];   /* 자점 추가 회선 : 명의자마다 다른 칸 */
+      var CLEAR = [K('고객명'), K('속성'), K('식별번호'), K('명의자연락처'), K('기타연락처'), K('본인인증'), K('번호이동인증'), K('자동이체'), K('사은계좌'), K('요금제'), K('동판사은품명'), K('총 현금'), K('단말기'), K('IMEI'), K('EID'), K('유심'), /동판\s*or\s*단판/];   /* 자점 추가 회선 : 명의자마다 다른 칸 · 동판 or 단판 */
       b2.addEventListener('click', function(){
         if (count >= MAX){ window.alert('최대 ' + MAX + '회선까지 작성할 수 있습니다.'); return; }
         slots[cur] = snap();
