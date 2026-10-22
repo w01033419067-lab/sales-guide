@@ -3827,7 +3827,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     function val(label){ var r = findRow(wired, label); return r ? r.querySelector('input.ff-in').value.trim() : ''; }
     function focusTo(label){ var r = findRow(wired, label); if (r) r.querySelector('input.ff-in').focus({ preventScroll: false }); }
     /* 사은계좌 ← 자동이체 */
-    var pay = findRow(wired, '■자동이체'), gift = findRow(wired, '★사은계좌');
+    var pay = null, gift = null;   /* 자점 : 사은계좌 「자동이체와 동일」(세 칸)은 team-wired.js */
     if (pay && gift) sameAs({ row: gift, from: wired, label: '납부계좌와 동일', title: '■자동이체에 적은 계좌를 그대로 불러옴',
       src: function(){ return pay.querySelector('input.ff-in').value; },
       empty: '■자동이체를 먼저 입력한 뒤 「납부계좌와 동일」을 눌러주세요.', focus: function(){ focusTo('■자동이체'); },
@@ -5137,7 +5137,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       ['□인터넷상품명', function(v){ return main(v).split(' + ')[0].replace(/ 단독$/, '') + (v[2] ? ' (WiFi ' + v[2] + ')' : ''); }],
       ['□TV/셋탑', function(v){ return main(v).split(' + ').slice(1).join(' + '); }],
       ['□추가TV/셋탑', function(v){ return extra(v).filter(function(x){ return /^TV 추가/.test(x); }).join(' / '); }],
-      ['□결합', function(v){ var b = etc(v).filter(function(l){ return /^결합 : /.test(l); })[0]; return b ? b.replace(/^결합 : /, '') : ''; }],
+      ['□결합', function(v){ var b = etc(v).filter(function(l){ return /^결합 : /.test(l); })[0]; return b ? b.replace(/^결합 : /, '').replace(/\s*\(대표회선 \d+회선\)$/, '') : ''; }],   /* 결합명만 (대표회선은 유심 쪽) */
       ['□월요금/모바일 결합 할인금액', function(v){ return v[3]; }],
       ['□설치비', function(v){ return v[4]; }],
       ['★현금사은품', function(v){ return v[5]; }],
@@ -5522,6 +5522,7 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
   /* ── 자동이체 · 사은계좌 : 계좌 · 예금주 · 주민번호 칸 따로 — 「위 정보와 동일」 체크하면 예금주 ← ■고객명 · 주민번호 ← ■식별번호
         체크 중엔 위 칸을 고치면 같이 바뀜 · 예금주/주민번호를 직접 고치면 체크 풀림 · 체크를 풀면 불러온 내용 지움 ── */
   Array.prototype.forEach.call(card.querySelectorAll('.ff-row.nfb-split'), function(r){
+    if (r.querySelector('.ff-fix').textContent.indexOf('■자동이체') !== 0) return;     /* 사은계좌는 아래 「자동이체와 동일」 */
     var holder = r.querySelector('.nfb-holder'), rrn = r.querySelector('.nfb-rrn');
     var nr = row('■고객명'), ir = row('■식별번호'), nameIn = nr && nr.querySelector('input.ff-in'), idIn = ir && ir.querySelector('input.ff-in'); if (!nameIn || !idIn) return;
     var lb = document.createElement('label'); lb.className = 'same-chk'; lb.title = '예금주 ← 고객명 · 주민번호 ← 식별번호';
@@ -5547,6 +5548,38 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     });
     onReset(off);
   });
+
+  /* ── 사은계좌 「자동이체와 동일」 : 자동이체 세 칸(계좌 · 예금주 · 주민번호)을 그대로 — 고칠 수 있음 (고치면 체크 풀림)
+        자동이체에 「카드」가 적혀 있으면 한 번 확인 · 체크 중엔 자동이체를 고치면 같이 · 체크를 풀면 불러온 내용 지움 ── */
+  (function(){
+    var rows = Array.prototype.filter.call(card.querySelectorAll('.ff-row.nfb-split'), function(r){ return true; });
+    var pay = rows.filter(function(r){ return r.querySelector('.ff-fix').textContent.indexOf('■자동이체') === 0; })[0],
+        gift = rows.filter(function(r){ return r.querySelector('.ff-fix').textContent.indexOf('★사은계좌') === 0; })[0];
+    if (!pay || !gift) return;
+    var P = Array.prototype.slice.call(pay.querySelectorAll('input.ff-in')), G = Array.prototype.slice.call(gift.querySelectorAll('input.ff-in'));
+    /* 사은계좌 주민번호 칸 : 숫자만 쳐도 900101-1234567 */
+    var rrn = gift.querySelector('.nfb-rrn'); rrn.setAttribute('inputmode', 'numeric');
+    rrn.addEventListener('input', function(e){
+      var v = rrn.value; if (!/^[\d-]*$/.test(v)) return;
+      var d = v.replace(/\D/g, '').slice(0, 13), del = /^delete/.test(e.inputType || ''), nv = d.length > 6 ? d.slice(0, 6) + '-' + d.slice(6) : (d.length === 6 && !del ? d + '-' : d);
+      if (nv !== v){ rrn.value = nv; try { rrn.setSelectionRange(nv.length, nv.length); } catch (err) {} }
+    });
+    var lb = document.createElement('label'); lb.className = 'same-chk'; lb.title = '■자동이체에 적은 계좌 · 예금주 · 주민번호를 그대로 불러옴';
+    lb.innerHTML = '<input type="checkbox"/>자동이체와 동일'; gift.appendChild(lb);
+    var chk = lb.querySelector('input'), got = [];
+    function off(){ chk.checked = false; lb.classList.remove('on'); }
+    function fill(){ got = P.map(function(x){ return x.value.trim(); }); G.forEach(function(x, i){ put(x, got[i] || ''); }); }
+    chk.addEventListener('change', function(){
+      if (chk.checked){
+        if (!P.some(function(x){ return x.value.trim(); })){ off(); window.alert('■자동이체를 먼저 입력한 뒤 「자동이체와 동일」을 눌러주세요.'); P[0].focus(); return; }
+        if (/카드/.test(P[0].value) && !window.confirm('자동이체에 「카드」가 적혀 있습니다.\n사은계좌는 은행 계좌만 가능합니다. 그래도 그대로 불러올까요?')){ off(); return; }
+        lb.classList.add('on'); fill();
+      } else { lb.classList.remove('on'); G.forEach(function(x, i){ if (x.value === (got[i] || '')) put(x, ''); }); got = []; }
+    });
+    card.addEventListener('input', function(e){ if (chk.checked && P.indexOf(e.target) >= 0) fill(); });
+    G.forEach(function(x){ x.addEventListener('input', function(e){ if (e.isTrusted && chk.checked) off(); }); });
+    onReset(off);
+  })();
 
   /* ── 쿠폰금액 : 「쿠폰적용」 체크하면 70,000 · 풀면 지움 · 직접 고치면 체크 풀림 ── */
   (function(){
