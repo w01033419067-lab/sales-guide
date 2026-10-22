@@ -5137,7 +5137,9 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
       ['□인터넷상품명', function(v){ return main(v).split(' + ')[0].replace(/ 단독$/, '') + (v[2] ? ' (WiFi ' + v[2] + ')' : ''); }],
       ['□TV/셋탑', function(v){ return main(v).split(' + ').slice(1).join(' + '); }],
       ['□추가TV/셋탑', function(v){ return extra(v).filter(function(x){ return /^TV 추가/.test(x); }).join(' / '); }],
-      ['□결합', function(v){ var b = etc(v).filter(function(l){ return /^결합 : /.test(l); })[0]; return b ? b.replace(/^결합 : /, '').replace(/\s*\(대표회선 \d+회선\)$/, '') : ''; }],   /* 결합명만 (대표회선은 유심 쪽) */
+      ['□결합', function(v){ var b = etc(v).filter(function(l){ return /^결합 : /.test(l); })[0]; b = b ? b.replace(/^결합 : /, '').replace(/\s*\(대표회선 \d+회선\)$/, '') : '';   /* 결합명만 (대표회선은 유심 쪽) */
+        if (/^SK[TB]$/.test(v[0])) return b ? b.replace(/^SK[TB]?\s+/, '').replace(/\s+결합$/, '결합') : '요즘우리집결합';   /* SKT · SKB : 통신사명 빼고 「요즘가족결합」 · 결합 없음 → 요즘우리집결합 */
+        return b; }],
       ['□월요금/모바일 결합 할인금액', function(v){ return v[3]; }],
       ['□설치비', function(v){ return v[4]; }],
       ['★현금사은품', function(v){ return v[5]; }],
