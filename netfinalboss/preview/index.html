@@ -5612,6 +5612,22 @@ document.querySelectorAll('.copy-btn').forEach(function(btn){
     onReset(function(){ chk.checked = inp.value === AMT; lb.classList.toggle('on', chk.checked); });
   })();
 })();
+
+/* 자점 : 양식에 작성 중인 내용이 있으면 새로고침 · 창 닫기 · 다른 주소로 이동 전에 브라우저가 한 번 물어봄
+   (문구는 브라우저 기본 문구 — 「변경사항이 저장되지 않을 수 있습니다」 등 · 직접 정할 수 없음)
+   기본 문구 · 고정값과 다르게 적은 칸이 하나라도 있으면 작성 중으로 봄 · 초기화하면 다시 안 물어봄 */
+(function(){
+  function dirty(){
+    return Array.prototype.some.call(document.querySelectorAll('#p6 .form-card .ff-in, #p6 .form-card .ff-detail'), function(x){
+      return !x.readOnly && x.value.trim() !== '' && x.value !== x.defaultValue;
+    });
+  }
+  window.addEventListener('beforeunload', function(e){
+    if (!dirty()) return;
+    e.preventDefault(); e.returnValue = '';
+    return '';
+  });
+})();
 </script>
 </body>
 </html>
