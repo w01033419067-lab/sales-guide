@@ -553,7 +553,7 @@ tbody tr:last-child td { border-bottom: none; }
   .ln-hit:first-of-type { border-top: 0; }
   .ln-hit:hover, .ln-hit:focus { background: #EAF2FB; outline: none; }
   .ln-hit .nm { font-size: 13px; font-weight: 700; color: #14213D; }
-  .ln-hit .nm mark { background: #FFE58A; color: inherit; border-radius: 2px; padding: 0 1px; }
+  .ln-hit .nm mark, .ln-hit .pr mark { background: #FFE58A; color: inherit; border-radius: 2px; padding: 0 1px; }
   .ln-hit .pr { font-size: 12.5px; font-weight: 800; color: #1F4E8C; font-variant-numeric: tabular-nums; }
   .ln-hit small { grid-column: 1 / -1; font-size: 11px; color: #6B7C8F; }
   .ln-del { flex: none; margin-left: auto; font-family: inherit; font-size: 12px; font-weight: 700; color: #A32D2D; background: #fff; border: 1px solid #E7B9B9; border-radius: 7px; padding: 4px 9px; cursor: pointer; }
@@ -1787,17 +1787,16 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     });
     if (phoneTotalDisc > mobile){ notes.push('휴대폰 결합 할인 ' + won(phoneTotalDisc) + '이 휴대폰 요금보다 커서 ' + won(mobile) + '만 적용'); phoneTotalDisc = mobile; }
     mobile -= phoneTotalDisc;
-    /* 복지할인 : 회선마다 · 합계로 정해지는 결합 할인(SK 요즘가족)은 회선마다 똑같이 나눈 몫까지 뺀 금액 기준 */
+    /* 복지할인 : 회선마다 · 「월정액 − 선택약정」 기준 (결합 할인과 상관없이 같은 금액) · 남은 요금까지만 · 납부금 10원 미만 절사
+       합계로 정해지는 결합 할인(SK 요즘가족)은 회선마다 똑같이 나눈 몫을 남은 요금에서 뺌 */
     if (lines.some(function(l){ return l.wf; })){
-      var gsh = phoneTotalDisc ? shareByContribution(phoneTotalDisc, lines.map(function(){ return 1; })).map(function(x){ return x.amt; }) : lines.map(function(){ return 0; }), chk = [];
+      var gsh = phoneTotalDisc ? shareByContribution(phoneTotalDisc, lines.map(function(){ return 1; })).map(function(x){ return x.amt; }) : lines.map(function(){ return 0; });
       lines.forEach(function(l, k){
         if (!l.wf) return;
-        var after = Math.max(0, l.pay - gsh[k]), w = welfareCalc(s.carrier, l.wf, l.list, after);
-        l.wfAmt = w.amt; l.wfPay = after - w.amt; l.wfChk = w.chk; mobile -= w.amt;
-        if (w.chk) chk.push(l.no);
+        var after = Math.max(0, l.pay - gsh[k]), amt = Math.min(welfareCalc(s.carrier, l.wf, l.list - l.sel), after), cut = (after - amt) % 10;
+        l.wfAmt = amt; l.wfCut = cut; l.wfPay = after - amt - cut; l.wfChk = false; mobile -= amt + cut;
       });
-      notes.push('복지할인 : 정액 요금제 월정액 기준 (초과 통화료 · 부가서비스 제외) · 1인 1회선 · 복지 자격이 여러 개여도 하나만');
-      if (chk.length) notes.push(chk.join('·') + '회선 : 수급자 · 차상위는 할인 뒤 금액이 낮아 실제 청구 금액과 몇십~몇천 원 다를 수 있음 — 고객센터 확인 필요');
+      notes.push('복지할인 : 정액 요금제 월정액에서 선택약정을 뺀 금액 기준 (결합 할인과 상관없음 · 초과 통화료 · 부가서비스 제외) · 1인 1회선 · 복지 자격이 여러 개여도 하나만 · 납부금 10원 미만 절사');
     }
 
     /* 1회 청구 */
@@ -1906,12 +1905,17 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     return html + (grp !== null ? '</optgroup>' : '');
   }
 
-  /* 휴대폰 요금제 검색 : 띄어쓰기·대소문자 무시, 여러 단어는 모두 포함된 요금제만 (예: 「초이스 넷플」) */
+  /* 휴대폰 요금제 검색 : 띄어쓰기·대소문자 무시, 여러 단어는 모두 포함된 요금제만 (예: 「초이스 넷플」)
+     이름 또는 월정액으로 — 숫자 1~3자리는 천원 단위 (37 → 37,000~37,999원) · 4자리 이상은 금액 앞자리 (37000 · 37,000원) */
   function normQ(v){ return String(v).toLowerCase().replace(/\s+/g, ''); }
+  function priceHit(price, w){
+    var d = String(w).replace(/[,원]/g, ''); if (!/^\d+$/.test(d) || !price) return false;
+    return d.length <= 3 ? Math.floor(price / 1000) === +d : String(price).indexOf(d) === 0;
+  }
   function findPlans(k, q){
     var words = String(q).toLowerCase().split(/\s+/).filter(Boolean);
     if (!words.length) return [];
-    return D.usim[k].filter(function(p){ var n = normQ(p.name); return words.every(function(w){ return n.indexOf(w) >= 0; }); });
+    return D.usim[k].filter(function(p){ var n = normQ(p.name); return words.every(function(w){ return n.indexOf(w) >= 0 || priceHit(p.price, w); }); });
   }
   function markQ(name, q){
     var w = String(q).trim().split(/\s+/)[0] || '', i = w ? name.toLowerCase().indexOf(w.toLowerCase()) : -1;
@@ -1924,9 +1928,9 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var hits = findPlans(S.carrier, q);
     box.innerHTML = hits.length
       ? '<div class="ln-hits-h">' + NAMES[dataKey(S.carrier)] + ' 요금제 ' + hits.length + '개 · 눌러서 선택</div>' + hits.map(function(p){
-          return '<button type="button" class="ln-hit" data-plan="' + esc(p.name) + '"><span class="nm">' + markQ(p.name, q) + '</span><span class="pr">' + won(p.price) + '</span>'
+          return '<button type="button" class="ln-hit" data-plan="' + esc(p.name) + '"><span class="nm">' + markQ(p.name, q) + '</span><span class="pr">' + (String(q).trim().split(/\s+/).some(function(w){ return priceHit(p.price, w); }) ? '<mark>' + won(p.price) + '</mark>' : won(p.price)) + '</span>'
             + '<small>' + esc((p.cat ? p.cat.replace(/\s*요금제$/, '') + ' · ' : '') + p.band + (p.data ? ' · ' + fmtData(p.data) : '')) + '</small></button>'; }).join('')
-      : '<div class="ln-hits-none">「' + esc(q) + '」이(가) 들어간 ' + NAMES[dataKey(S.carrier)] + ' 요금제가 없습니다</div>';
+      : '<div class="ln-hits-none">「' + esc(q) + '」에 맞는 ' + NAMES[dataKey(S.carrier)] + ' 요금제(이름 · 금액)가 없습니다</div>';
     box.hidden = false;
   }
   function pickPlan(lnEl, name){
@@ -1943,7 +1947,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
             ? '<select class="calc-sel ln-plan">' + planOptions(S.carrier, ln.plan) + '</select>'
             : '<input class="calc-num ln-price" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="현재 휴대폰 요금" value="' + (ln.price ? ln.price.toLocaleString('ko-KR') : '') + '"/>')
         + '<button type="button" class="ln-del" aria-label="' + (i + 1) + '회선 삭제">삭제</button></div>'
-        + (ln.type === 'new' ? '<div class="ln-find"><label class="ln-find-box"><span class="ln-find-tag">' + FIND_ICON + '요금제 검색</span><input class="calc-num ln-q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="예: 베이직, 80, 넷플릭스" aria-label="' + (i + 1) + '회선 요금제 검색"/></label><div class="ln-hits" hidden></div></div>' : '')
+        + (ln.type === 'new' ? '<div class="ln-find"><label class="ln-find-box"><span class="ln-find-tag">' + FIND_ICON + '요금제 검색</span><input class="calc-num ln-q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="예: 베이직, 37(금액), 넷플릭스" aria-label="' + (i + 1) + '회선 요금제 검색"/></label><div class="ln-hits" hidden></div></div>' : '')
         + '<div class="ln-bot">'
         + (ln.type === 'new'
             ? '<label class="calc-chk"><input type="checkbox" class="ln-sel"' + (ln.sel ? ' checked' : '') + '/>선택약정 25%</label>'
@@ -2018,7 +2022,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 
     show('mobile', !noPhone(S.carrier));
     renderLines();
-    note('mobile', noPhone(S.carrier) ? '' : S.carrier === 'soho' ? '<b>회선마다 「요금제 검색」에 이름 · 숫자를 치면 요금제를 바로 찾을 수 있습니다</b><br><b>LG 소호는 유심 동판 불가</b> — 고객이 쓰는 LG 휴대폰의 요금제(3번 LG 요금제)를 고르거나 「기존 휴대폰」에 현재 요금을 넣으면 <b>결합 할인만</b> 계산 · 유심비 없음' : '<b>회선마다 「요금제 검색」에 이름 · 숫자를 치면 요금제를 바로 찾을 수 있습니다</b><br>3번 ' + NAMES[dataKey(S.carrier)] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
+    note('mobile', noPhone(S.carrier) ? '' : S.carrier === 'soho' ? '<b>회선마다 「요금제 검색」에 이름 · 금액(예: 37 → 37,000원대)을 치면 요금제를 바로 찾을 수 있습니다</b><br><b>LG 소호는 유심 동판 불가</b> — 고객이 쓰는 LG 휴대폰의 요금제(3번 LG 요금제)를 고르거나 「기존 휴대폰」에 현재 요금을 넣으면 <b>결합 할인만</b> 계산 · 유심비 없음' : '<b>회선마다 「요금제 검색」에 이름 · 금액(예: 37 → 37,000원대)을 치면 요금제를 바로 찾을 수 있습니다</b><br>3번 ' + NAMES[dataKey(S.carrier)] + ' 유심 요금제 기준 · 기존 휴대폰(같은 통신사)은 현재 요금만 입력하면 결합 할인만 반영 · 유심비 7,700원은 첫 달 1회 청구');
 
     renderResult();
   }
@@ -2151,24 +2155,22 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   function n0(v){ return v.toLocaleString('ko-KR'); }
   /* 데이터 칸 「110GB+5Mbps」 → 「110GB · 소진 시 5Mbps」, 「무제한」 → 「데이터 무제한」 */
   function fmtData(d){ d = String(d || '').trim(); if (!d || /^[-–—]$/.test(d)) return ''; var m = /^(.+?)\s*\+\s*(.+)$/.exec(d); return m ? m[1] + ' · 소진 시 ' + m[2] : (/무제한$/.test(d) ? '데이터 ' + d : d); }
-  /* ── 휴대폰 복지할인 — 세 통신사 공통 정부 기준 · 부가세 포함 · 정액 요금제(통화료 0) 기준
-     장애인 · 국가유공자 : 다른 할인(선택약정 · 결합) 뒤 금액의 35% · 상한 없음
-     기초연금 : 다른 할인 뒤 금액의 50% · 최대 12,100원
-     생계 · 의료급여 : 월정액 최대 28,600원 (50% 추가 감면은 통화료에만 → 정액 요금제는 없음)
-     주거 · 교육급여 · 차상위 : 12,100원 + (45,100원까지 − 12,100) × 35% · 최대 23,650원
-     수급자 · 차상위 순서 : KT 「기타할인 선 적용 후 복지할인」(약관 설명서) → 다른 할인 뒤 금액 기준
-                          SK · LG 「복지할인 먼저」 → 원래 월정액 기준 (선택약정 · 결합은 원래대로) · 두 방식이 다르게 나오면 확인 필요 표시 */
+  /* ── 휴대폰 복지할인 — 세 통신사 공통 · 부가세 포함 · 정액 요금제(통화료 0) 기준
+     기준 금액 = 월정액 − 선택약정 (선택약정 · 결합 할인은 각각 원래 월정액에서 · 복지할인은 결합 할인과 상관없음 — KT 상세내역 예시와 같음)
+     장애인 · 국가유공자 : 기준 금액의 35% · 상한 없음
+     기초연금 : 기준 금액의 50% · 최대 12,100원
+     생계 · 의료급여 : 최대 28,600원 (50% 추가 감면은 통화료에만 → 정액 요금제는 없음)
+     주거 · 교육급여 · 차상위 : 12,100원 + 나머지의 35% · 최대 23,650원 */
   var WELFARE = true;
   var WF_NAME = { dis: '장애인 · 국가유공자', basic: '기초수급 (생계 · 의료급여)', low: '기초수급 (주거 · 교육급여) · 차상위', pension: '기초연금 (만 65세 이상)' };
   function wfLow(b){ return b <= 0 ? 0 : Math.min(b, 12100) + Math.floor(Math.max(0, Math.min(b, 45100) - 12100) * 0.35); }
-  function welfareCalc(car, k, list, after){
-    var kt = car === 'kt', amt = 0, alt = null;
-    if (k === 'dis') amt = Math.floor(after * 0.35);                                     /* 할인은 원 미만 버림 (SK 예시 35,148.75 → 35,149원과 같음) */
-    else if (k === 'pension') amt = Math.min(Math.floor(after * 0.5), 12100);
-    else if (k === 'basic'){ amt = Math.min(kt ? after : list, 28600); alt = Math.min(after, 28600); }
-    else if (k === 'low'){ amt = wfLow(kt ? after : list); alt = wfLow(after); }
-    amt = Math.min(amt, after);                                                            /* 요금보다 많이는 안 빠짐 */
-    return { amt: amt, chk: alt != null && Math.min(alt, after) !== amt };
+  function welfareCalc(car, k, base){
+    base = Math.max(0, base);
+    if (k === 'dis') return Math.floor(base * 0.35);                                       /* 원 미만 버림 */
+    if (k === 'pension') return Math.min(Math.floor(base * 0.5), 12100);
+    if (k === 'basic') return Math.min(base, 28600);
+    if (k === 'low') return wfLow(base);
+    return 0;
   }
   var WF_SHORT = { dis: '장애인·유공자', basic: '기초수급(생계·의료)', low: '기초수급(주거·교육)·차상위', pension: '기초연금(65세↑)' };     /* 드롭박스는 짧게 (아래 줄 · 내역은 WF_NAME) */
   function wfOptions(cur){ return '<option value="">해당없음</option>' + Object.keys(WF_NAME).map(function(k){ return '<option value="' + k + '" title="' + WF_NAME[k] + '"' + (cur === k ? ' selected' : '') + '>' + WF_SHORT[k] + '</option>'; }).join(''); }
@@ -2207,7 +2209,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
       L.push('■ 휴대폰 ' + c.n + '회선  월 ' + won(c.mobile));
       if (c.phoneTotalDisc && share) L.push(' (휴대폰 할인 ' + won(c.phoneTotalDisc) + ' ÷ ' + c.n + '회선)');
       c.lines.forEach(function(l, i){
-        var d = l.disc + (share ? share[i] : 0), pay = l.pay - (share ? share[i] : 0) - (l.wfAmt || 0);
+        var d = l.disc + (share ? share[i] : 0), pay = l.pay - (share ? share[i] : 0) - (l.wfAmt || 0) - (l.wfCut || 0);
         L.push(' ' + (i + 1) + ') ' + l.name + ' → ' + won(pay));
         if (l.data) L.push('    ' + fmtData(l.data));
         if (l.sel || d || l.wfAmt) L.push('    ' + n0(l.list) + (l.sel ? ' − 약정 ' + n0(l.sel) : '') + (d ? ' − 결합 ' + n0(d) : '') + (l.wfAmt ? ' − 복지 ' + n0(l.wfAmt) : ''));
