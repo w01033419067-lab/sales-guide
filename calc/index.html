@@ -1163,6 +1163,21 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 @media (prefers-reduced-motion: reduce) {
   .hx-scene.on, .mk-tap::after, .mk-row .v.auto { animation: none; }
 }
+/* calc-wide ── PC 요금계산기 화면만 넓고 여유 있게 : 본문을 양쪽 빈 곳의 1/2씩 넓힘 (최대 1360px) · 선택 칸은 줄이고 결과 칸은 넓혀 거의 반반 · 두 칸 사이 띄움 · 칸 안 여백 늘림 */
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+  main:has(#p7.active) { max-width: min(1360px, max(1000px, calc(1000px + (100vw - 1268px) / 2))); }
+  #p7 .calc-grid { grid-template-columns: minmax(0, 1fr) minmax(360px, .85fr); gap: clamp(36px, 3.2vw, 60px); }
+  #p7 .calc-form { gap: 16px; }
+  #p7 .cf-block { padding: 0 16px 16px; }
+  #p7 .cf-h { margin: 0 -16px 12px; padding: 10px 16px; }
+  #p7 .chips { gap: 8px; }
+  #p7 .cf-row + .cf-row { margin-top: 10px; }
+  #p7 .calc-result { gap: 14px; }
+  #p7 .cr-tbl td { padding: 8px 14px; }
+}
+@media (min-width: 1460px) and (hover: hover) and (pointer: fine) {
+  body:has(#p7.active) #toTop, body:has(#p7.active) #calcFab { right: max(16px, calc((100vw - 1268px) / 4 - 66px)); }
+}
 </style>
 <style id="cxCss">
   body { margin: 0 !important; padding: 0 !important; background: #F3F5F8; }
