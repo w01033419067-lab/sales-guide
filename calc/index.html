@@ -664,6 +664,15 @@ tbody tr:last-child td { border-bottom: none; }
   .cf-block:has(> .chips[data-f="bundle"]) > .cf-h { background: #FCEDE3; border-bottom-color: #F1C8AE; color: #7A2A08; }
   .cf-block:has(#calcGift) { border-left-color: #6B3FA0; }
   .cf-block:has(#calcGift) > .cf-h { background: #F0EAF8; border-bottom-color: #D5C6EA; color: #45266B; }
+  /* ⑧ 사은품 : [유선] 파랑 · [유심(무선)] 초록 — 헷갈리지 않게 글씨 · 칸 색 다르게 */
+  .cf-row.gift-w label.lbl, .cf-row.gift-u label.lbl { min-width: 128px; font-size: 13px; font-weight: 800; }
+  .cf-row.gift-w label.lbl, .cf-row.gift-w .gift-unit { color: #1F4E8C; }
+  .cf-row.gift-u label.lbl, .cf-row.gift-u .gift-unit { color: #0E7A4F; }
+  .cf-row .gift-unit { font-size: 12.5px; font-weight: 700; }
+  .cf-row.gift-w .calc-num { border-color: #9DBCE0; background: #F5F9FE; }
+  .cf-row.gift-u .calc-num { border-color: #8FCFB2; background: #F2FBF6; }
+  .cf-row.gift-u .calc-num:focus { border-color: #0E7A4F; box-shadow: 0 0 0 3px rgba(14,122,79,.14); }
+  @media (max-width: 640px){ .cf-row.gift-w label.lbl, .cf-row.gift-u label.lbl { min-width: 112px; font-size: 12.5px; } }
 </style><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"/>
 <style id="wgTheme">
@@ -1228,7 +1237,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 <div class="cf-block"><div class="cf-h">⑦ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-note" data-n="bundle"></div><div class="cf-note" data-n="join"></div></div>
 <div class="cf-block"><div class="cf-h">⑧ 현재 요금 · 사은품</div>
 <div class="cf-row"><label class="lbl" for="calcCur">현재 요금</label><input class="calc-num" id="calcCur" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="월 납부액 (선택)"/><span style="font-size:11.5px;color:#6B7C8F;">고객이 지금 내는 인터넷·TV·휴대폰 월 합계</span></div>
-<div class="cf-row"><label class="lbl" for="calcGift">사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span style="font-size:12.5px;font-weight:700;color:#1F4E8C;">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「· 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.</div>
+<div class="cf-row gift-w"><label class="lbl" for="calcGift">[유선] 사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span class="gift-unit">만원</span></div><div class="cf-row gift-u" data-b="giftu" hidden><label class="lbl" for="calcGiftU">[유심(무선)] 사은품</label><input class="calc-num" id="calcGiftU" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 20"/><span class="gift-unit">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「■ 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.<span data-n="giftu" hidden><br><b style="color:#0E7A4F;">[유심(무선)] 사은품</b>은 ⑥에서 <b>유심 신규</b> 회선을 추가했을 때만 보이고, 「유선 접수양식 작성 →」을 누르면 같은 통신사 유심 양식의 사은품 칸에 들어갑니다.</span></div>
 </div>
 </div>
 <div class="calc-result"></div>
@@ -1965,12 +1974,15 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   }
 
   /* ── 상태 ─────────────────────────────────────────────── */
-  var S = { carrier: 'kt', product: 0, speed: '', tv: '', wifi: true, stb: 0, tvAdd: 0, tvAdd2: 0, lines: [], bundle: 'none', rep: 0, pfBase: 'auto', splitTotal: 'eq', splitPf: 'ctb', day: 'wd', cur: null, gift: null,
+  var S = { carrier: 'kt', product: 0, speed: '', tv: '', wifi: true, stb: 0, tvAdd: 0, tvAdd2: 0, lines: [], bundle: 'none', rep: 0, pfBase: 'auto', splitTotal: 'eq', splitPf: 'ctb', day: 'wd', cur: null, gift: null, giftU: null,
             cctv: 1, phAdd: '', phN: 1, optLte: false, optCare: false, optPkg: false, safe: false, skyTotal: false, amp: 0, tel: 0, wifi7: false, lgPlan: 'basic' };      /* LG 소호 추가 · 옵션 · SKYLIFE 안심요금제 · WiFi 증폭기 · WiFi 7 (7D) · LG 인터넷 요금제 */
   function resetSoho(){ S.cctv = 1; S.phAdd = ''; S.phN = 1; S.optLte = false; S.optCare = false; S.optPkg = false; S.safe = false; S.skyTotal = false; S.amp = 0; S.tel = 0; }
   function resetBundleOpts(){ S.rep = 0; S.pfBase = 'auto'; S.splitTotal = 'eq'; S.splitPf = 'ctb'; }
   /* 상담 값을 입력했는지 — 휴대폰 회선 · 현재 요금 · 사은품 중 하나라도 있으면 입력한 것으로 봄 */
-  function touched(){ return S.lines.length > 0 || !!S.cur || !!S.gift; }
+  var GIFTU_CARRIERS = ['kt', 'skt', 'skb', 'lg'];
+  function giftUOn(){ return GIFTU_CARRIERS.indexOf(S.carrier) >= 0 && S.lines.some(function(l){ return l.type === 'new'; }); }   /* 유심 신규 회선이 있을 때만 (기존 휴대폰은 결합 할인 안내용) */
+  function giftU(){ return giftUOn() ? S.giftU : null; }
+  function touched(){ return S.lines.length > 0 || !!S.cur || !!S.gift || !!S.giftU; }
   /* 통신사 바꾸기 — 통신사마다 고른 내용을 기억해 두고, 다시 오면 그대로 (통신사끼리 비교)
      처음 가는 통신사는 속도 · TV · WiFi 만 이어받고 휴대폰 회선 · 결합은 비어 있는 상태로 (회선은 그 통신사 요금제로 새로 추가)
      현재 요금 · 사은품은 통신사와 상관없이 그대로 · 「새 상담 시작」을 누르면 모두 지움 */
@@ -1986,8 +1998,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   function resetAll(){
     MEMO = {};
     S.carrier = 'kt'; S.product = 0; S.speed = ''; S.tv = ''; S.wifi = true; S.wifi7 = false; S.lgPlan = 'basic'; S.stb = 0; S.tvAdd = 0; S.tvAdd2 = 0;
-    S.lines = []; S.bundle = 'none'; resetBundleOpts(); resetSoho(); S.day = 'wd'; S.cur = null; S.gift = null;
-    ['#calcCur', '#calcGift'].forEach(function(sel){ var el = P7.querySelector(sel); if (el) el.value = ''; });
+    S.lines = []; S.bundle = 'none'; resetBundleOpts(); resetSoho(); S.day = 'wd'; S.cur = null; S.gift = null; S.giftU = null;
+    ['#calcCur', '#calcGift', '#calcGiftU'].forEach(function(sel){ var el = P7.querySelector(sel); if (el) el.value = ''; });
     renderForm();
   }
 
@@ -2181,6 +2193,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 
   function renderResult(){
     normalize();
+    var gu = giftUOn(); show('giftu', gu); var gun = P7.querySelector('[data-n="giftu"]'); if (gun) gun.hidden = !gu;
     /* 결합 비교 */
     var opts = BUNDLES[S.carrier].map(function(bk){
       var c = compute(S, bk[0]);
@@ -2401,7 +2414,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     L.push('');
     if (S.carrier === 'soho'){ L.push('■ 설치 일정'); L.push(' · 접수 후 실사 · 공사 진행'); L.push(' · 최소 1~2주 이상 소요'); L.push('   (긴급 일정 불가)'); L.push(''); }
     L.push('■ 약정 : ' + c.wl + ' 3년' + (S.carrier !== 'soho' && c.lines.some(function(l){ return l.isNew; }) ? ' / 유심 1년' : ''));
-    if (S.gift) L.push('■ 사은품 : ' + S.gift + '만원');      /* 입력하지 않으면 줄 자체를 뺌 */
+    var gU = giftU();                                          /* 입력하지 않으면 줄 자체를 뺌 · 유심 사은품도 있으면 「유선 45만원 / 유심 20만원」 */
+    if (S.gift || gU) L.push('■ 사은품 : ' + (gU ? [S.gift ? '유선 ' + S.gift + '만원' : '', '유심 ' + gU + '만원'].filter(Boolean).join(' / ') : S.gift + '만원'));
     return L.join('\n');
   }
 
@@ -2525,10 +2539,10 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '').replace(/ 결합$/, '결합') : '';     /* 통신사명 빼고 (프리미엄 싱글결합 · 요즘가족결합 · 참쉬운 가족결합) */
     /* 요금제 뒤에 3번 유심 요금표의 요금제 군 (유심 양식에서만) : 베이직80(69K 이상) · 라이트 79(69이상) · 데이터플랜MAX(85군) */
     function withBand(name){ var p = D.usim[dataKey(S.carrier)].filter(function(x){ return x.name === name; })[0], g = p && p.band ? p.band.replace(/\*+$/, '').trim() : ''; return g ? name + '(' + g + ')' : name; }
-    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: withBand(l.name), sel: !!l.sel }; }), bundle: bName };
+    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: withBand(l.name), sel: !!l.sel }; }), bundle: bName, gift: giftU() ? giftU() + '만원' : '' };
     card.wgCalcFill();                                                                     /* 유심 양식 1회선에 요금제 · 선택약정 · 결합종류 */
     var nm = { ktu: 'KT', sku: 'SK', lgu: 'LG' }[tab];
-    return '휴대폰 유심 신규 ' + news.length + '회선의 요금제' + (bName ? ' · 결합종류' : '') + '를 「' + nm + ' 유심」 양식에도 채웠습니다.'
+    return '휴대폰 유심 신규 ' + news.length + '회선의 요금제' + (bName ? ' · 결합종류' : '') + (giftU() ? ' · 유심 사은품' : '') + '를 「' + nm + ' 유심」 양식에도 채웠습니다.'
       + (news.length > 1 ? '\n2회선부터는 ' + nm + ' 유심 양식에서 「추가 회선 작성」을 누르면 요금제가 차례로 들어갑니다.' : '');
   }
 
@@ -2618,7 +2632,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var t = e.target;
     if (t.classList.contains('ln-q')){ showHits(t); return; }
     if (t.id === 'calcCur'){ S.cur = parseWon(t.value); renderResult(); return; }
-    if (t.id === 'calcGift'){ var cg = cleanGift(t.value); if (cg !== t.value) t.value = cg; S.gift = parseFloat(cg) > 0 ? String(parseFloat(cg)) : null; renderResult(); return; }
+    if (t.id === 'calcGift' || t.id === 'calcGiftU'){ var cg = cleanGift(t.value); if (cg !== t.value) t.value = cg; S[t.id === 'calcGift' ? 'gift' : 'giftU'] = parseFloat(cg) > 0 ? String(parseFloat(cg)) : null; renderResult(); return; }
     if (t.classList.contains('ln-price')){ S.lines[+t.closest('.ln').getAttribute('data-i')].price = parseWon(t.value); renderResult(); }
   });
   P7.addEventListener('keydown', function(e){
