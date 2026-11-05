@@ -2268,6 +2268,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     if (S.cur){
       var d = S.cur - c.total;
       h += '<div class="cr-save ' + (d >= 0 ? 'down' : 'up') + '">' + (d >= 0 ? '현재보다 월 ' + won(d) + ' 절감 · 3년(36개월) ' + won(d * 36) : '현재보다 월 ' + won(-d) + ' 증가') + '</div>';
+      var b3 = benefit3(c);
+      if (b3) h += '<div class="cr-save ' + (b3.total >= 0 ? 'down' : 'up') + '">3년(36개월) 사은품 포함 : ' + (b3.total >= 0 ? '총 ' + won(b3.total) + ' 혜택' : '총 ' + won(-b3.total) + ' 손해 (고객 안내 문구엔 안 넣음)') + '</div>';
     }
     h += '</div><div class="cr-card"><table class="cr-tbl"><tbody><tr class="sec"><td colspan="2">' + c.wl.replace(/·/g, ' · ') + '</td></tr>';
     c.items.forEach(function(it){
@@ -2344,6 +2346,12 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   }
   var WF_SHORT = { dis: '장애인·유공자', basic: '기초수급(생계·의료)', low: '기초수급(주거·교육)·차상위', pension: '기초연금(65세↑)' };     /* 드롭박스는 짧게 (아래 줄 · 내역은 WF_NAME) */
   function wfOptions(cur){ return '<option value="">해당없음</option>' + Object.keys(WF_NAME).map(function(k){ return '<option value="' + k + '" title="' + WF_NAME[k] + '"' + (cur === k ? ' selected' : '') + '>' + WF_SHORT[k] + '</option>'; }).join(''); }
+  /* 3년(36개월) 총 혜택 = (현재 요금 − 새 월 합계) × 36 + 사은품(유선 + 유심) — 현재 요금이 없으면 null */
+  function benefit3(c){
+    if (!S.cur) return null;
+    var month = S.cur - c.total, gift = Math.round(((S.gift ? parseFloat(S.gift) : 0) + (giftU() ? parseFloat(giftU()) : 0)) * 10000);   /* 유선 + 유심 사은품 */
+    return { month: month, gift: gift, total: month * 36 + gift };
+  }
   function message(c){
     /* 카톡·문자로 보내는 견적서 — 짧은 줄 · 항목별 제목 · 합계 강조 (좁은 말풍선에서도 줄이 넘어가지 않게) */
     var L = [], sum = function(a){ return a.reduce(function(x, y){ return x + y; }, 0); };
@@ -2395,6 +2403,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     if (disc) L.push(' · 결합 할인 : 월 ' + won(disc) + (c.noPhone ? ' (' + c.wl + ')' : ''));
     if (c.noPhone){ L.push(' · 휴대폰 요금은 포함되지 않음'); L.push(' · 휴대폰 결합 할인은 별도'); L.push('   (요금제·회선 수에 따라 다름)'); }
     if (S.cur) L.push(' · 현재 요금 대비 : 월 ' + won(Math.abs(S.cur - c.total)) + (S.cur >= c.total ? ' 절감' : ' 증가'));
+    var b3m = benefit3(c);
+    if (b3m && b3m.total > 0){ L.push(' · 3년간 총 혜택 : ' + won(b3m.total)); L.push('   (' + (b3m.gift ? (b3m.month > 0 ? '월 절감 36개월 + 사은품' : '사은품 − 월 차액 36개월') : '월 절감 36개월') + ')'); }   /* 손해면 넣지 않음 */
     L.push('━━━━━━━━━━━━');
     /* 1회 청구 · 약정 · 사은품 */
     var once = [];
