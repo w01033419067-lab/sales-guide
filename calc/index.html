@@ -257,6 +257,8 @@
   .form-actions { flex-wrap: wrap; justify-content: flex-end; flex-shrink: 1; min-width: 0; max-width: 100%; }
   /* 사은계좌 「납부계좌와 동일」 — 입력칸 뒤에 붙어 내용이 길어지면 같이 밀려남 */
   .ff-row.has-same .ff-in { flex: 0 1 auto; min-width: 0; max-width: 100%; }
+  /* 모바일 스크립트 : 고객 정보 자리 (유심 양식 「유심 해피콜」에서 실제 값으로 바뀜) */
+  .hc-f { color: #1F4E8C; font-weight: 800; } .hc-yes { color: #2E75B6; font-weight: 700; } .hc-no { color: #A32D2D; font-weight: 700; }
   @media (max-width: 640px) { .ff-row.has-same .ff-fix { flex-basis: 100%; } }
   /* ■자동이체 흐린 예시 글씨 (은행명 / 계좌번호 … / 카드주) : 좁은 화면에선 항목명 윗줄 · 입력칸 한 줄 전체 · 예시는 칸 아래 작은 회색 줄 (칸 안에 다 안 들어감) */
   @media (max-width: 640px) { .ff-row.ff-pay { flex-wrap: wrap; } .ff-row.ff-pay .ff-fix { flex-basis: 100%; } .ff-row.ff-pay .ff-in { flex: 1 1 100%; width: 100%; margin-left: 0; } }
@@ -2441,6 +2443,16 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     if (S.gift || gU) L.push('■ 사은품 : ' + (gU ? [S.gift ? '유선 ' + S.gift + '만원' : '', '유심 ' + gU + '만원'].filter(Boolean).join(' / ') : S.gift + '만원'));
     return L.join('\n');
   }
+
+  /* 휴대폰 회선별 금액 (고객 안내 문구와 같은 계산) — 유심 해피콜 팝업에서 씀
+     list 월정액 · sel 선택약정 할인 · disc 결합 할인(합계 할인은 회선마다 똑같이 나눈 몫 포함) · wf 복지 할인 · pay 청구 금액 · whole : 합계 할인을 나눌 수 없을 때 그 금액 */
+  window.wgCalcLines = function(){
+    var c = compute(S); if (!c.ok) c = compute(S, 'none');
+    var share = c.lines.map(function(){ return 0; });
+    if (c.phoneTotalDisc){ share = shareByContribution(c.phoneTotalDisc, c.lines.map(function(){ return 1; })).map(function(x){ return x.amt; }); if (c.lines.some(function(l, i){ return share[i] > l.pay; })) share = null; }
+    return { carrier: S.carrier, bundle: c.bLabel || '', whole: share ? 0 : c.phoneTotalDisc, lines: c.lines.map(function(l, i){ var sh = share ? share[i] : 0, wf = (l.wfAmt || 0) + (l.wfCut || 0);
+      return { no: l.no, name: l.name, isNew: l.isNew, list: l.list, sel: l.sel, disc: l.disc + sh, wf: wf, pay: l.pay - sh - wf }; }) };
+  };
 
   /* ── 6번 유선 접수양식으로 넘기기 ─────────────────────── */
   var FORM_CARRIER = { kt: 'KT', skt: 'SKT', skb: 'SKB', sk: 'SK', lg: 'LG U+', soho: 'LG U+ 소호', sky: '스카이라이프', hello: 'LG헬로비전' };
