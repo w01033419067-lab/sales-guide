@@ -1329,6 +1329,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   /* 계산기 통신사 버튼 · SKT / SKB 는 요금표·요금제·결합 모두 SK 와 같고 가입 통신사만 다름 */
   var CARRIERS = ['kt', 'skt', 'skb', 'lg', 'soho', 'sky', 'hello'];
   var MSG_NAME = { kt: 'KT', sk: 'SK', skt: 'SKT', skb: 'SKB', lg: 'LG', soho: 'LG 소호', sky: '스카이라이프', hello: 'LG헬로비전' };   /* 견적서·결과의 통신사 이름 */
+  var MVNO_SKB = ['SK텔링크 (SK세븐모바일)', '리브모바일', '이야기모바일', '모빙', '토스모바일', '아이즈모바일'];   /* SKB 알뜰한 결합 가능 알뜰폰 */
+  function phoneName(c, b){ return b === 'skmvno' ? '알뜰폰(6개사)' : PHONE_NAME[c]; }
   var PHONE_NAME = { kt: 'KT', sk: 'SKT', skt: 'SKT', skb: 'SKT', lg: 'LG U+', soho: 'LG U+', sky: '', hello: '' };   /* 결합하는 휴대폰 통신사 */
   function noPhone(c){ return c === 'sky' || c === 'hello'; }          /* 결합 휴대폰 없는 통신사 (SKYLIFE · 헬로비전) */
   /* TV 가 들어간 구성인지 — LG 소호는 「구성」 칸에 전화 · CCTV 도 있어 「실속형」 이 있을 때만 TV */
@@ -1659,7 +1661,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   var BUNDLE_DESC = {
     kt:  { none: '결합 없는 단독 요금', fixed: '인터넷 5,500 + 폰 회선별 3~7천 할인', total: '폰 월정액 합계 클수록 할인 ↑',
            psingle: '500M↑ + 7.7만↑ 폰 1대 → 25% (인터넷 단독 + 5,500)', pfamily: '7.7만↑ 폰 2대↑ → 대표 외 25%' },
-    sk:  { none: '결합 없는 단독 요금', skfam: '인+티 할인 + 폰 회선수별 최대 2.4만' },
+    sk:  { none: '결합 없는 단독 요금', skfam: '인+티 할인 + 폰 회선수별 최대 2.4만', skmvno: '알뜰폰 6개사 · 인+티 할인만 (요즘가족과 같음)' },
     lg:  { none: '결합 없는 단독 요금', lgeasy: '인+티 할인 + 폰 회선별 할인', together: '85↑ 무제한 폰 2~5대 → 인당 1~2만' },
     sky: { none: '결합 할인 없음' },
     hello: { none: '결합 할인 없음' }
@@ -1668,7 +1670,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     kt:  [['none', '결합 안 함'], ['fixed', '정액 결합'], ['total', '총액 결합'], ['psingle', '프리미엄 싱글'], ['pfamily', '프리미엄 가족']],
     sk:  [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
     skt: [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
-    skb: [['none', '결합 안 함'], ['skfam', '요즘가족 결합']],
+    skb: [['none', '결합 안 함'], ['skfam', '요즘가족 결합'], ['skmvno', '알뜰한 결합']],      /* 알뜰한 결합 : SKB만 (SKT 불가) */
     lg:  [['none', '결합 안 함'], ['lgeasy', '참쉬운 가족결합'], ['together', '투게더 결합']],
     soho: [['none', '결합 안 함'], ['lgeasy', '참쉬운 가족결합'], ['together', '투게더 결합']],      /* LG 소호 : 할인 금액은 LG 와 같음 */
     sky: [['none', '결합 안 함']],
@@ -1846,6 +1848,12 @@ header h1 { display: flex; align-items: center; gap: 10px; }
           lineObjs.forEach(function(x, i){ phoneDisc[i] = skGot[i]; phoneTag[i] = skGot[i] ? '균등 분배' : ''; });
           notes.push('요즘가족 휴대폰 할인 ' + won(skTot) + ' (' + n + '회선) → 회선마다 똑같이 나눔' + (skGot.every(function(v){ return v === skGot[0]; }) ? ' (회선당 ' + won(skGot[0]) + ')' : '')); }
         if (n >= 5 && cnt === RULES.skFamilyPhone.length - 1) notes.push('5회선까지 가능하나 최대 할인 24,000원');
+      } else if (b === 'skmvno'){
+        need(s.carrier === 'skb', 'SKB만 가능 (SKT 불가)');
+        need(!isFamilyProduct(s), '패밀리는 알뜰한 결합 중복 불가');
+        bLabel = 'SK 알뜰한 결합';                      /* 인터넷 · TV 할인 = 요즘가족 결합과 같은 금액 (요금표 결합 열) · 휴대폰은 알뜰폰이라 할인 없음 */
+        notes.push('알뜰한 결합 : 인터넷 · TV 할인만 요즘가족 결합과 같은 금액 · 결합 가능 알뜰폰 6개사 — ' + MVNO_SKB.join(' · '));
+        if (n) notes.push('⑥에 넣은 휴대폰은 SKT 요금제라 알뜰한 결합 할인 대상이 아님 — 휴대폰 할인 없이 계산');
       } else if (b === 'lgeasy'){
         var E = W.easy || (s.carrier === 'soho' ? D.wired.lg.easy : null);   /* 휴대폰 없으면 참쉬운 인+티 요금만 · LG 소호는 LG 표 */ bLabel = 'LG 참쉬운 가족결합'; need(!!E, 'LG 참쉬운 가족결합 표가 없습니다');
         var er = E.rows.filter(function(x){ return n >= x.min && n <= x.max; })[0] || E.rows[E.rows.length - 1];
@@ -1883,7 +1891,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
       throw e;
     }
 
-    if (b !== 'none' && !n) notes.unshift(PHONE_NAME[s.carrier] + ' 휴대폰 없이 계산 — 인터넷·TV 결합 할인만 반영 (고객이 ' + PHONE_NAME[s.carrier] + ' 휴대폰과 결합할 때 적용) · 휴대폰 할인은 회선을 추가하면 계산');
+    if (b !== 'none' && !n) notes.unshift(b === 'skmvno' ? '알뜰한 결합 : 인터넷·TV 할인만 (고객이 알뜰폰 6개사 휴대폰과 결합할 때 적용) · 알뜰폰 휴대폰 할인 없음' : PHONE_NAME[s.carrier] + ' 휴대폰 없이 계산 — 인터넷·TV 결합 할인만 반영 (고객이 ' + PHONE_NAME[s.carrier] + ' 휴대폰과 결합할 때 적용) · 휴대폰 할인은 회선을 추가하면 계산');
     if (isTtgProduct(s) && b !== 'none' && n) notes.push('따.가.결 : 휴대폰 할인은 베이스 결합 그룹 전체 기준 — 베이스 가구 계산에 이미 넣은 휴대폰이면 중복으로 보지 마세요');
     if (s.carrier === 'kt'){
       var yNo = [];
@@ -1891,8 +1899,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
       if (yNo.length) notes.push('청소년 할인 미적용 (' + yNo.join('·') + '회선) — 프리미엄 가족결합 · 대표회선 제외 · 청소년 회선과 법정대리인 회선 모두 8만원 이상 5G 요금제일 때 월 5,500원 (별도 요청 필수)');
     }
     /* 요금표 열로 할인이 이미 반영되는 결합 (SK 요즘가족 · LG 참쉬운) */
-    if (b === 'skfam' || b === 'lgeasy'){
-      var col = (b === 'skfam' && s.wifi && r.bundleWifi != null) ? r.bundleWifi : r.bundle;
+    if (b === 'skfam' || b === 'skmvno' || b === 'lgeasy'){                 /* 알뜰한 결합 : 요즘가족과 같은 결합 열 */
+      var col = ((b === 'skfam' || b === 'skmvno') && s.wifi && r.bundleWifi != null) ? r.bundleWifi : r.bundle;
       if (col != null) netDisc = regular - col;
     }
     if (netDisc) items.push({ label: '결합 할인 (인터넷)', sub: bLabel, amt: -netDisc, kind: 'disc' });
@@ -1956,7 +1964,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 
     return { ok: true, bundle: b, bLabel: bLabel, row: r, desc: desc, items: items, wired: wired,
              lines: lines, phoneTotalDisc: phoneTotalDisc, mobile: mobile, total: wired + mobile,
-             notes: notes, install: inst, usim: usim, n: n, split: splitUsed, pfMode: pfModeUsed, wl: WL, noPhone: b !== 'none' && !n };
+             notes: notes, install: inst, usim: usim, n: n, bKey: b, split: splitUsed, pfMode: pfModeUsed, wl: WL, noPhone: b !== 'none' && !n };
   }
 
   /* LG 소호 설치비 표 상품 이름 (동시 설치) — CCTV 는 표에 동시 금액이 없어 인터넷(+티비) 금액으로 */
@@ -2218,7 +2226,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
            : S.carrier === 'soho' ? 'LG 소호 결합 할인 금액은 일반 LG와 같습니다 · LG 소호는 유심 동판 불가 — 고객이 쓰는 LG 휴대폰으로 결합 할인만 계산 · 투게더는 법인사업자 불가'
            : S.carrier === 'lg' ? '투게더 결합 : 대상 요금제(데이터플랜MAX · 플러스플랜95·105·115·130) 휴대폰만 할인 · 데이터플랜은 MAX만 대상 · 기존 휴대폰은 예전 대상 요금제일 때만 (접수 전 확인)'
            : isSK(S.carrier) ? (isFamilyProduct(S) ? NAMES[S.carrier] + ' 패밀리 인터넷은 요즘가족 결합과 중복할 수 없습니다. ' + FAMILY_NOTE[S.carrier].replace(/^.*· /, '') + '.'
-                                                   : '인터넷+TV 번들 요금은 우리집 결합 할인이 이미 반영된 금액입니다. 요즘가족 결합 시 WiFi는 +1,100원입니다.')
+                                                   : '인터넷+TV 번들 요금은 우리집 결합 할인이 이미 반영된 금액입니다. 요즘가족 결합 시 WiFi는 +1,100원입니다.'
+                                                     + (S.carrier === 'skb' ? '<br><b>알뜰한 결합 (SKB만 · SKT 불가)</b> : 인터넷 · TV 할인만 요즘가족 결합과 같은 금액 · 결합 가능 알뜰폰 6개사 — ' + MVNO_SKB.map(function(x, i){ return (i + 1) + '. ' + x; }).join(' ') : ''))
 
            : '';
     note('bundle', bn);
@@ -2361,7 +2370,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     L.push(prod);
     var sub = [dm ? dm[2] : '', bName].filter(Boolean).join(' · ');
     if (sub) L.push(sub);
-    var pn = PHONE_NAME[S.carrier];
+    var pn = phoneName(S.carrier, c.bKey);
     if (c.noPhone) L.push('※ ' + pn + ' 휴대폰과 결합할 때의 요금입니다');
     L.push('');
     /* 인터넷·TV */
@@ -2401,7 +2410,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     L.push('━━━━━━━━━━━━');
     L.push('★ 월 합계 : ' + won(c.total) + ' (부가세 포함)');
     if (disc) L.push(' · 결합 할인 : 월 ' + won(disc) + (c.noPhone ? ' (' + c.wl + ')' : ''));
-    if (c.noPhone){ L.push(' · 휴대폰 요금은 포함되지 않음'); L.push(' · 휴대폰 결합 할인은 별도'); L.push('   (요금제·회선 수에 따라 다름)'); }
+    if (c.noPhone && c.bKey === 'skmvno'){ L.push(' · 휴대폰(알뜰폰) 요금은 포함되지 않음'); L.push(' · 알뜰폰 휴대폰 할인 없음'); }
+    else if (c.noPhone){ L.push(' · 휴대폰 요금은 포함되지 않음'); L.push(' · 휴대폰 결합 할인은 별도'); L.push('   (요금제·회선 수에 따라 다름)'); }
     if (S.cur) L.push(' · 현재 요금 대비 : 월 ' + won(Math.abs(S.cur - c.total)) + (S.cur >= c.total ? ' 절감' : ' 증가'));
     var b3m = benefit3(c);
     if (b3m && b3m.total > 0){ L.push(' · 3년간 총 혜택 : ' + won(b3m.total)); L.push('   (' + (b3m.gift ? (b3m.month > 0 ? '월 절감 36개월 + 사은품' : '사은품 − 월 차액 36개월') : '월 절감 36개월') + ')'); }   /* 손해면 넣지 않음 */
@@ -2468,7 +2478,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
       var nNew = c.lines.filter(function(l){ return l.isNew; }).length, nSel = c.lines.filter(function(l){ return l.sel; }).length;
       etc.push('휴대폰 ' + c.n + '회선 : ' + c.lines.map(function(l){ return l.no + ') ' + (l.isNew ? l.name : '기존 휴대폰 ' + won(l.list)) + (/청소년/.test(l.tag) ? '(청소년)' : '') + (l.wf ? ' · 복지 ' + WF_SHORT[l.wf] : ''); }).join(' ')
         + (nNew && S.carrier !== 'soho' ? ' · 유심 신규 ' + nNew + '회선' : '') + (nSel ? ' · 선택약정 ' + nSel + '회선' : ''));
-    } else if (c.bLabel) etc.push('휴대폰 회선 미입력 — 인터넷·TV 결합 할인만 반영 (' + PHONE_NAME[S.carrier] + ' 휴대폰 결합 조건)');
+    } else if (c.bLabel) etc.push(c.bKey === 'skmvno' ? '알뜰한 결합 : 알뜰폰 6개사(' + MVNO_SKB.join(' · ') + ') 휴대폰 결합 조건 — 인터넷·TV 할인만' : '휴대폰 회선 미입력 — 인터넷·TV 결합 할인만 반영 (' + PHONE_NAME[S.carrier] + ' 휴대폰 결합 조건)');
     if (fam) etc.push(FAMILY_NOTE[S.carrier]);
     if (centerJoin(c)) etc.push(S.carrier === 'lg' ? 'LG : 기존 휴대폰 결합은 개통 완료 후 고객센터 신청' : JOIN_RULE[S.carrier]);
     else if (S.carrier === 'skb' && (c.n >= 2 || fam)) etc.push('SKB : 대표자 휴대폰 1회선만 접수 시 진행 · 추가 가족 회선' + (fam ? '·패밀리 결합' : '') + '은 고객센터 직접 신청');
