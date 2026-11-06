@@ -2502,15 +2502,19 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     if (ins.some(function(x){ return !x; })){ window.alert('유선 접수양식의 항목을 찾지 못했습니다. 담당자에게 알려주세요.'); return; }
     var clash = ins.some(function(x, i){ return x.value !== x.defaultValue && x.value !== vals[i]; });
     /* 양식에 적힌 내용이 있으면 3가지 중 선택 : 1. 전체 초기화 후 연동 / 2. 고객정보 유지 · 계산기 연동 / 3. 취소 */
-    var dirty = clash || Array.prototype.some.call(card.querySelectorAll('.ff-in'), function(x){ return !x.readOnly && x.value !== x.defaultValue; });
+    var wDirty = clash || Array.prototype.some.call(card.querySelectorAll('.ff-in'), function(x){ return !x.readOnly && x.value !== x.defaultValue; });
+    var usims = usimCards(), usDirty = usims.some(function(c){ return Array.prototype.some.call(c.querySelectorAll('.ff-in'), function(x){ return !x.readOnly && x.value.trim() && x.value !== x.defaultValue; }); });   /* 유심 양식에 적힌 내용도 확인 */
+    var dirty = wDirty || usDirty;
     if (!dirty) return fillWiredForm(card, ins, vals);
     var os = card.dataset.with ? document.querySelector('#p6 .form-card[data-form="' + card.dataset.with + '"]') : null;
     var osDirty = os && Array.prototype.some.call(os.querySelectorAll('.ff-in'), function(x){ return x.value !== x.defaultValue; });
-    askFormMode('유선 접수양식에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
+    askFormMode((wDirty ? '유선 접수양식' : '유심 양식') + '에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
       if (mode === 'keep') fillWiredForm(card, ins, vals);
-      else if (mode === 'reset'){ resetFormCard(card); setTimeout(function(){ fillWiredForm(card, ins, vals); }, 0); }   /* 초기화 뒤 처리(폭 맞춤 등)가 끝난 다음 채움 */
-    });
+      else if (mode === 'reset'){ resetFormCard(card); usims.forEach(resetFormCard); setTimeout(function(){ fillWiredForm(card, ins, vals); }, 0); }   /* 유선 · OSS · 유심 양식 모두 초기화 → 초기화 뒤 처리(폭 맞춤 등)가 끝난 다음 채움 (유심 양식은 계산기 요금제로 다시 채움) */
+    }, usDirty);
   }
+  /* 6번 유심 양식 카드들 (KT · SK(T · B) · LG) */
+  function usimCards(){ return Array.prototype.filter.call(document.querySelectorAll('#p6 .tpanel .form-card'), function(c){ return /^(ktu|sku|skbu|lgu)$/.test(c.closest('.tpanel').getAttribute('data-k') || ''); }); }
   /* 양식 「초기화」 버튼과 똑같이 비움 (확인창 없이) — 고정한 유치자 정보는 남음 */
   function resetFormCard(card){
     var b = card.querySelector('.reset-btn'); if (!b) return;
@@ -2518,12 +2522,12 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     try { b.click(); } finally { window.confirm = cf; }
   }
   /* 3가지 선택창 — done('reset' | 'keep' | null) · 키보드 1 · 2 · 3 / Esc = 취소 */
-  function askFormMode(msg, osDirty, done){
+  function askFormMode(msg, osDirty, done, usDirty){
     var old = document.getElementById('wgFormAsk'); if (old) old.parentNode.removeChild(old);
     var lines = msg.split('\n'), prev = document.activeElement, m = document.createElement('div');
     m.id = 'wgFormAsk'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', '유선 접수양식 작성 방법');
     m.innerHTML = '<div class="fa-box"><p class="fa-msg"><b>' + esc(lines[0]) + '</b>' + esc(lines.slice(1).join('\n')) + '</p>'
-      + '<button type="button" class="fa-btn fa-reset" data-m="reset"><b>1. 접수양식 전체 초기화 후 계산기 내용으로 연동</b><small>고객명 · 주소 등 모든 칸을 비우고 계산기 내용만 채움 (고정한 유치자 정보는 남음)' + (osDirty ? ' · 아래 OSS 접수양식도 함께 비움' : '') + '</small></button>'
+      + '<button type="button" class="fa-btn fa-reset" data-m="reset"><b>1. 접수양식 전체 초기화 후 계산기 내용으로 연동</b><small>고객명 · 주소 등 모든 칸을 비우고 계산기 내용만 채움 (고정한 유치자 정보는 남음)' + (osDirty ? ' · 아래 OSS 접수양식도 함께 비움' : '') + (usDirty ? ' · 유심 양식도 함께 비움' : '') + '</small></button>'
       + '<button type="button" class="fa-btn fa-keep" data-m="keep"><b>2. 고객정보 유지 · 계산기 내용 연동</b><small>고객명 · 주소 등 나머지 칸과 유치자 정보는 그대로</small></button>'
       + '<button type="button" class="fa-btn fa-cancel" data-m=""><b>3. 취소</b></button></div>';
     document.body.appendChild(m);
