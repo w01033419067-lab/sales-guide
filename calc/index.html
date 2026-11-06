@@ -2212,8 +2212,20 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     renderResult();
   }
 
+  /* ⑥ 휴대폰 회선(요금제 · 현재 요금 · 선택약정 · 청소년 등)이 바뀌면 ⑦ 결합을 최저 요금 결합으로 자동 선택
+     — 회선이 그대로면 직접 고른 결합 유지 · 저장된 상담 불러올 때(wgCalcNoAuto)는 바꾸지 않음 · 같은 금액이면 목록 앞쪽 */
+  function autoBundle(){
+    var sig;
+    try { sig = S.carrier + '|' + S.lines.map(function(ln){ var o = lineInfo(S, ln); return o.ok ? [o.isNew ? 'n' : 'o', o.name, o.list, o.sel, o.youth ? 1 : 0, o.wf].join(':') : ''; }).filter(Boolean).join(','); } catch (e) { return; }
+    var prev = autoBundle.sig; autoBundle.sig = sig;
+    if (prev === undefined || prev === sig || window.wgCalcNoAuto || sig === S.carrier + '|') return;
+    var best = null;
+    BUNDLES[S.carrier].forEach(function(bk){ var c = compute(S, bk[0]); if (c.ok && (!best || c.total < best.t)) best = { k: bk[0], t: c.total }; });
+    if (best) S.bundle = best.k;
+  }
   function renderResult(){
     normalize();
+    autoBundle();
     var gu = giftUOn(); show('giftu', gu); var gun = P7.querySelector('[data-n="giftu"]'); if (gun) gun.hidden = !gu;
     /* 결합 비교 */
     var opts = BUNDLES[S.carrier].map(function(bk){
@@ -2512,13 +2524,13 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     /* 양식에 적힌 내용이 있으면 3가지 중 선택 : 1. 전체 초기화 후 연동 / 2. 고객정보 유지 · 계산기 연동 / 3. 취소 */
     var wDirty = clash || Array.prototype.some.call(card.querySelectorAll('.ff-in'), function(x){ return !x.readOnly && x.value !== x.defaultValue; });
     var usims = usimCards(), usDirty = usims.some(function(c){ return Array.prototype.some.call(c.querySelectorAll('.ff-in'), function(x){ return !x.readOnly && x.value.trim() && x.value !== x.defaultValue; }); });   /* 유심 양식에 적힌 내용도 확인 */
-    var dirty = wDirty || usDirty;
+    var os = document.querySelector('#p6 .form-card[data-form="oss"]'); if (os === card) os = null;   /* OSS 접수양식 (유선 카드와 연결돼 있든 따로 있든) */
+    var osDirty = !!os && Array.prototype.some.call(os.querySelectorAll('.ff-in'), function(x){ return x.value !== x.defaultValue; });
+    var dirty = wDirty || usDirty || osDirty;
     if (!dirty) return fillWiredForm(card, ins, vals);
-    var os = card.dataset.with ? document.querySelector('#p6 .form-card[data-form="' + card.dataset.with + '"]') : null;
-    var osDirty = os && Array.prototype.some.call(os.querySelectorAll('.ff-in'), function(x){ return x.value !== x.defaultValue; });
-    askFormMode((wDirty ? '유선 접수양식' : '유심 양식') + '에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
+    askFormMode((wDirty ? '유선 접수양식' : osDirty ? 'OSS 접수양식' : '유심 양식') + '에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
       if (mode === 'keep') fillWiredForm(card, ins, vals);
-      else if (mode === 'reset'){ resetFormCard(card); usims.forEach(resetFormCard); setTimeout(function(){ fillWiredForm(card, ins, vals); }, 0); }   /* 유선 · OSS · 유심 양식 모두 초기화 → 초기화 뒤 처리(폭 맞춤 등)가 끝난 다음 채움 (유심 양식은 계산기 요금제로 다시 채움) */
+      else if (mode === 'reset'){ resetFormCard(card); if (os && card.dataset.with !== 'oss') resetFormCard(os); usims.forEach(resetFormCard); setTimeout(function(){ fillWiredForm(card, ins, vals); }, 0); }   /* 유선 · OSS · 유심 양식 모두 초기화 → 초기화 뒤 처리(폭 맞춤 등)가 끝난 다음 채움 (유심 양식은 계산기 요금제로 다시 채움) */
     }, usDirty);
   }
   /* 6번 유심 양식 카드들 (KT · SK(T · B) · LG) */
