@@ -1221,19 +1221,61 @@ header h1 { display: flex; align-items: center; gap: 10px; }
 #p7 .cr-acts .cr-copy,#p7 .cr-acts .cr-form{margin-top:0;flex:1 1 0;min-width:0}
 @media (max-width:640px){#p7 .cr-acts{gap:6px}#p7 .cr-acts .cr-copy,#p7 .cr-acts .cr-form{padding-left:4px;padding-right:4px;font-size:13px;letter-spacing:-.2px}}
 </style>
+<style id="cxfCss">
+.cxf-side{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:12px 14px;background:#fff;border:1px solid #DDE5EF;border-radius:14px;box-shadow:0 2px 10px rgba(16,40,80,.05)}
+.cxf-side .cxf-h{font-size:14px;font-weight:900;color:#12305C;margin-right:4px}
+.cxf-side .cxf-tip{flex-basis:100%;margin:2px 0 0;font-size:12px;color:#6B7684;line-height:1.5}
+.cxf-open{font-family:inherit;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:800;border-radius:11px;padding:10px 14px;cursor:pointer;border:1.5px solid;text-align:left;line-height:1.3}
+.cxf-open small{font-size:12px;font-weight:800;opacity:.85}
+.cxf-open[data-g="partner"]{color:#1E4C8F;background:#EEF4FB;border-color:#9DBBE0}.cxf-open[data-g="partner"]:hover{background:#DFEAF7}
+.cxf-open[data-g="team"]{color:#B4430C;background:#FFF4EA;border-color:#F2B98A}.cxf-open[data-g="team"]:hover{background:#FFE7D3}
+.cxf-open .ic{font-size:16px}
+@media (min-width:1760px){
+  .cxf-side{position:fixed;top:92px;left:calc(50% - 590px - 296px);width:272px;flex-direction:column;align-items:stretch;gap:10px;padding:16px}
+  .cxf-side .cxf-h{font-size:15px;margin:0 0 2px}
+  .cxf-open{width:100%;justify-content:flex-start;padding:14px 16px;font-size:15px}
+}
+#cxfModal{position:fixed;inset:0;z-index:2147483000;background:rgba(15,25,45,.55);display:flex;align-items:center;justify-content:center;padding:24px}
+#cxfModal[hidden]{display:none}
+html.cxf-lock,html.cxf-lock body{overflow:hidden}
+.cxf-box{background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,20,60,.35);width:min(1120px,100%);height:min(88vh,980px);display:flex;flex-direction:column;overflow:hidden;--c:#1E4C8F;--bg:#EEF4FB;--bd:#BCD2EC}
+.cxf-box.team{--c:#B4430C;--bg:#FFF4EA;--bd:#F2C9A6}
+.cxf-top{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--bd)}
+.cxf-top .cxf-title{font-size:17px;font-weight:900;color:var(--c);flex:1;min-width:0}
+.cxf-seg{display:inline-flex;background:#fff;border:1.5px solid var(--bd);border-radius:10px;padding:3px;gap:3px}
+.cxf-seg button{font-family:inherit;font-size:13px;font-weight:800;border:0;border-radius:7px;padding:6px 12px;cursor:pointer;background:transparent;color:#4E5968}
+.cxf-seg button.on{background:var(--c);color:#fff}
+.cxf-x{font-family:inherit;font-size:13px;font-weight:800;color:var(--c);background:#fff;border:1.5px solid var(--c);border-radius:9px;padding:6px 12px;cursor:pointer}
+.cxf-body{flex:1;min-height:0;display:flex}
+.cxf-tabs{flex:none;width:190px;overflow-y:auto;padding:10px;border-right:1px solid #EEF1F5;background:#FAFBFD;display:flex;flex-direction:column;gap:4px}
+.cxf-tabs button{font-family:inherit;text-align:left;font-size:14px;font-weight:700;color:#333D4B;background:transparent;border:0;border-radius:9px;padding:9px 12px;cursor:pointer}
+.cxf-tabs button:hover{background:#F0F3F7}
+.cxf-tabs button.on{background:var(--c);color:#fff}
+.cxf-cards{flex:1;min-width:0;overflow-y:auto;padding:14px 18px 22px;display:flex;flex-direction:column;gap:14px}
+.cxf-card{flex:none;border:1px solid #E3E8EF;border-radius:12px;overflow:hidden}
+.cxf-ch{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:#F7F9FC;border-bottom:1px solid #E3E8EF}
+.cxf-ch b{font-size:15px;font-weight:900;color:#191F28}
+.cxf-ch small{font-size:12px;color:#6B7684;font-weight:600}
+.cxf-acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.cxf-copy{font-family:inherit;font-size:13px;font-weight:800;color:#fff;background:var(--c);border:0;border-radius:9px;padding:7px 14px;cursor:pointer;white-space:nowrap}
+.cxf-copy.alt{background:#fff;color:var(--c);border:1.5px solid var(--c);padding:5.5px 12.5px}
+.cxf-copy.done{background:#1E6B3A;color:#fff;border-color:#1E6B3A}
+.cxf-pre{margin:0;padding:12px 14px;font-family:inherit;font-size:13.5px;line-height:1.7;color:#191F28;white-space:pre-wrap;word-break:break-all;background:#fff;max-height:none}
+.cxf-empty{color:#8B95A1;font-size:13px}
+</style>
 </head>
 <body>
 <div class="cx-head"><span class="cx-logo"><svg viewBox="0 0 134 90" aria-hidden="true"><polygon fill="#12376A" points="0,0 34,0 60,62 86,0 106,0 68,90 50,90"/><polygon fill="#3BA9E6" points="113,0 134,0 93,90 72,90"/></svg></span><span><span class="t1">웨이브넷</span><span class="t2">요금계산기</span></span></div>
-<div class="cx-main"><div class="section page active" id="p7"><div class="section-header"><span class="num">7</span><h2>요금계산기</h2></div><div class="section-body">
+<div class="cx-main"><aside class="cxf-side" aria-label="접수 양식 전체"><div class="cxf-h">📋 접수 양식</div><button type="button" class="cxf-open" data-g="partner"><span class="ic">🤝</span><span>접수 양식 전체 <small>(협력점)</small></span></button><button type="button" class="cxf-open" data-g="team"><span class="ic">🏢</span><span>접수 양식 전체 <small>(자점)</small></span></button><p class="cxf-tip">양식을 골라 「복사」 → 카톡 등으로 그대로 보내 주세요 (빈 양식)</p></aside><div class="section page active" id="p7"><div class="section-header"><span class="num">7</span><h2>요금계산기</h2></div><div class="section-body">
 
 <div class="calc-err" hidden></div>
-<div class="calc-toolbar"><span class="calc-tip">통신사 → 속도 → TV 순서로 고르고, 휴대폰을 추가하면 결합 할인까지 계산돼요</span><button class="calc-reset" type="button"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>새 상담 시작</button></div>
+<div class="calc-toolbar"><span class="calc-tip">통신사 → 속도 → TV 순서로 고르고, 휴대폰을 추가하면 결합 할인까지 계산돼요 · KT NEW모든G는 요금할인 쿠폰 적용 가능</span><button class="calc-reset" type="button"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>새 상담 시작</button></div>
 <div class="calc-grid">
 <div class="calc-form">
 <div class="cf-block"><div class="cf-h">① 통신사</div><div class="chips" data-f="carrier"></div></div>
 <div class="cf-block" data-b="product"><div class="cf-h">상품 구분</div><div class="chips" data-f="product"></div><div class="cf-note" data-n="product"></div></div>
 <div class="cf-block"><div class="cf-h">② 인터넷 속도</div><div class="chips" data-f="speed"></div><div class="cf-sub" data-lgplan hidden><div class="cf-subh">인터넷 요금제 <small>LG · 고객 선택</small></div><div class="chips" data-f="lgplan"></div><div class="cf-note" data-n="lgplan"></div></div></div>
-<div class="cf-block"><div class="cf-h">③ TV</div><div class="chips" data-f="tv"></div></div>
+<div class="cf-block"><style id="wgCouponCss">.cf-coupon{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.cf-coupon[hidden]{display:none}.coupon-btn{font-family:inherit;font-size:13px;font-weight:800;border:1.5px dashed #E0262F;color:#C4232F;background:#FFF5F5;border-radius:10px;padding:7px 12px;cursor:pointer}.coupon-btn.on{border-style:solid;background:#E0262F;color:#fff}.coupon-btn:disabled{opacity:.45;cursor:default}.coupon-hint{font-size:12px;color:#6B7684;font-weight:600}</style><div class="cf-h">③ TV</div><div class="chips" data-f="tv"></div><div class="cf-coupon" hidden><button type="button" class="coupon-btn">요금할인 쿠폰적용</button><span class="coupon-hint"></span></div></div>
 <div class="cf-block" data-b="wifi"><div class="cf-h">④ WiFi</div><div class="chips" data-f="wifi"></div><div class="cf-note" data-n="wifi"></div></div>
 <div class="cf-block" data-b="tel" hidden><div class="cf-h">전화 <small>유선 · 고객 선택</small></div><div class="cf-row"><label class="lbl" for="calcTel">전화</label><select class="calc-sel" id="calcTel"></select></div><div class="cf-note" data-n="tel"></div></div>
 <div class="cf-block" data-b="amp" hidden><div class="cf-h">WiFi 증폭기 <small>고객 선택</small></div><div class="cf-row"><label class="lbl" for="calcAmp">증폭기</label><select class="calc-sel" id="calcAmp"></select></div><div class="cf-note" data-n="amp"></div></div>
@@ -1738,6 +1780,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var stb = stbOpts(s)[s.stb];
     if (stb && s.stb && s.carrier === 'soho') items.push({ label: 'TV프리미엄 변경', sub: '메인 TV 실속형 → 프리미엄', amt: stb[1], kind: 'add' });
     else if (stb && s.stb){ var sa = stbAmount(s); items.push({ label: '셋탑 변경', sub: stb[0] + (stb[2] ? ' · 프로모션 적용' : '') + (sa !== stb[1] ? ' (올 요금제 할인 반영)' : ''), amt: sa, kind: sa < 0 ? 'disc' : 'add' }); }
+    if (couponOn(s, r)) items.push({ label: '요금할인 쿠폰 적용', sub: 'NEW모든G → 베이직 TV 요금', amt: -COUPON_AMT, kind: 'disc' });
 
     /* LG 소호 추가 · 옵션 : CCTV 2대째부터 대당 · 전화기 2대째부터 대당 · 인터넷 옵션 (고객 선택) */
     var SO = RULES.soho, sp = s.carrier === 'soho' ? sohoParts(r) : [];
@@ -2006,7 +2049,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   }
 
   /* ── 상태 ─────────────────────────────────────────────── */
-  var S = { carrier: 'kt', product: 0, speed: '', tv: '', wifi: true, stb: 0, tvAdd: 0, tvAdd2: 0, lines: [], bundle: 'none', rep: 0, pfBase: 'auto', splitTotal: 'eq', splitPf: 'ctb', day: 'wd', cur: null, gift: null, giftU: null,
+  var S = { carrier: 'kt', product: 0, speed: '', tv: '', wifi: true, stb: 0, tvAdd: 0, tvAdd2: 0, lines: [], bundle: 'none', rep: 0, pfBase: 'auto', splitTotal: 'eq', splitPf: 'ctb', day: 'wd', cur: null, gift: null, giftU: null, coupon: false,
             cctv: 1, phAdd: '', phN: 1, optLte: false, optCare: false, optPkg: false, safe: false, skyTotal: false, amp: 0, tel: 0, wifi7: false, lgPlan: 'basic' };      /* LG 소호 추가 · 옵션 · SKYLIFE 안심요금제 · WiFi 증폭기 · WiFi 7 (7D) · LG 인터넷 요금제 */
   function resetSoho(){ S.cctv = 1; S.phAdd = ''; S.phN = 1; S.optLte = false; S.optCare = false; S.optPkg = false; S.safe = false; S.skyTotal = false; S.amp = 0; S.tel = 0; }
   function resetBundleOpts(){ S.rep = 0; S.pfBase = 'auto'; S.splitTotal = 'eq'; S.splitPf = 'ctb'; }
@@ -2030,7 +2073,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   function resetAll(){
     MEMO = {};
     S.carrier = 'kt'; S.product = 0; S.speed = ''; S.tv = ''; S.wifi = true; S.wifi7 = false; S.lgPlan = 'basic'; S.stb = 0; S.tvAdd = 0; S.tvAdd2 = 0;
-    S.lines = []; S.bundle = 'none'; resetBundleOpts(); resetSoho(); S.day = 'wd'; S.cur = null; S.gift = null; S.giftU = null;
+    S.lines = []; S.bundle = 'none'; resetBundleOpts(); resetSoho(); S.day = 'wd'; S.cur = null; S.gift = null; S.giftU = null; S.coupon = false;
     ['#calcCur', '#calcGift', '#calcGiftU'].forEach(function(sel){ var el = P7.querySelector(sel); if (el) el.value = ''; });
     renderForm();
   }
@@ -2155,6 +2198,12 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     chips('tv', tvs(S).map(function(r){ return { v: r.tv, t: r.tv, s: r.note, row: S.carrier === 'kt' ? 0 : S.carrier === 'hello' ? (/^Pro/.test(r.tv) ? 1 : 0) : null }; }), S.tv);   /* KT 한 줄 · 헬로비전 Pro 아랫줄 */
 
     var r = row(S);
+    var cpBox = $('.cf-coupon'), cpOk = couponOk(S, r);
+    if (!cpOk) S.coupon = false;                                                          /* 모든G 가 아니면 쿠폰 풀림 */
+    if (cpBox){ cpBox.hidden = !(COUPON && S.carrier === 'kt' && isTvRow(S, r));
+      var cpBtn = cpBox.querySelector('.coupon-btn'); cpBtn.disabled = !cpOk; cpBtn.classList.toggle('on', !!S.coupon);
+      cpBtn.textContent = S.coupon ? '✓ 요금할인 쿠폰 적용됨' : '요금할인 쿠폰적용';
+      cpBox.querySelector('.coupon-hint').textContent = !cpOk ? 'NEW모든G 선택 시 적용 가능' : S.coupon ? 'NEW모든G → 베이직 TV 요금 (월 -' + won(COUPON_AMT) + ') · 다시 누르면 해제' : '누르면 NEW모든G를 베이직 TV 요금으로 (월 -' + won(COUPON_AMT) + ')'; }
     /* LG 인터넷 요금제 (와이파이 기본 / 프리미엄안심 / 프리미엄안심보상) */
     var LPr = lgPlanOf(S), giga = mbps(S.speed) >= 500, lpBox = P7.querySelector('[data-lgplan]');
     if (lpBox) lpBox.hidden = !LPr;
@@ -2348,7 +2397,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     h += '</div>';
 
     h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><div class="cr-acts"><button type="button" class="cr-copy">안내 문구 복사</button>' + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button>' : '') + '</div>'   /* 한 줄 좌우 */
-       + (wiredForm() ? '<div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다' + (USIM_TAB[S.carrier] ? ' · 유심 신규 회선이 있으면 요금제 · 결합종류를 유심 양식에도 채웁니다' : '') + '</div>' : '')
+       + (wiredForm() ? '<div class="cr-form-tip">가입통신사 · 인터넷 · TV · 결합 · 월요금 · 설치비 · 현금사은품 · 기타요청사항을 6번 유선 접수양식에 채웁니다' + (USIM_TAB[S.carrier] ? ' · 유심 신규 회선이 있으면 요금제 · 결합종류를 유심 양식에도 채웁니다' : '') + '</div>' : '')
        + '</div></div>';
     h += '<div class="cr-warn">※ 결합 할인은 통신사 심사·가입 조건에 따라 달라질 수 있습니다. 최종 요금은 접수 전 통신사 기준으로 다시 확인하세요.</div>';
     $('.calc-result').innerHTML = h;
@@ -2373,7 +2422,9 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   function n0(v){ return v.toLocaleString('ko-KR'); }
   /* 데이터 칸 「110GB+5Mbps」 → 「110GB · 소진 시 5Mbps」, 「무제한」 → 「데이터 무제한」 */
   function fmtData(d){ d = String(d || '').trim(); if (!d || /^[-–—]$/.test(d)) return ''; var m = /^(.+?)\s*\+\s*(.+)$/.exec(d); return m ? m[1] + ' · 소진 시 ' + m[2] : (/무제한$/.test(d) ? '데이터 ' + d : d); }
-  /* ── 휴대폰 복지할인 — 세 통신사 공통 · 부가세 포함 · 정액 요금제(통화료 0) 기준
+  /* KT 요금할인 쿠폰 — 자점만 (COUPON) : NEW모든G 를 베이직 요금으로 (월 -7,700원) */
+  var COUPON = true, COUPON_AMT = 7700;
+  /* ── 휴대폰 복지할인 (협력점 · 자점 모두) — 세 통신사 공통 · 부가세 포함 · 정액 요금제(통화료 0) 기준
      기준 금액 = 월정액 − 선택약정 (선택약정 · 결합 할인은 각각 원래 월정액에서 · 복지할인은 결합 할인과 상관없음 — KT 상세내역 예시와 같음)
      장애인 · 국가유공자 : 기준 금액의 35% · 상한 없음
      기초연금 : 기준 금액의 50% · 최대 12,100원
@@ -2392,6 +2443,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   }
   var WF_SHORT = { dis: '장애인·유공자', basic: '기초수급(생계·의료)', low: '기초수급(주거·교육)·차상위', pension: '기초연금(65세↑)' };     /* 드롭박스는 짧게 (아래 줄 · 내역은 WF_NAME) */
   function wfOptions(cur){ return '<option value="">해당없음</option>' + Object.keys(WF_NAME).map(function(k){ return '<option value="' + k + '" title="' + WF_NAME[k] + '"' + (cur === k ? ' selected' : '') + '>' + WF_SHORT[k] + '</option>'; }).join(''); }
+  function couponOk(s, r){ return COUPON && s.carrier === 'kt' && !!r && /모든G/.test(r.tv); }
+  function couponOn(s, r){ return couponOk(s, r) && !!s.coupon; }
   /* 3년(36개월) 총 혜택 = (현재 요금 − 새 월 합계) × 36 + 사은품(유선 + 유심) — 현재 요금이 없으면 null */
   function benefit3(c){
     if (!S.cur) return null;
@@ -2492,9 +2545,60 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   /* ── 6번 유선 접수양식으로 넘기기 ─────────────────────── */
   var FORM_CARRIER = { kt: 'KT', skt: 'SKT', skb: 'SKB', sk: 'SK', lg: 'LG U+', soho: 'LG U+ 소호', sky: '스카이라이프', hello: 'LG헬로비전' };
   var FORM_FIELDS = ['■가입통신사', '■신청상품', '■AP(WI-FI)신청여부', '■월요금', '■설치비(기사출동비)', '■고객 현금사은품 금액', '■기타내용'];
+  /* 양식 칸 이름이 다를 때(자점) : [칸 이름, 7칸 값 → 넣을 내용] 목록 — null 이면 위 7칸 그대로 */
+  var FORM_PICK = (function(){
+    function main(v){ return (v[1] || '').split(' / ')[0]; }
+    function etc(v){ return (v[6] || '').split('\n'); }
+    /* ★사은품 명 : 유심 신규 → 「유선현금00+동판현금00」 · KT 쿠폰 → 뒤에 「+선납권70,000」 (적어 둔 숫자 · 직접 쓴 내용은 그대로)
+       00 자리 : 계산기 ⑧ [유선] 사은품 → 유선현금 · [유심(무선)] 사은품 → 동판현금 (비워 두면 양식에 적어 둔 숫자 · 없으면 00) */
+    function giftName(cur, usim, cp){
+      var t = cur.replace(/\+?선납권70,000원?$/, ''), m = /^유선현금([^+]*)(?:\+동판현금([^+]*))?$/.exec(t);
+      if (t && !m) return t + (cp ? '+선납권70,000' : '');
+      var w = S.gift || (m ? m[1] : '00'), d = giftU() || (m && m[2] != null ? m[2] : '00'), out = [];
+      if (usim || w !== '00') out.push('유선현금' + w);                    /* 유심 없이 쿠폰만 → 「선납권70,000」만 */
+      if (usim) out.push('동판현금' + d);
+      if (cp) out.push('선납권70,000');
+      return out.join('+');
+    }
+    function usimNew(){ var c = compute(S); if (!c.ok) c = compute(S, 'none'); return c.lines.some(function(l){ return l.isNew; }); }   /* 계산기에 유심 신규 회선 */
+    function extra(v){ return (v[1] || '').split(' / ').slice(1); }                                  /* 신청상품 뒤 「/ TV 추가 1대(…)」 · 「/ 소호 옵션」 */
+    return [
+      ['■속성', function(){   /* 쿠폰 「←/쿠폰」 · 쿠폰+유심 신규 「←/쿠폰/동판」 · 유심 신규만 「동판」 앞에 붙임 · 풀면 뺌 (예전 「쿠폰/←」 · 「←/동판」도 바꿈)
+           지난번에 자동으로 붙인 앞부분은 새로고침해도 기억 (sessionStorage nfb.draft:attr — 창 닫기 · 로그아웃 때 지워짐) → 그 앞부분만 떼고 다시 붙임
+           직접 쓴 「동판」(계산기에 유심 없음)은 남기되 「←/쿠폰/동판」 모양으로 합침 · 기억이 없으면(예전 화면) 맨 앞 「동판」은 자동으로 본다 */
+        var x = formField(wiredForm(), '■속성'), raw = x ? x.value : '', cp = couponOn(S, row(S)), us = usimNew(), K = 'nfb.draft:attr', prev = null;
+        try { prev = window.sessionStorage.getItem(K); } catch (e) {}
+        var m = /^(?:쿠폰\/←|←(?:\/쿠폰)?(?:\/동판)?)\s*/.exec(raw), cur = m ? raw.slice(m[0].length) : raw;   /* 자동 모양 앞부분 (←/쿠폰/동판 등) 떼기 */
+        var hasD = (!!m && /동판/.test(m[0])) || /^동판/.test(cur);
+        cur = cur.replace(/^(?:동판\s*\/?\s*)+/, '');                                               /* 맨 앞 동판은 (겹친 「동판동판」 포함) 떼고 아래에서 한 번만 다시 붙임 */
+        var autoD = prev === null || /동판/.test(prev);                                            /* 지난번 동판을 자동으로 붙였음 (기억이 없으면 자동으로 봄) */
+        var man = hasD && !us && !autoD;                                                           /* 계산기에 유심이 없는데 직접 쓴 동판 → 남김 */
+        var d = us || man, pre = cp ? '←/쿠폰' + (d ? '/동판' : '') : d ? '동판' : '';
+        var auto = cp ? '←/쿠폰' + (us ? '/동판' : '') : us ? '동판' : '';                      /* 기억하는 건 자동으로 붙인 것만 (직접 쓴 동판 제외) */
+        try { window.sessionStorage.setItem(K, man ? auto : pre); } catch (e) {}
+        if (x) x.dataset.nfbAttr = pre;
+        return pre + (pre && /^OSS(?:\/|$)/.test(cur) ? '/' : '') + cur; }],   /* OSS가 맨 앞에 있었으면 「동판/OSS」처럼 사이에 / */
+      ['★쿠폰금액', function(){ var x = formField(wiredForm(), '★쿠폰금액'), cur = x ? x.value : ''; return couponOn(S, row(S)) ? '70,000' : (cur === '70,000' ? '' : cur); }],
+      ['★사은품 명', function(){ var x = formField(wiredForm(), '★사은품 명'), cur = x ? x.value.trim() : ''; return giftName(cur, usimNew(), couponOn(S, row(S))); }],
+      ['□가입통신사', function(v){ return v[0]; }],
+      ['□인터넷상품명', function(v){ var pl = extra(v).filter(function(x){ return /^프리미엄안심/.test(x); })[0];   /* LG 인터넷 요금제 · WiFi 7 (7D) : 「인터넷 500M 프리미엄안심보상 (WiFi 7)」 · WiFi 미포함(X)이면 WiFi 글자 자체를 안 붙임 (자동등록이 「WiFi」만 보고 포함으로 읽음) */
+        return main(v).split(' + ')[0].replace(/ 단독$/, '') + (pl ? ' ' + pl : '') + (/^O/.test(v[2] || '') ? ' (WiFi ' + v[2].replace(/^O \(WiFi (.+)\)$/, '$1') + ')' : ''); }],
+      ['□TV/셋탑', function(v){ return main(v).split(' + ').slice(1).join(' + '); }],
+      ['□추가TV/셋탑', function(v){ return extra(v).filter(function(x){ return /^TV 추가/.test(x); }).join(' / '); }],
+      ['□전화상품', function(v){ return extra(v).filter(function(x){ return /^전화 : /.test(x); }).map(function(x){ return x.replace(/^전화 : /, ''); }).join(' / '); }],   /* 계산기 「전화」 */
+      ['□결합', function(v){ var b = etc(v).filter(function(l){ return /^결합 : /.test(l); })[0]; b = b ? b.replace(/^결합 : /, '').replace(/\s*\(대표회선 \d+회선\)$/, '') : '';   /* 결합명만 (대표회선은 유심 쪽) */
+        if (/^SK[TB]$/.test(v[0])) return b ? b.replace(/^SK[TB]?\s+/, '').replace(/\s+결합$/, '결합') : '요즘우리집결합';   /* SKT · SKB : 통신사명 빼고 「요즘가족결합」 · 결합 없음 → 요즘우리집결합 */
+        return b; }],
+      ['□월요금/모바일 결합 할인금액', function(v){ return v[3]; }],
+      ['□설치비', function(v){ return v[4]; }],
+      ['★현금사은품', function(v){ return v[5]; }],
+      ['□기타요청사항', function(v){ var o = extra(v).filter(function(x){ return !/^TV 추가/.test(x) && !/^전화 : /.test(x) && !/^프리미엄안심/.test(x); });   /* LG 소호 추가 · 옵션 (CCTV · 전화기 · 인터넷 옵션) */
+        return (o.length ? ['추가 · 옵션 : ' + o.join(' / ')] : []).concat(etc(v).filter(function(l){ return l && !/^결합 : /.test(l); })).join('\n'); }]
+    ];
+  })();
   function formPlan(){
     var v = formValues();
-    return { labels: FORM_FIELDS, vals: v };
+    return FORM_PICK ? { labels: FORM_PICK.map(function(p){ return p[0]; }), vals: FORM_PICK.map(function(p){ return p[1](v) || ''; }) } : { labels: FORM_FIELDS, vals: v };
   }
   function wiredForm(){ return document.querySelector('#p6 .tpanel[data-k="wired"] .form-card'); }
   function formField(card, label){
@@ -2514,6 +2618,10 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var w7 = wifi7On(S), ap = (S.carrier === 'lg' ? 'O' : (r.wifi != null ? (wifiOn(S, r) ? 'O' : 'X') : '')) + (w7 ? ' (' + w7.name + ')' : '');      /* AP(WI-FI) 신청여부 O / X · LG는 WiFi 기본제공 · WiFi 7 (7D) 면 「O (WiFi 7D)」 */
     var before = compute(S, 'none').wired, bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '') : '';
     var fee = c.bLabel && before !== c.wired ? '결합 전 ' + won(before) + ' → 결합 후 ' + won(c.wired) + ' (' + bName + ')' : won(c.wired);
+    if (couponOn(S, r)){                                                                 /* 요금할인 쿠폰 : 원래 요금 → 결합 후 → 할인적용(9개월) */
+      var S0 = Object.assign({}, S, { coupon: false }), orig = compute(S0, 'none').wired, c0 = c.bLabel ? compute(S0) : null;
+      fee = won(orig) + (c0 && c0.ok && c0.wired !== orig ? ' → 결합 후 ' + won(c0.wired) + ' (' + bName + ')' : '') + ' → 할인적용(9개월) ' + won(c.wired);
+    }
     var inst = c.install ? won(c.install.fee) + (c.install.other == null ? '' : c.install.other === c.install.fee ? ' (주말·야간 동일)' : ' (주말·야간 ' + won(c.install.other) + ')') : '';
     /* 기타내용 : 결합 · 휴대폰 회선 · 패밀리 정보 */
     var etc = [];
@@ -2543,7 +2651,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var osDirty = !!os && Array.prototype.some.call(os.querySelectorAll('.ff-in'), function(x){ return x.value !== x.defaultValue; });
     var dirty = wDirty || usDirty || osDirty;
     if (!dirty) return fillWiredForm(card, ins, vals);
-    askFormMode((wDirty ? '유선 접수양식' : osDirty ? 'OSS 접수양식' : '유심 양식') + '에 이미 적힌 내용이 있습니다.\n가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용 7칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
+    askFormMode((wDirty ? '유선 접수양식' : osDirty ? 'OSS 접수양식' : '유심 양식') + '에 이미 적힌 내용이 있습니다.\n가입통신사 · 인터넷 · TV · 결합 · 월요금 · 설치비 · 현금사은품 · 기타요청사항 칸을 계산기 내용으로 바꿀까요?', osDirty, function(mode){
       if (mode === 'keep') fillWiredForm(card, ins, vals);
       else if (mode === 'reset'){ resetFormCard(card); if (os && card.dataset.with !== 'oss') resetFormCard(os); usims.forEach(resetFormCard); setTimeout(function(){ fillWiredForm(card, ins, vals); }, 0); }   /* 유선 · OSS · 유심 양식 모두 초기화 → 초기화 뒤 처리(폭 맞춤 등)가 끝난 다음 채움 (유심 양식은 계산기 요금제로 다시 채움) */
     }, usDirty);
@@ -2562,7 +2670,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var lines = msg.split('\n'), prev = document.activeElement, m = document.createElement('div');
     m.id = 'wgFormAsk'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', '유선 접수양식 작성 방법');
     m.innerHTML = '<div class="fa-box"><p class="fa-msg"><b>' + esc(lines[0]) + '</b>' + esc(lines.slice(1).join('\n')) + '</p>'
-      + '<button type="button" class="fa-btn fa-reset" data-m="reset"><b>1. 접수양식 전체 초기화 후 계산기 내용으로 연동</b><small>고객명 · 주소 등 모든 칸을 비우고 계산기 내용만 채움 (고정한 유치자 정보는 남음)' + (osDirty ? ' · 아래 OSS 접수양식도 함께 비움' : '') + (usDirty ? ' · 유심 양식도 함께 비움' : '') + '</small></button>'
+      + '<button type="button" class="fa-btn fa-reset" data-m="reset"><b>1. 접수양식 전체 초기화 후 계산기 내용으로 연동</b><small>고객명 · 주소 등 모든 칸을 비우고 계산기 내용만 채움 (고정한 팀명 · 유치자명은 남음)' + (osDirty ? ' · 아래 OSS 접수양식도 함께 비움' : '') + (usDirty ? ' · 유심 양식도 함께 비움' : '') + '</small></button>'
       + '<button type="button" class="fa-btn fa-keep" data-m="keep"><b>2. 고객정보 유지 · 계산기 내용 연동</b><small>고객명 · 주소 등 나머지 칸과 유치자 정보는 그대로</small></button>'
       + '<button type="button" class="fa-btn fa-cancel" data-m=""><b>3. 취소</b></button></div>';
     document.body.appendChild(m);
@@ -2595,7 +2703,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   }
   /* ── 휴대폰 유심 신규 회선이 있으면 그 통신사 유심 양식에 요금제 · 선택약정 · 결합종류 채움 ──
      1회선 요금제는 바로 · 2회선부터는 유심 양식의 「추가 회선 작성」을 누를 때 차례로 채움 (window.wgUsimQueue) */
-  var USIM_TAB = { kt: 'ktu', skt: 'sku', skb: 'sku', sk: 'sku', lg: 'lgu' };      /* LG 소호는 유심 동판 불가 → 유심 양식 없음 */
+  var USIM_TAB = { kt: 'ktu', skt: 'sku', skb: 'skbu', sk: 'sku', lg: 'lgu' };   /* 자점 : SKB → SKB 유심 */      /* LG 소호는 유심 동판 불가 → 유심 양식 없음 */
   /* 안내 토스트 (남색 · 6초) — 확인창처럼 멈추지 않게 */
   function infoToast(m){
     var t = document.getElementById('wgInfoToast');
@@ -2613,9 +2721,9 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     var bName = c.bLabel ? c.bLabel.replace(/^(KT|SK|LG) /, '').replace(/ 결합$/, '결합') : '';     /* 통신사명 빼고 (프리미엄 싱글결합 · 요즘가족결합 · 참쉬운 가족결합) */
     /* 요금제 뒤에 3번 유심 요금표의 요금제 군 (유심 양식에서만) : 베이직80(69K 이상) · 라이트 79(69이상) · 데이터플랜MAX(85군) */
     function withBand(name){ var p = D.usim[dataKey(S.carrier)].filter(function(x){ return x.name === name; })[0], g = p && p.band ? p.band.replace(/\*+$/, '').trim() : ''; return g ? name + '(' + g + ')' : name; }
-    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: withBand(l.name), sel: !!l.sel }; }), bundle: bName, gift: giftU() ? giftU() + '만원' : '' };
+    window.wgUsimQueue = { tab: tab, plans: news.map(function(l){ return { name: withBand(l.name), sel: !!l.sel }; }), bundle: bName, members: c.lines.map(function(l){ return { no: l.no, label: (l.isNew ? l.name : '기존 휴대폰') + (/대표회선/.test(l.tag || '') ? ' (대표회선)' : '') }; }), gift: giftU() ? giftU() + '만원' : '' };
     card.wgCalcFill();                                                                     /* 유심 양식 1회선에 요금제 · 선택약정 · 결합종류 */
-    var nm = { ktu: 'KT', sku: 'SK', lgu: 'LG' }[tab];
+    var nm = { ktu: 'KT', sku: 'SKT', skbu: 'SKB', lgu: 'LG' }[tab];
     return '휴대폰 유심 신규 ' + news.length + '회선의 요금제' + (bName ? ' · 결합종류' : '') + (giftU() ? ' · 유심 사은품' : '') + '를 「' + nm + ' 유심」 양식에도 채웠습니다.'
       + (news.length > 1 ? '\n2회선부터는 ' + nm + ' 유심 양식에서 「추가 회선 작성」을 누르면 요금제가 차례로 들어갑니다.' : '');
   }
@@ -2645,6 +2753,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
       if (f === 'bundle') renderResult(); else renderForm();
       return;
     }
+    var cpb = e.target.closest('.coupon-btn');
+    if (cpb){ if (!cpb.disabled){ S.coupon = !S.coupon; renderForm(); } return; }
     if (e.target.closest('.add-line')){
       if (S.lines.length < RULES.maxLines){
         S.lines.push({ type: 'new', plan: '', price: null, sel: true, youth: false }); renderLines(); renderResult();
@@ -2750,7 +2860,46 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   syncFab();
 
   /* 검증용 */
-  window.wgCalc = { data: D, state: S, compute: compute, rules: RULES, render: renderForm, reset: resetAll, touched: touched, formValues: formValues, welfare: welfareCalc };
+  window.wgCalc = { data: D, state: S, compute: compute, rules: RULES, render: renderForm, reset: resetAll, touched: touched, formValues: formValues, couponOn: function(){ return couponOn(S, row(S)); }, welfare: welfareCalc };
+})();
+</script>
+<div id="cxfModal" hidden role="dialog" aria-modal="true" aria-label="접수 양식 전체"><div class="cxf-box"><div class="cxf-top"><span class="cxf-seg"><button type="button" data-g="partner">협력점</button><button type="button" data-g="team">자점</button></span><b class="cxf-title"></b><button type="button" class="cxf-x">닫기 ✕</button></div><div class="cxf-body"><nav class="cxf-tabs" aria-label="양식 종류"></nav><div class="cxf-cards"></div></div></div></div><script id="cxfData" type="application/json">{"partner":[{"k":"wired","name":"유선 · OSS","cards":[{"title":"유선 접수양식","sub":"(전 통신사)","copies":[{"label":"유선 복사","text":"●유치자 상호/성함/연락처:\n■고객명: \n■속성: \n■유선동판명의자: \n■주민번호: \n■설치주소: \n■연락처 : \n■청구매체: \n■자동이체: \n■사은계좌(유치자 지급은 미기재) : \n■가입통신사: \n■신청상품: \n■AP(WI-FI)신청여부: \n■월요금: \n■설치희망일: \n■설치비(기사출동비): \n■상품권: (없으면 기재X)\n■고객 현금사은품 금액(\"웨이브넷 지급\" 일때만 기재) : \n■현금지급처(웨이브넷 지급 or 유치자 지급): 웨이브넷 지급\n■본인인증: (통신사 기재)\n■이전통신사 : \n■기타내용: \n\n\n1. 개인정보 수집.이용에 동의/거부 합니다 : *동의\n2. 개인정보 제3자 제공에 동의/거부 합니다 : *동의"},{"label":"유선+OSS 복사","text":"●유치자 상호/성함/연락처:\n■고객명: \n■속성: \n■유선동판명의자: \n■주민번호: \n■설치주소: \n■연락처 : \n■청구매체: \n■자동이체: \n■사은계좌(유치자 지급은 미기재) : \n■가입통신사: \n■신청상품: \n■AP(WI-FI)신청여부: \n■월요금: \n■설치희망일: \n■설치비(기사출동비): \n■상품권: (없으면 기재X)\n■고객 현금사은품 금액(\"웨이브넷 지급\" 일때만 기재) : \n■현금지급처(웨이브넷 지급 or 유치자 지급): 웨이브넷 지급\n■본인인증: (통신사 기재)\n■이전통신사 : \n■기타내용: \n\n[OSS 접수양식]\n-기존통신사 : \n-해지명의 [성함/연락처/생년월일] : \n-해지 주소 : \n-인터넷전화 사용구분 : O / X\n-인터넷/TV 회선수 각각 확인 : [ex) 인1/티1]\n-설치희망일 : \n-해지희망일 :\n\n1. 개인정보 수집.이용에 동의/거부 합니다 : *동의\n2. 개인정보 제3자 제공에 동의/거부 합니다 : *동의"}]},{"title":"OSS(원스톱해지) 접수 양식","sub":"(유선과 함께 접수 시 위 「유선+OSS 복사」)","copies":[{"label":"복사","text":"[OSS 접수양식]\n-기존통신사 : \n-해지명의 [성함/연락처/생년월일] : \n-해지 주소 : \n-인터넷전화 사용구분 : O / X\n-인터넷/TV 회선수 각각 확인 : [ex) 인1/티1]\n-설치희망일 : \n-해지희망일 :"}]}]},{"k":"ktu","name":"KT 유심","cards":[{"title":"KT 유심 접수양식","sub":"","copies":[{"label":"복사","text":"● [ KT 유심 MNP 접수양식 ]\n(기존통신사) - KT (★UIT) **유심 7700 후납 안내완\n\n◈고객명 : \n◈유선동판 명의자 : \n◈주민번호 : \n◈연락처 : \n◈자동이체 : \n◈사은계좌 : \n◈ 본인인증 : PASS인증\n\n◇ 요금제 : \n◇ 선택약정(12개월/24개월) : 12개월\n◇ 유심수령주소 : \n◇ 사은품 : \n\n◈ 유선 서비스번호 : \n◈ 결합 종류 : "}]}]},{"k":"sku","name":"SK 유심","cards":[{"title":"SK 유심 접수양식","sub":"","copies":[{"label":"복사","text":"● [ SK 유심 MNP 접수양식 ]\n(기존통신사)-SK *유심비 7700 후납 안내\n\n□고객명: \n□유선동판 명의자: \n□주민번호: \n□연락처: \n□자동이체: \n□사은계좌: \n\n■본인인증 : PASS인증\n\n☆ 요금제 : \n☆ 선택약정(12개월/24개월) : 12개월\n☆ 유심수령주소 : \n☆ 사은품 : \n\n♤ 유선 접수일자 : \n★ 결합종류 : 요즘가족결합\nㄴ 추가결합 구성원 : "}]}]},{"k":"lgu","name":"LG 유심","cards":[{"title":"LG 유심 접수양식","sub":"","copies":[{"label":"복사","text":"● [ LG 유심 MNP 접수양식 ]\n■ 고객명 : \n■ 유선동판 명의자 : \n■ 주민번호 : \n■ 연락처 : \n■ 기존통신사 : \n■ 자동이체 : \n■ 사은계좌 : \n\n■ 단말기(모델/일련) : \n■ IMEI : \n■ IMEI 2 : \n■ EID : \n\n■ 선택약정여부 (12/24개월) : 12개월\n■ 요금제 : \n■ 결합종류 : \n■ 기존통신사 위약금 / 미청구금 확인 : Y\n■ 유심비(7700원) : 후납\n■ 인증방법 : PASS인증\n\n■ 사은품 : \n■ 유심수령주소 : \n■ 기타 : "}]}]},{"k":"sr","name":"SR 처리양식","cards":[{"title":"KT SR 처리양식","sub":"","copies":[{"label":"복사","text":"■ 담당자 :\n■ 통화대상 :\n■ 통화일시 :\n■ 최종처리내역 :\n■ 실판매자 :\n■ 실판매자 연락처 :\n------ 해지 요청시 ------\n■ 해지 요청 날짜 :\n■ 해지 접속 번호 :\n■ 해지 요청 상품 :\n■ 위약금 발생 안내 여부 (O/X) :\n■ 대리점 사은품 환수 여부 (O/X) :\n■ 상품권 사용 여부 (O/X) :"}]},{"title":"SK T / B SR 처리양식","sub":"","copies":[{"label":"복사","text":"1. 통화고객명(관계) / 가번 :\n2. 통화번호:\n3. 통화일시:\n4. 상담사명/직통번호 :\n5. 녹취자료 보유여부 :\n6. 통화내용 상세 :"}]},{"title":"LG SR 처리양식","sub":"","copies":[{"label":"복사","text":"- 통화고객명 (관계) :\n- 가입번호 (가번) :\n- 통화번호 :\n- 통화일시 (시간) :\n- 상담자 (이름/직통번호) :\n- 녹취자료보유 (Y/N) : Y\n- 통화내용 (상세) :\n- 민원취소안내여부:"}]},{"title":"SKYLIFE SR 처리양식","sub":"","copies":[{"label":"복사","text":"■ 담당자 :\n■ 통화대상 :\n■ 통화일시 :\n■ 최종처리내역 :\n■ 실판매자 :\n■ 실판매자 연락처 :"}]}]},{"k":"quote","name":"다회선 견적서","cards":[{"title":"다회선 견적서 요청 양식","sub":"","copies":[{"label":"복사","text":"◆ 주소 확인필요합니다(건축물대장 확인)\nㄴ 건물유형 :\n◆ 기존 사용중인 인터넷 통신사 :\n◆ 방갯수(TV대수)가 몇개인지? :\n◆ 가입,설치 희망 통신사 :\n◆ 설치주소 대략 지역까지만(서울,경기 등) 확인 부탁드립니다.\n↘ 주소:"}]}]},{"k":"ship","name":"삼성물류 발주","cards":[{"title":"삼성물류 발주요청 양식","sub":"","copies":[{"label":"복사","text":"■ 삼성물류 발주요청양식 ■\n담당자:\n고객명:\n연락처:\n설치주소:\n통신사:\n접속번호(서비스번호):\n개통일자:\n선택모델:\n벽걸이여부(5만원 비용발생):"}]}]}],"team":[{"k":"wired","name":"유선 · OSS","cards":[{"title":"유선 접수양식","sub":"","copies":[{"label":"유선 복사","text":"■팀명: \n■유치자명: \n■고객명(사업자일시 상호명): \n■속성: \n■유선동판명의자: \n■식별번호(주민번호,법인번호,외국인번호): \n■사업자번호(해당시): \n■대표자명(해당시): \n■명의자연락처&인증통신사: \n■본인인증여부: \n■설치시연락처: \n■기타연락처: \n■설치주소: \n■청구매체(이메일 또는 문자청구): \n■자동이체:  /  / \n■접수경로: \n■주소증빙(대기/생략): \n■주소증빙 생략사유: \n■토스자: \n■소개자: \n■메모1/2: \n■인입최초시간: \n\n--사은품--\n★현금사은품(현금만 기재): \n★상품권(상품권만 기재): \n★사은품 명 : \n★물류사은품금액 : \n★쿠폰금액 : \n★수납금액 : \n★선납금액 : \n★사은계좌(은행/계좌/예금주/주민번호):  /  / \n\n--상품정보--\n□가입통신사: \n□기존통신사: \n□인터넷상품명: \n□TV/셋탑: \n□추가TV/셋탑: \n□전화상품(상품 관련 모든정보 기입): \n□결합: \n□월요금/모바일 결합 할인금액: \n□설치비: \n□설치희망일: \n□기타요청사항: "},{"label":"유선+OSS 복사","text":"■팀명: \n■유치자명: \n■고객명(사업자일시 상호명): \n■속성: \n■유선동판명의자: \n■식별번호(주민번호,법인번호,외국인번호): \n■사업자번호(해당시): \n■대표자명(해당시): \n■명의자연락처&인증통신사: \n■본인인증여부: \n■설치시연락처: \n■기타연락처: \n■설치주소: \n■청구매체(이메일 또는 문자청구): \n■자동이체:  /  / \n■접수경로: \n■주소증빙(대기/생략): \n■주소증빙 생략사유: \n■토스자: \n■소개자: \n■메모1/2: \n■인입최초시간: \n\n--사은품--\n★현금사은품(현금만 기재): \n★상품권(상품권만 기재): \n★사은품 명 : \n★물류사은품금액 : \n★쿠폰금액 : \n★수납금액 : \n★선납금액 : \n★사은계좌(은행/계좌/예금주/주민번호):  /  / \n\n--상품정보--\n□가입통신사: \n□기존통신사: \n□인터넷상품명: \n□TV/셋탑: \n□추가TV/셋탑: \n□전화상품(상품 관련 모든정보 기입): \n□결합: \n□월요금/모바일 결합 할인금액: \n□설치비: \n□설치희망일: \n□기타요청사항: \n\n--OSS정보--\n●OSS가입여부(가입/미가입): \n\n* OSS\n1. 전통신사 사용주소: \n2. 전통신사: \n3. 사용중인 상품(인,티 회선수): \n4. 개통희망일: \n5. 해지희망일: \n\n★필요시 추가기재: OSS인증방법: \n"}]},{"title":"OSS 접수양식","sub":"(유선과 함께 접수 시 위 「유선+OSS 복사」)","copies":[{"label":"복사","text":"--OSS정보--\n●OSS가입여부(가입/미가입): \n\n* OSS\n1. 전통신사 사용주소: \n2. 전통신사: \n3. 사용중인 상품(인,티 회선수): \n4. 개통희망일: \n5. 해지희망일: \n\n★필요시 추가기재: OSS인증방법: \n"}]}]},{"k":"ktu","name":"KT 유심","cards":[{"title":"KT 유심 접수양식","sub":"","copies":[{"label":"복사","text":"□팀명: \n□유치자명: \n□접수경로: \n□자동이체: \n□사은계좌: \n\n-KT   **유심 7,700 후납 안내완\n\n■고객명: \n■속성: ㄴ▲\n■식별번호(주민번호,법인번호,외국인번호): \n■명의자연락처&통신사: \n■기타연락처: \n■본인인증: PASS인증\n■번호이동인증: 단말0000/계좌0000/카드0000/지로\n\n☆요금제: \n☆선택약정: \n☆수령주소: \n☆동판사은품명: \n☆총 현금: \n\n■결합종류: \n■결합 구성원: \n\n- 동판 or 단판 : \n- 유선 가입자명 : \n- 유선 가입상품 : \n- 유선 접수일자 : \n- 유선 개통기한 : \n- 유선 개통일자 : \n- 유선 접수번호 : \n\n■해피콜여부(완료/미완료/생략): \n■인입최초시간: "}]}]},{"k":"sku","name":"SKT 유심","cards":[{"title":"SKT 유심 접수양식","sub":"","copies":[{"label":"복사","text":"□팀명: \n□유치자명: \n□접수경로: \n□자동이체: \n□사은계좌: \n\n-SKT   **유심 7,700 후납 안내완\n\n■고객명: \n■속성: ㄴ▲\n■식별번호(주민번호,법인번호,외국인번호): \n■명의자연락처&통신사: \n■기타연락처: \n■본인인증: PASS인증\n■번호이동인증: 단말0000/계좌0000/카드0000/지로\n\n☆요금제: \n☆선택약정: \n☆수령주소: \n☆동판사은품명: \n☆총 현금: \n\n■결합종류: \n■결합 구성원: \n\n- 동판 or 단판 : \n- 유선 가입자명 : \n- 유선 가입상품 : \n- 유선 접수일자 : \n- 유선 개통기한 : \n- 유선 개통일자 : \n- 유선 접수번호 : \n\n■해피콜여부(완료/미완료/생략): \n■인입최초시간: "}]}]},{"k":"skbu","name":"SKB 유심","cards":[{"title":"SKB 유심 접수양식","sub":"","copies":[{"label":"복사","text":"□팀명: \n□유치자명: \n□접수경로: \n□자동이체: \n□사은계좌: \n\n-SKB   **유심 7,700 후납 안내완\n\n■고객명: \n■속성: ㄴ▲\n■식별번호(주민번호,법인번호,외국인번호): \n■명의자연락처&통신사: \n■기타연락처: \n■본인인증: PASS인증\n■번호이동인증: 단말0000/계좌0000/카드0000/지로\n\n☆요금제: \n☆선택약정: \n☆수령주소: \n☆동판사은품명: \n☆총 현금: \n\n■결합종류: \n■결합 구성원: \n\n- 동판 or 단판 : \n- 유선 가입자명 : \n- 유선 가입상품 : \n- 유선 접수일자 : \n- 유선 개통기한 : \n- 유선 개통일자 : \n- 유선 접수번호 : \n\n■해피콜여부(완료/미완료/생략): \n■인입최초시간: "}]}]},{"k":"lgu","name":"LG 유심","cards":[{"title":"LG 유심 접수양식","sub":"","copies":[{"label":"복사","text":"□팀명: \n□유치자명: \n□접수경로: \n□자동이체: \n□사은계좌: \n\n-LG   **유심 7,700 후납 안내완\n\n■고객명: \n■속성: ㄴ▲\n■식별번호(주민번호,법인번호,외국인번호): \n■명의자연락처&통신사: \n■기타연락처: \n■본인인증: PASS인증\n■번호이동인증: 단말0000/계좌0000/카드0000/지로\n■ 단말기(모델/일련) : \n■ IMEI : \n■ IMEI 2 : \n■ EID : \n■ 유심(모델명/일련) : \n\n☆요금제: \n☆선택약정: \n☆수령주소: \n☆동판사은품명: \n☆총 현금: \n\n■결합종류: \n■결합 구성원: \n\n- 동판 or 단판 : \n- 유선 가입자명 : \n- 유선 가입상품 : \n- 유선 접수일자 : \n- 유선 개통기한 : \n- 유선 개통일자 : \n- 유선 접수번호 : \n\n■해피콜여부(완료/미완료/생략): \n■인입최초시간: "}]}]},{"k":"sr","name":"SR 처리양식","cards":[{"title":"KT SR 처리양식","sub":"","copies":[{"label":"복사","text":"■ 담당자 :\n■ 통화대상 :\n■ 통화일시 :\n■ 최종처리내역 :\n■ 실판매자 :\n■ 실판매자 연락처 :\n------ 해지 요청시 ------\n■ 해지 요청 날짜 :\n■ 해지 접속 번호 :\n■ 해지 요청 상품 :\n■ 위약금 발생 안내 여부 (O/X) :\n■ 대리점 사은품 환수 여부 (O/X) :\n■ 상품권 사용 여부 (O/X) :"}]},{"title":"SK T / B SR 처리양식","sub":"","copies":[{"label":"복사","text":"1. 통화고객명(관계) / 가번 :\n2. 통화번호:\n3. 통화일시:\n4. 상담사명/직통번호 :\n5. 녹취자료 보유여부 :\n6. 통화내용 상세 :"}]},{"title":"LG SR 처리양식","sub":"","copies":[{"label":"복사","text":"- 통화고객명 (관계) :\n- 가입번호 (가번) :\n- 통화번호 :\n- 통화일시 (시간) :\n- 상담자 (이름/직통번호) :\n- 녹취자료보유 (Y/N) : Y\n- 통화내용 (상세) :\n- 민원취소안내여부:"}]},{"title":"SKYLIFE SR 처리양식","sub":"","copies":[{"label":"복사","text":"■ 담당자 :\n■ 통화대상 :\n■ 통화일시 :\n■ 최종처리내역 :\n■ 실판매자 :\n■ 실판매자 연락처 :"}]}]},{"k":"quote","name":"다회선 토스 양식","cards":[{"title":"다회선 토스 양식","sub":"","copies":[{"label":"복사","text":"■ 현재통신사 : \n■ 희망통신사 : \n■ 연령대 : \n■ 상담 인입시간 : \n■ 상담 희망시간 : \n■ 연락처 : \n■ 인입경로 : \n■ 기타 : "}]}]},{"k":"ship","name":"삼성물류 발주","cards":[{"title":"삼성물류 발주요청양식","sub":"","copies":[{"label":"복사","text":"고객명: \n연락처: \n설치주소: \n통신사: \n접속번호(서비스번호): \n개통일자: \n선택모델: \n벽걸이여부(5만원 비용발생): "}]}]}]}</script><script>
+/* 접수 양식 전체 (협력점 · 자점) — 두 가이드 6번 양식의 빈 양식을 그대로 복사 (계산기 연동 없음) */
+(function(){
+  var F = JSON.parse(document.getElementById('cxfData').textContent), M = document.getElementById('cxfModal'); if (!M) return;
+  var box = M.querySelector('.cxf-box'), tabs = M.querySelector('.cxf-tabs'), cards = M.querySelector('.cxf-cards'), title = M.querySelector('.cxf-title');
+  var NAME = { partner: '협력점', team: '자점' }, g = 'partner', k = null, prev = null;
+  function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function mem(n, v){ try { if (v === undefined) return localStorage.getItem('cxf.' + n); localStorage.setItem('cxf.' + n, v); } catch (e) { return null; } }
+  function render(){
+    var list = F[g] || [], t = list.filter(function(x){ return x.k === k; })[0] || list[0]; k = t ? t.k : null;
+    box.classList.toggle('team', g === 'team'); title.textContent = '접수 양식 전체 (' + NAME[g] + ')';
+    Array.prototype.forEach.call(M.querySelectorAll('.cxf-seg button'), function(b){ b.classList.toggle('on', b.getAttribute('data-g') === g); });
+    tabs.innerHTML = list.map(function(x){ return '<button type="button" data-k="' + esc(x.k) + '"' + (x.k === k ? ' class="on"' : '') + '>' + esc(x.name) + '</button>'; }).join('');
+    cards.innerHTML = !t ? '<p class="cxf-empty">양식이 없습니다.</p>' : t.cards.map(function(c, ci){
+      return '<section class="cxf-card"><div class="cxf-ch"><b>' + esc(c.title) + '</b>' + (c.sub ? '<small>' + esc(c.sub) + '</small>' : '')
+        + '<span class="cxf-acts">' + c.copies.map(function(x, i){ return '<button type="button" class="cxf-copy' + (i ? ' alt' : '') + '" data-c="' + ci + '" data-i="' + i + '">' + esc(x.label) + '</button>'; }).join('') + '</span></div>'
+        + '<pre class="cxf-pre">' + esc(c.copies[0] ? c.copies[0].text : '') + '</pre></section>';
+    }).join('');
+    cards.scrollTop = 0; mem('g', g); if (k) mem('k.' + g, k);
+  }
+  function open(group){ g = F[group] ? group : 'partner'; k = mem('k.' + g); prev = document.activeElement; M.hidden = false; document.documentElement.classList.add('cxf-lock'); render(); M.querySelector('.cxf-x').focus({ preventScroll: true }); }
+  function close(){ M.hidden = true; document.documentElement.classList.remove('cxf-lock'); if (prev && prev.focus) try { prev.focus({ preventScroll: true }); } catch (e) {} }
+  function copy(text, btn){
+    var done = function(){ var t = btn.textContent; btn.textContent = '복사했습니다 ✓'; btn.classList.add('done'); setTimeout(function(){ btn.textContent = t; btn.classList.remove('done'); }, 1500); };
+    var old = function(){ var ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, old); else old();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.cxf-open'), function(b){ b.addEventListener('click', function(){ open(b.getAttribute('data-g')); }); });
+  M.addEventListener('click', function(e){
+    var t = e.target;
+    if (t === M || (t.closest && t.closest('.cxf-x'))) return close();
+    var sg = t.closest && t.closest('.cxf-seg button'); if (sg){ g = sg.getAttribute('data-g'); k = mem('k.' + g); return render(); }
+    var tb = t.closest && t.closest('.cxf-tabs button'); if (tb){ k = tb.getAttribute('data-k'); return render(); }
+    var cp = t.closest && t.closest('.cxf-copy'); if (cp){ var list = F[g], tt = list.filter(function(x){ return x.k === k; })[0], c = tt && tt.cards[+cp.getAttribute('data-c')], x = c && c.copies[+cp.getAttribute('data-i')]; if (x) copy(x.text, cp); }
+  });
+  document.addEventListener('keydown', function(e){ if (!M.hidden && e.key === 'Escape'){ e.preventDefault(); close(); } });
+  window.cxfOpen = open;
 })();
 </script>
 </body>
