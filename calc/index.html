@@ -1210,6 +1210,17 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   .cx-main #p7 .section-header .num { display: none; }
   @media (max-width: 640px){ .cx-main { padding: 10px 8px 30px; } }
 </style>
+<style id="wgCalcRows">
+/* ③ TV 칩 줄 맞춤 (KT 한 줄 · 헬로비전 Pro 아랫줄) — 자리가 좁으면 칩이 줄고 채널 수 (…)는 칩 안 아랫줄로 */
+#p7 .chip-row{display:flex;flex-wrap:nowrap;gap:6px;flex:1 1 100%;min-width:0}
+#p7 .chip-row .chip{flex:0 1 auto;padding-left:10px;padding-right:10px;word-break:keep-all}
+#p7 .chip-row .chip small{white-space:nowrap}
+@media (max-width:640px){#p7 .chip-row{flex-wrap:wrap}}
+/* 결과 : 「안내 문구 복사」 · 「유선 접수양식 작성 →」 한 줄 좌우 */
+#p7 .cr-acts{display:flex;gap:8px;margin-top:6px}
+#p7 .cr-acts .cr-copy,#p7 .cr-acts .cr-form{margin-top:0;flex:1 1 0;min-width:0}
+@media (max-width:640px){#p7 .cr-acts{gap:6px}#p7 .cr-acts .cr-copy,#p7 .cr-acts .cr-form{padding-left:4px;padding-right:4px;font-size:13px;letter-spacing:-.2px}}
+</style>
 </head>
 <body>
 <div class="cx-head"><span class="cx-logo"><svg viewBox="0 0 134 90" aria-hidden="true"><polygon fill="#12376A" points="0,0 34,0 60,62 86,0 106,0 68,90 50,90"/><polygon fill="#3BA9E6" points="113,0 134,0 93,90 72,90"/></svg></span><span><span class="t1">웨이브넷</span><span class="t2">요금계산기</span></span></div>
@@ -2050,12 +2061,16 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   var $ = function(sel){ return P7.querySelector(sel); };
   function chips(f, opts, cur){
     var box = $('[data-f="' + f + '"]'); if (!box) return;
-    box.innerHTML = opts.map(function(o){
+    var rows = opts.some(function(o){ return o.row != null; });                                     /* 줄을 정한 칩 (③ TV : KT · 헬로비전) */
+    var html = opts.map(function(o){
       var v = o.v, on = String(v) === String(cur);
       return '<button type="button" class="chip' + (on ? ' on' : '') + (o.best ? ' best' : '') + '" data-v="' + esc(v) + '"'
-        + (o.disabled ? ' disabled title="' + esc(o.why || '') + '"' : '') + (o.d ? ' data-d="1"' : '') + '>' + esc(o.t) + (o.s ? '<small>' + esc(o.s) + '</small>' : '')
+        + (o.disabled ? ' disabled title="' + esc(o.why || '') + '"' : '') + (o.d ? ' data-d="1"' : '') + '>' + (rows ? esc(o.t).replace(/\(/g, '<wbr>(') : esc(o.t)) + (o.s ? '<small>' + esc(o.s) + '</small>' : '')
         + (o.d ? '<span class="chip-d">' + esc(o.d) + '</span>' : '') + '</button>';
-    }).join('');
+    });
+    if (!rows){ box.innerHTML = html.join(''); return; }
+    var g = []; opts.forEach(function(o, i){ var k = o.row || 0; (g[k] = g[k] || []).push(html[i]); });
+    box.innerHTML = g.filter(Boolean).map(function(x){ return '<div class="chip-row">' + x.join('') + '</div>'; }).join('');
   }
   function show(b, on){ var el = $('[data-b="' + b + '"]'); if (el) el.hidden = !on; }
   function note(n, html, warn){ var el = $('[data-n="' + n + '"]'); if (el){ el.innerHTML = html || ''; el.classList.toggle('warn', !!warn); el.hidden = !html; } }
@@ -2137,7 +2152,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     note('product', isFamilyProduct(S) ? FAMILY_NOTE[S.carrier] : isTtgProduct(S) ? TTG_NOTE : '', isFamilyProduct(S));
 
     chips('speed', speeds(S).map(function(v){ return { v: v, t: v }; }), S.speed);
-    chips('tv', tvs(S).map(function(r){ return { v: r.tv, t: r.tv, s: r.note }; }), S.tv);
+    chips('tv', tvs(S).map(function(r){ return { v: r.tv, t: r.tv, s: r.note, row: S.carrier === 'kt' ? 0 : S.carrier === 'hello' ? (/^Pro/.test(r.tv) ? 1 : 0) : null }; }), S.tv);   /* KT 한 줄 · 헬로비전 Pro 아랫줄 */
 
     var r = row(S);
     /* LG 인터넷 요금제 (와이파이 기본 / 프리미엄안심 / 프리미엄안심보상) */
@@ -2332,8 +2347,8 @@ header h1 { display: flex; align-items: center; gap: 10px; }
     if (c.notes.length) h += '<div class="cr-box"><div class="h">참고</div>' + c.notes.map(esc).join('<br>') + '</div>';
     h += '</div>';
 
-    h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><button type="button" class="cr-copy">안내 문구 복사</button>'
-       + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button><div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다' + (USIM_TAB[S.carrier] ? ' · 유심 신규 회선이 있으면 요금제 · 결합종류를 유심 양식에도 채웁니다' : '') + '</div>' : '')
+    h += '<div class="cr-card cr-msg"><div class="cr-box"><div class="h">고객 안내 문구</div><textarea readonly spellcheck="false">' + esc(message(c)) + '</textarea><div class="cr-acts"><button type="button" class="cr-copy">안내 문구 복사</button>' + (wiredForm() ? '<button type="button" class="cr-form">유선 접수양식 작성 →</button>' : '') + '</div>'   /* 한 줄 좌우 */
+       + (wiredForm() ? '<div class="cr-form-tip">가입통신사 · 신청상품 · WiFi · 월요금 · 설치비 · 사은품 · 기타내용을 6번 유선 접수양식에 채웁니다' + (USIM_TAB[S.carrier] ? ' · 유심 신규 회선이 있으면 요금제 · 결합종류를 유심 양식에도 채웁니다' : '') + '</div>' : '')
        + '</div></div>';
     h += '<div class="cr-warn">※ 결합 할인은 통신사 심사·가입 조건에 따라 달라질 수 있습니다. 최종 요금은 접수 전 통신사 기준으로 다시 확인하세요.</div>';
     $('.calc-result').innerHTML = h;
@@ -2619,7 +2634,7 @@ header h1 { display: flex; align-items: center; gap: 10px; }
   P7.addEventListener('click', function(e){
     var chip = e.target.closest('.chip');
     if (chip && !chip.disabled){
-      var f = chip.parentNode.getAttribute('data-f'), v = chip.getAttribute('data-v');
+      var f = chip.closest('[data-f]').getAttribute('data-f'), v = chip.getAttribute('data-v');                  /* 줄로 묶인 칩도 */
       if (f === 'carrier'){ if (S.carrier !== v) switchCarrier(v); }
       else if (f === 'product') S.product = +v;
       else if (f === 'speed'){ if (S.carrier === 'lg' && (mbps(v) <= 100) !== (mbps(S.speed) <= 100)) S.tvAdd = 0; S.tvAdd2 = 0; if (S.carrier === 'sky' && (v === SKY_TV_ONLY) !== (S.speed === SKY_TV_ONLY)) S.tvAdd = 0; S.tvAdd2 = 0; S.speed = v; }
