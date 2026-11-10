@@ -2,6 +2,7 @@
 
 <html lang="ko">
 <head>
+<script>window.CX_BUILD = "bcf472be626a";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -2970,6 +2971,30 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
   });
   document.addEventListener('keydown', function(e){ if (!M.hidden && e.key === 'Escape'){ e.preventDefault(); close(); } });
   window.cxfOpen = open;
+})();
+</script>
+<style id="cxUpdCss">#wgUpdate{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:2147483100;display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:min(94vw,640px);background:#143A70;color:#fff;border-radius:14px;padding:11px 14px;box-shadow:0 12px 30px rgba(15,38,72,.35);font-size:13px}#wgUpdate b{font-size:14px;font-weight:900}#wgUpdate span{opacity:.85}#wgUpdate .nu-go{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:9px;background:#FFC83D;color:#2B1B00;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit}#wgUpdate .nu-x{border:0;background:transparent;color:#fff;font-size:15px;cursor:pointer;opacity:.7}</style>
+<script>
+/* 새 버전 알림 (청약직원용 계산기) */
+(function(){
+  var BUILD = window.CX_BUILD, bar = null, snooze = 0;
+  function show(){
+    if (bar) return;
+    bar = document.createElement('div'); bar.id = 'wgUpdate'; bar.setAttribute('role', 'status');
+    bar.innerHTML = '<b>계산기가 업데이트됐습니다</b><span>새로고침하면 바뀐 내용이 적용돼요 (지금 입력한 계산 내용은 지워져요)</span><button type="button" class="nu-go">새로고침</button><button type="button" class="nu-x" aria-label="닫기">✕</button>';
+    document.body.appendChild(bar);
+    bar.querySelector('.nu-go').addEventListener('click', function(){ location.reload(); });
+    bar.querySelector('.nu-x').addEventListener('click', function(){ bar.remove(); bar = null; snooze = Date.now(); });
+  }
+  function poll(){
+    if (!BUILD || document.hidden || Date.now() - snooze < 10 * 60 * 1000) return;
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if (j && j.build && j.build !== BUILD) show(); }).catch(function(){});
+  }
+  setInterval(poll, 3 * 60 * 1000);
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) poll(); });
+  setTimeout(poll, 20 * 1000);
+  window.cxCheckUpdate = poll;                                                            /* 시험용 */
 })();
 </script>
 </body>
