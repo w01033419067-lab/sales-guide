@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "59c511d32358";</script>
+<script>window.CX_BUILD = "b1190fec5e9b";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -1681,8 +1681,8 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
   var TV_ADD_MAX = 2;
   function tvMax(s){ return s.carrier === 'kt' ? 4 : TV_ADD_MAX; }                          /* KT : 추가 TV 최대 4대 · 다른 통신사 2대 */
   function addTvs(s){ var o = tvAddOpts(s), out = []; ['tvAdd', 'tvAdd2', 'tvAdd3', 'tvAdd4'].slice(0, tvMax(s)).some(function(k){ var a = s[k] ? o[s[k] - 1] : null; if (!a) return true; out.push(a); return false; }); return out; }
-  /* 전화 고른 것 [[이름, 월요금, 종류, 대수]] — KT : 일전 · 인전 각 20대 · AI전화 1대 / SK · LG : 1회선 */
-  var TEL_KT = { il: 'telIl', in: 'telIn', ai: 'telAi' }, TEL_KT_MAX = { il: 20, in: 20, ai: 1 };
+  /* 전화 고른 것 [[이름, 월요금, 종류, 대수]] — KT : 일전 · 인전 각 5대 (넘으면 회선증설) · AI전화 1대 / SK · LG : 1회선 */
+  var TEL_KT = { il: 'telIl', in: 'telIn', ai: 'telAi' }, TEL_KT_MAX = { il: 5, in: 5, ai: 1 };
   function telPicks(s){ var T = telOf(s); if (!T) return []; if (s.carrier !== 'kt'){ var p = telPick(s); return p ? [p.concat([1])] : []; }
     return T.list.filter(function(o){ return TEL_KT[o[2]] && s[TEL_KT[o[2]]] > 0; }).map(function(o){ return o.concat([Math.min(TEL_KT_MAX[o[2]], s[TEL_KT[o[2]]])]); }); }
   /* TV 추가 2 (2대째) 선택 칸 : 1대째를 골랐을 때만 보임 · 목록은 1대째와 같음 */
@@ -2317,7 +2317,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
       for (var i = 1; i <= TEL_KT_MAX[k]; i++) html += '<option value="' + i + '"' + (i === cur ? ' selected' : '') + '>' + i + '대 · ' + esc(o[0]) + ' (+' + won(o[1] * i) + ')</option>';
       sel.innerHTML = html;
     });
-    if (ktTel) note('tel', '일반전화 · 인터넷전화 각 최대 20대 · AI전화 1대 · 홈 인터넷 전화 결합은 2대까지 — 500M↑ + 일반 · 인터넷전화면 인터넷 요금 <b>2,200원 할인 (대수와 상관없이 한 번)</b> · 설치비 대당 36,000원 (주말 · 야간 45,000) · <b>일반전화만</b> 인터넷 동시 설치 할인 1대째 4,000 · 2대째부터 대당 10,000 · 전화 기본요금제 접수 불가 · AI전화 으랏차차 패키지 550원 할인은 사업자만 (계산 안 함)');
+    if (ktTel) note('tel', '일반전화 · 인터넷전화 각 최대 5대 (5대 넘으면 회선증설 필요) · AI전화 1대 · 홈 인터넷 전화 결합은 2대까지 — 500M↑ + 일반 · 인터넷전화면 인터넷 요금 <b>2,200원 할인 (대수와 상관없이 한 번)</b> · 설치비 대당 36,000원 (주말 · 야간 45,000) · <b>일반전화만</b> 인터넷 동시 설치 할인 1대째 4,000 · 2대째부터 대당 10,000 · 전화 기본요금제 접수 불가 · AI전화 으랏차차 패키지 550원 할인은 사업자만 (계산 안 함)');
     var AMP = ampOf(S); show('amp', !!AMP);
     if (AMP){ if (!AMP.price[S.amp - 1]) S.amp = 0;
       $('#calcAmp').innerHTML = '<option value="0">사용 안 함</option>' + AMP.price.map(function(p, i){ return '<option value="' + (i + 1) + '"' + (S.amp === i + 1 ? ' selected' : '') + '>' + AMP.short + ' ' + (i + 1) + '대 (+' + won(p) + ')</option>'; }).join('');
