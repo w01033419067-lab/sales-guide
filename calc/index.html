@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "26b099359859";</script>
+<script>window.CX_BUILD = "f219c846eebb";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -1279,32 +1279,92 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
 <div class="calc-toolbar"><span class="calc-tip">통신사 → 속도 → TV 순서로 고르고, 휴대폰을 추가하면 결합 할인까지 계산돼요 · KT NEW모든G는 요금할인 쿠폰 적용 가능</span><button class="calc-reset" type="button"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>새 상담 시작</button></div>
 <div class="calc-grid">
 <div class="calc-form">
-<div class="cf-block"><div class="cf-h">① 통신사</div><div class="chips" data-f="carrier"></div></div>
-<div class="cf-block" data-b="product"><div class="cf-h">상품 구분</div><div class="chips" data-f="product"></div><div class="cf-note" data-n="product"></div><div class="cf-sub" data-ttgbase hidden><div class="cf-subh">베이스 인터넷 <small>따.가.결 · 휴대폰 할인 기준</small></div><div class="chips" data-f="ttgbase"></div><div class="cf-note" data-n="ttgbase"></div></div></div>
-<div class="cf-block"><div class="cf-h">② 인터넷 속도</div><div class="chips" data-f="speed"></div><div class="cf-sub" data-lgplan hidden><div class="cf-subh">인터넷 요금제 <small>LG · 고객 선택</small></div><div class="chips" data-f="lgplan"></div><div class="cf-note" data-n="lgplan"></div></div></div>
-<div class="cf-block"><style id="wgCouponCss">.cf-coupon{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.cf-coupon[hidden]{display:none}.coupon-btn{font-family:inherit;font-size:13px;font-weight:800;border:1.5px dashed #E0262F;color:#C4232F;background:#FFF5F5;border-radius:10px;padding:7px 12px;cursor:pointer}.coupon-btn.on{border-style:solid;background:#E0262F;color:#fff}.coupon-btn:disabled{opacity:.45;cursor:default}.coupon-hint{font-size:12px;color:#6B7684;font-weight:600}</style><div class="cf-h">③ TV</div><div class="chips" data-f="tv"></div><div class="cf-coupon" hidden><button type="button" class="coupon-btn">요금할인 쿠폰적용</button><span class="coupon-hint"></span></div></div>
-<div class="cf-block" data-b="wifi"><div class="cf-h">④ WiFi</div><div class="chips" data-f="wifi"></div><div class="cf-note" data-n="wifi"></div></div>
-<div class="cf-block" data-b="tel" hidden><div class="cf-h">전화 <small>유선 · 고객 선택</small></div><div class="cf-row" data-tel1><label class="lbl" for="calcTel">전화</label><select class="calc-sel" id="calcTel"></select></div><div class="cf-row" data-telkt="il" hidden><label class="lbl" for="calcTel_il">일반전화</label><select class="calc-sel" id="calcTel_il"></select></div><div class="cf-row" data-telkt="in" hidden><label class="lbl" for="calcTel_in">인터넷전화</label><select class="calc-sel" id="calcTel_in"></select></div><div class="cf-row" data-telkt="ai" hidden><label class="lbl" for="calcTel_ai">AI전화</label><select class="calc-sel" id="calcTel_ai"></select></div><div class="cf-note" data-n="tel"></div></div>
-<div class="cf-block" data-b="amp" hidden><div class="cf-h">WiFi 증폭기 <small>고객 선택</small></div><div class="cf-row"><label class="lbl" for="calcAmp">증폭기</label><select class="calc-sel" id="calcAmp"></select></div><div class="cf-note" data-n="amp"></div></div>
-<div class="cf-block" data-b="skyopt" hidden><div class="cf-h">인터넷 옵션 <small>SKYLIFE · 고객 선택</small></div><div class="cf-row"><label class="calc-chk"><input type="checkbox" id="calcSkySafe"/>안심요금제 <b style="margin-left:4px;">+1,100원</b>/월</label><label class="calc-chk" style="margin-left:14px;"><input type="checkbox" id="calcSkyTotal"/>토탈케어상품 <b style="margin-left:4px;">+2,200원</b>/월</label></div><div class="cf-note" style="display:block;">둘 중 하나만 (함께 신청 불가) · 토탈케어 = 안심 + 원격점검 · 금융사기 · TV 수리비 보상 · 신청 시 접수양식에 안심 / 토탈케어 기재 필수 (미기재 시 일반요금제로 진행) · 인터넷 단독 · 인터넷 + TV 모두 가능</div></div>
-<div class="cf-block" data-b="tvopt"><div class="cf-h">⑤ TV 옵션 <small>셋탑 · TV 추가</small></div>
+<style id="wgCalcLayoutCss">
+/* 요금계산기 간소화 (11.12) : 같은 갈래는 한 카드 · 추가 상품은 접힘 */
+.cf-line { display: flex; align-items: flex-start; gap: 10px; }
+.cf-line + .cf-line, .cf-line + .cf-wifi, .cf-wifi + .cf-sub { margin-top: 10px; }
+.cf-wifi { margin-top: 10px; }
+.cf-wifi[hidden] { display: none; }
+.cf-lab { flex: none; width: 42px; padding-top: 9px; font-size: 12px; font-weight: 800; color: #3A4A5E; }
+.cf-line > .chips { flex: 1 1 auto; min-width: 0; }
+.cf-sub[data-b="product"] { margin-top: 12px; }
+.cf-fold-tg { display: flex; align-items: center; gap: 8px; width: calc(100% + 32px); box-sizing: border-box; border: 0; border-bottom: 1px solid transparent; text-align: left; font-family: inherit; cursor: pointer; }
+.cf-fold-tg:focus-visible { outline: 2px solid #2E75B6; outline-offset: -2px; }
+.cf-fold-t { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.cf-fold-tg { --cf-fold-accent: #D9480F; }   /* 접혀 있어도 눈에 띄게 (색은 변수로 — 글씨 진하게 처리에서 바뀌지 않게) */
+#p7 .cf-fold-t small, .cf-fold-t small { font-size: 13px; font-weight: 800; color: var(--cf-fold-accent); margin-left: 2px; }
+.cf-fold-sum { flex: 1 1 auto; min-width: 0; text-align: right; font-size: 11.5px; font-weight: 700; color: #6B7C8F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cf-fold-sum.has { color: #1E4C8F; }
+.cf-fold-ic { flex: none; font-size: 11.5px; font-weight: 800; color: #1E4C8F; background: #fff; border: 1px solid #BFD3EA; border-radius: 999px; padding: 2px 9px; }
+.cf-fold-ic::after { content: '펼치기 ▾'; }
+.cf-fold.open .cf-fold-ic::after { content: '접기 ▴'; }
+.cf-fold:not(.open) { padding-bottom: 0 !important; }
+.cf-fold:not(.open) > .cf-fold-tg { margin-bottom: 0 !important; border-bottom-color: transparent !important; border-radius: 0 9px 9px 0 !important; }
+.cf-fold:not(.open) > .cf-fold-body { display: none; }
+.cf-fold[hidden] { display: none; }
+.cf-fold-body > .cf-sub.first { margin-top: 0; padding-top: 0; border-top: 0; }
+@media (max-width: 480px){ .cf-fold-sum { display: none; } .cf-fold-sum.has { display: block; } }
+</style>
+<div class="cf-block" data-card="base"><div class="cf-h">① 통신사 · 상품</div><div class="chips" data-f="carrier"></div>
+<div class="cf-sub" data-b="product"><div class="cf-subh">상품 구분</div><div class="chips" data-f="product"></div><div class="cf-note" data-n="product"></div><div class="cf-sub" data-ttgbase hidden><div class="cf-subh">베이스 인터넷 <small>따.가.결 · 휴대폰 할인 기준</small></div><div class="chips" data-f="ttgbase"></div><div class="cf-note" data-n="ttgbase"></div></div></div></div>
+<div class="cf-block" data-card="net"><div class="cf-h">② 인터넷 <small>속도 · WiFi</small></div><div class="cf-line"><span class="cf-lab">속도</span><div class="chips" data-f="speed"></div></div><div class="cf-wifi" data-b="wifi"><div class="cf-line"><span class="cf-lab">WiFi</span><div class="chips" data-f="wifi"></div></div><div class="cf-note" data-n="wifi"></div></div><div class="cf-sub" data-lgplan hidden><div class="cf-subh">인터넷 요금제 <small>LG · 고객 선택</small></div><div class="chips" data-f="lgplan"></div><div class="cf-note" data-n="lgplan"></div></div></div>
+<div class="cf-block" data-card="tv"><style id="wgCouponCss">.cf-coupon{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.cf-coupon[hidden]{display:none}.coupon-btn{font-family:inherit;font-size:13px;font-weight:800;border:1.5px dashed #E0262F;color:#C4232F;background:#FFF5F5;border-radius:10px;padding:7px 12px;cursor:pointer}.coupon-btn.on{border-style:solid;background:#E0262F;color:#fff}.coupon-btn:disabled{opacity:.45;cursor:default}.coupon-hint{font-size:12px;color:#6B7684;font-weight:600}</style><div class="cf-h">③ TV</div><div class="chips" data-f="tv"></div><div class="cf-coupon" hidden><button type="button" class="coupon-btn">요금할인 쿠폰적용</button><span class="coupon-hint"></span></div>
+<div class="cf-sub" data-b="tvopt"><div class="cf-subh">TV 옵션 <small>셋탑 · TV 추가</small></div>
 <div class="cf-row"><label class="lbl" for="calcStb">메인TV 셋탑</label><select class="calc-sel" id="calcStb"></select></div>
 <div class="cf-row"><label class="lbl" for="calcTvAdd">TV 추가</label><select class="calc-sel" id="calcTvAdd"></select></div>
 <div class="cf-row" data-tv2 hidden><label class="lbl" for="calcTvAdd2">TV 추가 2</label><select class="calc-sel" id="calcTvAdd2"></select></div>
 <div class="cf-row" data-tv3 hidden><label class="lbl" for="calcTvAdd3">TV 추가 3</label><select class="calc-sel" id="calcTvAdd3"></select></div>
 <div class="cf-row" data-tv4 hidden><label class="lbl" for="calcTvAdd4">TV 추가 4</label><select class="calc-sel" id="calcTvAdd4"></select></div>
 <div class="tv-pick" hidden></div>
-<div class="cf-note" data-n="tvopt"></div></div>
-<div class="cf-block" data-b="sohoopt" hidden><div class="cf-h">추가 · 옵션 <small>LG 소호 · 고객 선택</small></div>
+<div class="cf-note" data-n="tvopt"></div></div></div>
+<div class="cf-block cf-fold" data-fold data-card="extra"><button type="button" class="cf-h cf-fold-tg" aria-expanded="false"><span class="cf-fold-t">④ 추가 상품 <small>전화 · 증폭기 · 옵션</small></span><span class="cf-fold-sum"></span><span class="cf-fold-ic" aria-hidden="true"></span></button><div class="cf-fold-body">
+<div class="cf-sub" data-b="tel" hidden><div class="cf-subh">전화 <small>유선 · 고객 선택</small></div><div class="cf-row" data-tel1><label class="lbl" for="calcTel">전화</label><select class="calc-sel" id="calcTel"></select></div><div class="cf-row" data-telkt="il" hidden><label class="lbl" for="calcTel_il">일반전화</label><select class="calc-sel" id="calcTel_il"></select></div><div class="cf-row" data-telkt="in" hidden><label class="lbl" for="calcTel_in">인터넷전화</label><select class="calc-sel" id="calcTel_in"></select></div><div class="cf-row" data-telkt="ai" hidden><label class="lbl" for="calcTel_ai">AI전화</label><select class="calc-sel" id="calcTel_ai"></select></div><div class="cf-note" data-n="tel"></div></div>
+<div class="cf-sub" data-b="amp" hidden><div class="cf-subh">WiFi 증폭기 <small>고객 선택</small></div><div class="cf-row"><label class="lbl" for="calcAmp">증폭기</label><select class="calc-sel" id="calcAmp"></select></div><div class="cf-note" data-n="amp"></div></div>
+<div class="cf-sub" data-b="skyopt" hidden><div class="cf-subh">인터넷 옵션 <small>SKYLIFE · 고객 선택</small></div><div class="cf-row"><label class="calc-chk"><input type="checkbox" id="calcSkySafe"/>안심요금제 <b style="margin-left:4px;">+1,100원</b>/월</label><label class="calc-chk" style="margin-left:14px;"><input type="checkbox" id="calcSkyTotal"/>토탈케어상품 <b style="margin-left:4px;">+2,200원</b>/월</label></div><div class="cf-note" style="display:block;">둘 중 하나만 (함께 신청 불가) · 토탈케어 = 안심 + 원격점검 · 금융사기 · TV 수리비 보상 · 신청 시 접수양식에 안심 / 토탈케어 기재 필수 (미기재 시 일반요금제로 진행) · 인터넷 단독 · 인터넷 + TV 모두 가능</div></div>
+<div class="cf-sub" data-b="sohoopt" hidden><div class="cf-subh">추가 · 옵션 <small>LG 소호 · 고객 선택</small></div>
 <div class="cf-row" data-b="cctv"><label class="lbl" for="calcCctv">CCTV</label><select class="calc-sel" id="calcCctv"></select></div>
 <div class="cf-row" data-b="phadd"><label class="lbl" for="calcPhAdd">전화기 추가</label><select class="calc-sel" id="calcPhAdd"></select><select class="calc-sel" id="calcPhN" style="flex:0 0 auto;width:auto;"></select></div>
 <div class="cf-row" style="flex-wrap:wrap;gap:6px 14px;align-items:flex-start;"><span class="lbl">인터넷 옵션</span><span style="display:flex;flex-direction:column;gap:6px;"><label class="calc-chk"><input type="checkbox" id="calcOptLte"/><span>결제안심인터넷 LTE라우터 <small class="so-amt" data-o="lte"></small></span></label><label class="calc-chk"><input type="checkbox" id="calcOptCare"/><span>안심보상요금제 <small class="so-amt" data-o="care"></small></span></label><label class="calc-chk"><input type="checkbox" id="calcOptPkg"/><span>추가접속 단말패키지 <small class="so-amt" data-o="pkg"></small></span></label></span></div>
 <div class="cf-note" data-n="sohoopt"></div></div>
-<div class="cf-block" data-b="mobile"><div class="cf-h">⑥ 결합 휴대폰 <small>유심 신규 또는 기존 휴대폰</small></div><div class="calc-lines"></div><button class="add-line" type="button">+ 휴대폰 회선 추가</button><div class="cf-note" data-n="mobile"></div></div>
-<div class="cf-block"><div class="cf-h">⑦ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-sub" data-ttgb hidden style="margin-top:8px;"><div class="cf-subh">베이스회선 그룹 <small>따.가.결</small></div><div class="cf-row ttgb-tot" style="flex-wrap:wrap;gap:6px 8px;"><label class="lbl" for="calcTtgN">베이스회선 휴대폰</label><input class="calc-num" id="calcTtgN" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="회선" style="flex:0 0 4.5em;width:4.5em;"/><span style="font-size:12.5px;color:#4E5968;">회선 · 월정액 합계</span><input class="calc-num" id="calcTtgSum" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 150,000" style="flex:1 1 8em;min-width:7em;"/><span style="font-size:12.5px;color:#4E5968;">원</span></div><div class="chips" data-f="ttgrep"></div><div class="cf-note" data-n="ttgb"></div></div><div class="cf-note" data-n="bundle"></div><div class="cf-note" data-n="join"></div></div>
-<div class="cf-block"><div class="cf-h">⑧ 현재 요금 · 사은품</div>
+</div></div>
+<div class="cf-block" data-b="mobile"><div class="cf-h">⑤ 결합 휴대폰 <small>유심 신규 또는 기존 휴대폰</small></div><div class="calc-lines"></div><button class="add-line" type="button">+ 휴대폰 회선 추가</button><div class="cf-note" data-n="mobile"></div></div>
+<div class="cf-block"><div class="cf-h">⑥ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-sub" data-ttgb hidden style="margin-top:8px;"><div class="cf-subh">베이스회선 그룹 <small>따.가.결</small></div><div class="cf-row ttgb-tot" style="flex-wrap:wrap;gap:6px 8px;"><label class="lbl" for="calcTtgN">베이스회선 휴대폰</label><input class="calc-num" id="calcTtgN" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="회선" style="flex:0 0 4.5em;width:4.5em;"/><span style="font-size:12.5px;color:#4E5968;">회선 · 월정액 합계</span><input class="calc-num" id="calcTtgSum" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 150,000" style="flex:1 1 8em;min-width:7em;"/><span style="font-size:12.5px;color:#4E5968;">원</span></div><div class="chips" data-f="ttgrep"></div><div class="cf-note" data-n="ttgb"></div></div><div class="cf-note" data-n="bundle"></div><div class="cf-note" data-n="join"></div></div>
+<div class="cf-block"><div class="cf-h">⑦ 현재 요금 · 사은품</div>
 <div class="cf-row"><label class="lbl" for="calcCur">현재 요금</label><input class="calc-num" id="calcCur" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="월 납부액 (선택)"/><span style="font-size:11.5px;color:#6B7C8F;">고객이 지금 내는 인터넷·TV·휴대폰 월 합계</span></div>
-<div class="cf-row gift-w"><label class="lbl" for="calcGift">[유선] 사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span class="gift-unit">만원</span></div><div class="cf-row gift-u" data-b="giftu" hidden><label class="lbl" for="calcGiftU">[유심(무선)] 사은품</label><input class="calc-num" id="calcGiftU" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 20"/><span class="gift-unit">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「■ 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.<span data-n="giftu" hidden><br><b style="color:#0E7A4F;">[유심(무선)] 사은품</b>은 ⑥에서 <b>유심 신규</b> 회선을 추가했을 때만 보이고, 「유선 접수양식 작성 →」을 누르면 같은 통신사 유심 양식의 사은품 칸에 들어갑니다.</span></div>
+<div class="cf-row gift-w"><label class="lbl" for="calcGift">[유선] 사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span class="gift-unit">만원</span></div><div class="cf-row gift-u" data-b="giftu" hidden><label class="lbl" for="calcGiftU">[유심(무선)] 사은품</label><input class="calc-num" id="calcGiftU" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 20"/><span class="gift-unit">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「■ 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.<span data-n="giftu" hidden><br><b style="color:#0E7A4F;">[유심(무선)] 사은품</b>은 ⑤에서 <b>유심 신규</b> 회선을 추가했을 때만 보이고, 「유선 접수양식 작성 →」을 누르면 같은 통신사 유심 양식의 사은품 칸에 들어갑니다.</span></div>
+<script id="wgCalcFold">
+/* ④ 추가 상품 : 처음엔 접힘 · 머리를 누르면 펼침 / 접힘 · 접혀 있어도 고른 것은 머리에 요약 · 들어 있는 칸이 모두 숨으면 카드도 숨김 · 새 상담이면 다시 접힘 */
+(function(){
+  var f = document.querySelector('.calc-form [data-fold]'); if (!f) return;
+  var tg = f.querySelector('.cf-fold-tg'), body = f.querySelector('.cf-fold-body'), sum = f.querySelector('.cf-fold-sum'), busy = false;
+  function cut(t){ return String(t || '').split(' (')[0].replace(/\s+/g, ' ').trim(); }
+  function sync(){
+    if (busy) return; busy = true;
+    var subs = Array.prototype.filter.call(body.children, function(x){ return x.classList.contains('cf-sub'); }), on = subs.filter(function(x){ return !x.hidden; }), picks = [];
+    f.hidden = !on.length;
+    subs.forEach(function(x){ x.classList.toggle('first', x === on[0]); });
+    on.forEach(function(sb){
+      Array.prototype.forEach.call(sb.querySelectorAll('select'), function(s){
+        var row = s.closest('.cf-row'); if (!row || row.hidden || s.selectedIndex <= 0 || !s.options[s.selectedIndex]) return;
+        var lb = row.querySelector('.lbl'), t = s.options[s.selectedIndex].text, m = /^(\d+)대(?=\s|$)/.exec(t);
+        if (s.id === 'calcPhN'){ var a = sb.querySelector('#calcPhAdd'); if (a && a.selectedIndex > 0 && picks.length) picks[picks.length - 1] += ' ' + cut(t); return; }
+        picks.push(m && lb ? lb.textContent.trim() + ' ' + m[1] + '대' : (lb && s.id !== 'calcAmp' && s.id !== 'calcTel' ? lb.textContent.trim() + ' ' : '') + cut(t));
+      });
+      Array.prototype.forEach.call(sb.querySelectorAll('input[type="checkbox"]'), function(c){ if (c.checked) picks.push(cut(c.parentNode.textContent).replace(/\s*\+[\d,]+원.*$/, '')); });
+    });
+    sum.textContent = picks.length ? picks.join(' · ') : '선택 안 함'; sum.classList.toggle('has', picks.length > 0); sum.title = sum.textContent;
+    busy = false;
+  }
+  function open(on){ f.classList.toggle('open', on); tg.setAttribute('aria-expanded', on ? 'true' : 'false'); }
+  tg.addEventListener('click', function(){ open(!f.classList.contains('open')); });
+  new MutationObserver(sync).observe(body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+  var p7 = f.closest('.calc-grid') || document;
+  ['change', 'input', 'click'].forEach(function(ev){ p7.addEventListener(ev, function(){ setTimeout(sync, 0); }); });
+  document.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('.calc-reset')) setTimeout(function(){ open(false); sync(); }, 60); });
+  window.addEventListener('load', function(){ setTimeout(sync, 300); });
+  open(false); sync();
+})();
+</script>
 </div>
 </div>
 <div class="calc-result"></div>
@@ -1869,7 +1929,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
           splitUsed = sp === 'ctb' ? 'ctb' : 'eq';
         }
         if (tb) notes.push('따.가.결 : 베이스회선 휴대폰 ' + tb.n + '회선 · ' + won(tb.sum) + ' 포함 그룹 합계 ' + won(gsum) + ' → 그룹 할인 ' + won(amt) + ' 중 내 회선 몫만 표시');
-        else if (isTtgProduct(s)) notes.push('따.가.결 : 베이스회선 휴대폰을 넣지 않아 내 휴대폰만으로 구간 계산 — ⑦ 아래 「베이스회선 휴대폰」을 넣으면 그룹 합계 구간 · 내 몫으로 계산');
+        else if (isTtgProduct(s)) notes.push('따.가.결 : 베이스회선 휴대폰을 넣지 않아 내 휴대폰만으로 구간 계산 — ⑥ 아래 「베이스회선 휴대폰」을 넣으면 그룹 합계 구간 · 내 몫으로 계산');
         notes.push('휴대폰 월정액 합계 ' + won(gsum) + (tb ? ' (베이스회선 포함)' : '') + ' (선택약정 전) → ' + tierName(T.th, ti) + ' 구간 · 휴대폰 할인 ' + won(amt)
           + (amt ? ' (' + { eq: '동일 금액', ctb: '기여도', line: '지정회선' }[splitUsed] + '으로 나눔)' : ''));
       } else if (b === 'psingle'){
@@ -1965,7 +2025,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
         need(!isFamilyProduct(s), '패밀리는 알뜰한 결합 중복 불가');
         bLabel = 'SK 알뜰한 결합';                      /* 인터넷 · TV 할인 = 요즘가족 결합과 같은 금액 (요금표 결합 열) · 휴대폰은 알뜰폰이라 할인 없음 */
         notes.push('알뜰한 결합 : 인터넷 · TV 할인만 요즘가족 결합과 같은 금액 · 결합 가능 알뜰폰 6개사 — ' + MVNO_SKB.join(' · '));
-        if (n) notes.push('⑥에 넣은 휴대폰은 SKT 요금제라 알뜰한 결합 할인 대상이 아님 — 휴대폰 할인 없이 계산');
+        if (n) notes.push('⑤에 넣은 휴대폰은 SKT 요금제라 알뜰한 결합 할인 대상이 아님 — 휴대폰 할인 없이 계산');
       } else if (b === 'lgeasy'){
         var E = W.easy || (s.carrier === 'soho' ? D.wired.lg.easy : null);   /* 휴대폰 없으면 참쉬운 인+티 요금만 · LG 소호는 LG 표 */ bLabel = 'LG 참쉬운 가족결합'; need(!!E, 'LG 참쉬운 가족결합 표가 없습니다');
         var er = E.rows.filter(function(x){ return n >= x.min && n <= x.max; })[0] || E.rows[E.rows.length - 1];
@@ -2250,7 +2310,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
     var prods = D.wired[S.carrier].products;
     show('product', prods.length > 1);
     chips('product', prods.map(function(p, i){ return { v: i, t: S.carrier === 'soho' ? p.name.replace(/\s*\(.*$/, '') : productChip(p) }; }), S.product);
-    $('[data-b="product"] .cf-h').textContent = S.carrier === 'soho' ? '상품 구성' : '상품 구분';
+    $('[data-b="product"] .cf-subh').textContent = S.carrier === 'soho' ? '상품 구성' : '상품 구분';
     $('[data-f="tv"]').previousElementSibling.textContent = S.carrier === 'soho' ? '③ 전화 · TV · CCTV' : '③ TV';
     note('product', isFamilyProduct(S) ? FAMILY_NOTE[S.carrier] : isTtgProduct(S) ? TTG_NOTE : '', isFamilyProduct(S));
     var tbBox = P7.querySelector('[data-ttgbase]'), tg = isTtgProduct(S);                    /* 따.가.결 : 베이스 인터넷 */
@@ -2382,7 +2442,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
            : S.carrier === 'sky' ? 'SKYLIFE는 가이드에 결합 할인 정보가 없습니다.'
            : S.carrier === 'hello' ? '헬로비전은 가이드에 결합 할인 정보가 없습니다.'
            : S.carrier === 'soho' ? 'LG 소호 결합 할인 금액은 일반 LG와 같습니다 · LG 소호는 유심 동판 불가 — 고객이 쓰는 LG 휴대폰으로 결합 할인만 계산 · 투게더는 법인사업자 불가'
-           : S.carrier === 'lg' ? '투게더 결합 : 대상 요금제(데이터플랜MAX · 플러스플랜95·105·115·130) 휴대폰만 할인 · 데이터플랜은 MAX만 대상 · 기존 휴대폰은 예전 대상 요금제일 때만 (접수 전 확인) · 만 18세 이하 청소년 회선은 ⑥ 「청소년 할인」 체크 시 월 10,000원 추가 (휴대폰 2회선 이상)'
+           : S.carrier === 'lg' ? '투게더 결합 : 대상 요금제(데이터플랜MAX · 플러스플랜95·105·115·130) 휴대폰만 할인 · 데이터플랜은 MAX만 대상 · 기존 휴대폰은 예전 대상 요금제일 때만 (접수 전 확인) · 만 18세 이하 청소년 회선은 ⑤ 「청소년 할인」 체크 시 월 10,000원 추가 (휴대폰 2회선 이상)'
            : isSK(S.carrier) ? (isFamilyProduct(S) ? NAMES[S.carrier] + ' 패밀리 인터넷은 요즘가족 결합과 중복할 수 없습니다. ' + FAMILY_NOTE[S.carrier].replace(/^.*· /, '') + '.'
                                                    : '인터넷+TV 번들 요금은 우리집 결합 할인이 이미 반영된 금액입니다. 요즘가족 결합 시 WiFi는 +1,100원입니다.'
                                                      + (S.carrier === 'skb' ? '<br><b>알뜰한 결합 (SKB만 · SKT 불가)</b> : 인터넷 · TV 할인만 요즘가족 결합과 같은 금액 · 결합 가능 알뜰폰 6개사 — ' + MVNO_SKB.map(function(x, i){ return (i + 1) + '. ' + x; }).join(' ') : ''))
