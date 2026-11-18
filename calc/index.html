@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "56392ed195b3";</script>
+<script>window.CX_BUILD = "4d044be42c29";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -1333,7 +1333,7 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
 <div class="cf-block"><div class="cf-h">⑥ 결합 할인 <small>누르면 적용 · 금액은 월 합계</small></div><div class="chips" data-f="bundle"></div><div class="cf-row" data-b="rep" hidden style="margin-top:8px;"><label class="lbl" for="calcRep">대표회선</label><select class="calc-sel" id="calcRep"></select></div><div class="cf-row" data-b="pfbase" hidden style="margin-top:8px;"><label class="lbl" for="calcPfBase">베이스 할인</label><select class="calc-sel" id="calcPfBase"></select></div><div class="cf-row" data-b="split" hidden style="margin-top:8px;"><label class="lbl" for="calcSplit">할인 나누기</label><select class="calc-sel" id="calcSplit"></select></div><div class="cf-sub" data-ttgb hidden style="margin-top:8px;"><div class="cf-subh">베이스회선 그룹 <small>따.가.결</small></div><div class="cf-row ttgb-tot" style="flex-wrap:wrap;gap:6px 8px;"><label class="lbl" for="calcTtgN">베이스회선 휴대폰</label><input class="calc-num" id="calcTtgN" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="회선" style="flex:0 0 4.5em;width:4.5em;"/><span style="font-size:12.5px;color:#4E5968;">회선 · 월정액 합계</span><input class="calc-num" id="calcTtgSum" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="예: 150,000" style="flex:1 1 8em;min-width:7em;"/><span style="font-size:12.5px;color:#4E5968;">원</span></div><div class="chips" data-f="ttgrep"></div><div class="cf-note" data-n="ttgb"></div></div><div class="cf-note" data-n="bundle"></div><div class="cf-note" data-n="join"></div></div>
 <div class="cf-block"><div class="cf-h">⑦ 현재 요금 · 사은품</div>
 <div class="cf-row"><label class="lbl" for="calcCur">현재 요금</label><input class="calc-num" id="calcCur" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="월 납부액 (선택)"/><span style="font-size:11.5px;color:#6B7C8F;">고객이 지금 내는 인터넷·TV·휴대폰 월 합계</span></div>
-<div class="cf-row gift-w"><label class="lbl" for="calcGift">[유선] 사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 35"/><span class="gift-unit">만원</span></div><div class="cf-row gift-u" data-b="giftu" hidden><label class="lbl" for="calcGiftU">[유심(무선)] 사은품</label><input class="calc-num" id="calcGiftU" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 20"/><span class="gift-unit">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「■ 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.<span data-n="giftu" hidden><br><b style="color:#0E7A4F;">[유심(무선)] 사은품</b>은 ⑤에서 <b>유심 신규</b> 회선을 추가했을 때만 보이고, 「유선 접수양식 작성 →」을 누르면 같은 통신사 유심 양식의 사은품 칸에 들어갑니다.</span></div>
+<div class="cf-row gift-w"><label class="lbl" for="calcGift">[유선] 사은품</label><input class="calc-num" id="calcGift" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 45"/><span class="gift-unit">만원</span></div><div class="cf-row gift-u" data-b="giftu" hidden><label class="lbl" for="calcGiftU">[유심(무선)] 사은품</label><input class="calc-num" id="calcGiftU" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="예: 20"/><span class="gift-unit">만원</span></div><div class="cf-note">숫자만 입력 · 입력하면 고객 안내 문구 맨 아랫줄에 「■ 사은품 : ○○만원」이 들어가고, 비워두면 빠집니다.<span data-n="giftu" hidden><br><b style="color:#0E7A4F;">[유심(무선)] 사은품</b>은 ⑤에서 <b>유심 신규</b> 회선을 추가했을 때만 보이고, 「유선 접수양식 작성 →」을 누르면 같은 통신사 유심 양식의 사은품 칸에 들어갑니다.</span></div>
 <script id="wgCalcFold">
 /* ④ 추가 상품 : 처음엔 접힘 · 머리를 누르면 펼침 / 접힘 · 접혀 있어도 고른 것은 머리에 요약 · 들어 있는 칸이 모두 숨으면 카드도 숨김 · 새 상담이면 다시 접힘 */
 (function(){
@@ -2859,8 +2859,8 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
   /* 양식 「초기화」 버튼과 똑같이 비움 (확인창 없이) — 고정한 유치자 정보는 남음 */
   function resetFormCard(card){
     var b = card.querySelector('.reset-btn'); if (!b) return;
-    var cf = window.confirm; window.confirm = function(){ return true; };
-    try { b.click(); } finally { window.confirm = cf; }
+    var cf = window.confirm, o = b.textContent; window.confirm = function(){ return true; };
+    try { b.click(); } finally { window.confirm = cf; b.textContent = o; }   /* 「초기화됨」 글자 없이 (1.2초 뒤 글자가 바뀌며 화면이 밀리지 않게) */
   }
   /* 3가지 선택창 — done('reset' | 'keep' | null) · 키보드 1 · 2 · 3 / Esc = 취소 */
   function askFormMode(msg, osDirty, done, usDirty){
@@ -2893,7 +2893,8 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
     if (usimNote) infoToast(usimNote);
     setTimeout(function(){
       var navH = (window.wgNavH ? window.wgNavH() : 0);
-      window.scrollTo({ top: ins[0].getBoundingClientRect().top + window.pageYOffset - navH - 140, behavior: 'smooth' });
+      var sb = card.closest('.section-body'), tb = (sb && sb.querySelector(':scope > .tabbar')) || card;   /* 양식 탭 줄(유선 · OSS …)이 화면 위쪽에 오게 → 양식 머리 · ■고객명까지 한눈에 */
+      window.scrollTo({ top: Math.max(0, tb.getBoundingClientRect().top + window.pageYOffset - navH - 28), behavior: 'smooth' });
       ins.forEach(function(x){ if (x.tagName === 'TEXTAREA'){ x.dispatchEvent(new Event('input', { bubbles: true })); } });
     }, 80);
     clearTimeout(toWiredForm.t);                                                         /* 연달아 눌러도 매번 5초 */
