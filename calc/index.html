@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "4d044be42c29";</script>
+<script>window.CX_BUILD = "07eecd467ad2";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -2896,6 +2896,10 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
       var sb = card.closest('.section-body'), tb = (sb && sb.querySelector(':scope > .tabbar')) || card;   /* 양식 탭 줄(유선 · OSS …)이 화면 위쪽에 오게 → 양식 머리 · ■고객명까지 한눈에 */
       window.scrollTo({ top: Math.max(0, tb.getBoundingClientRect().top + window.pageYOffset - navH - 28), behavior: 'smooth' });
       ins.forEach(function(x){ if (x.tagName === 'TEXTAREA'){ x.dispatchEvent(new Event('input', { bubbles: true })); } });
+      if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches){   /* PC : ■고객명 칸에 바로 입력 (휴대폰은 자판이 올라와 양식을 가리므로 그대로) */
+        var nmRow = Array.prototype.filter.call(card.querySelectorAll('.ff-row'), function(r){ var f = r.querySelector('.ff-fix'); return f && f.textContent.indexOf('■고객명') === 0; })[0], nmIn = nmRow && nmRow.querySelector('input.ff-in');
+        if (nmIn){ try { nmIn.focus({ preventScroll: true }); nmIn.setSelectionRange(nmIn.value.length, nmIn.value.length); } catch (e) {} }
+      }
     }, 80);
     clearTimeout(toWiredForm.t);                                                         /* 연달아 눌러도 매번 5초 */
     toWiredForm.t = setTimeout(function(){ ins.forEach(function(x){ x.classList.remove('ff-filled'); }); }, 5900);
