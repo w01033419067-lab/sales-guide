@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "07eecd467ad2";</script>
+<script>window.CX_BUILD = "bc089ad78f0b";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -2407,6 +2407,10 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
     $('#calcTvAdd').disabled = !ta.length;
     renderTv2();
     syncTvPick();
+    var FAXN = S.carrier === 'soho' && /팩스\(CPG\)/.test(S.tv || '') ? '<b>팩스(CPG)는 기본요금 1,100원 + CPG임대료 1,100원이며, 팩스 발신요금은 건당 41.8원 발생</b>' : '';   /* LG 소호 팩스(CPG) 고르면 칩 바로 아래 안내 */
+    var fxEl = P7.querySelector('[data-n="fax"]'), tvCh = P7.querySelector('.chips[data-f="tv"]');
+    if (!fxEl && tvCh){ fxEl = document.createElement('div'); fxEl.className = 'cf-note'; fxEl.setAttribute('data-n', 'fax'); fxEl.hidden = true; tvCh.parentNode.insertBefore(fxEl, tvCh.nextSibling); }
+    note('fax', FAXN);
     note('tvopt', !isTvRow(S, r) ? '' : S.carrier === 'soho' ? 'LG 소호 : 메인 TV 실속형 → 프리미엄 월 +3,300원 · 고급형 셋탑 접수 불가 · 셋탑 할인 불가 — 추가 TV는 실속형 UHD4 / 프리미엄 UHD4' : (S.carrier === 'lg' && mbps(S.speed) <= 100 ? 'LG 광랜(100M)은 UHD 2대 이상 진행 불가 — 추가 TV는 실속형 추단(11,000원)만 가능합니다.' : S.carrier === 'sky' ? (r.tvOnly ? 'SKYLIFE : TV 단독은 추가 TV도 ALL만 가능합니다 (IPTV 추단 불가).' : /^ALL/.test(r.tv) ? 'SKYLIFE : 메인 TV가 ALL이면 추가 TV도 ALL만 가능합니다 (IPTV 추단 불가).' : 'SKYLIFE : 메인 TV가 IPTV(베이직 · 플러스 · 초이스)면 추가 TV도 IPTV만 가능합니다 (ALL 추단 불가).') : (isSK(S.carrier) ? 'SK 추가 TV 요금은 <b>스마트3 셋탑(다셋탑 50% 할인 2,200원)</b> 포함 금액 · 다른 셋탑은 스마트3 대비 애플 +2,200 · AI5(케어형) +1,650 · AI5(임대형) +5,500 · 사운드맥스 +6,600원 · 추가 TV는 최대 2대 · 메인 TV와 다른 요금제 · 셋탑 가능' : (S.carrier === 'kt' ? '추가 TV는 최대 4대' : '추가 TV는 최대 2대') + ' · 메인 TV와 다른 요금제로 고를 수 있습니다.')), S.carrier === 'sky' && isTvRow(S, r));
 
     /* LG 소호 추가 · 옵션 */
