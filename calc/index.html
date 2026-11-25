@@ -2,7 +2,7 @@
 
 <html lang="ko">
 <head>
-<script>window.CX_BUILD = "d833099fa57b";</script>
+<script>window.CX_BUILD = "aee7858c80a8";</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>웨이브넷 요금계산기</title>
@@ -2892,6 +2892,12 @@ html.cxf-lock,html.cxf-lock body{overflow:hidden}
       x.classList.remove('ff-filled'); void x.offsetWidth; x.classList.add('ff-filled');
       x.classList.toggle('ff-auto', !!vals[i]);                                          /* 채운 칸은 연한 노랑 유지 */
     });
+    (function(){   /* 계산기 → 양식 : 가입통신사 SKT · SKB · 스카이라이프면 ■청구매체 기본 「문자청구서」 (비어 있을 때만) */
+      function rr(re){ return Array.prototype.filter.call(card.querySelectorAll('.ff-row'), function(r){ var f = r.querySelector('.ff-fix'); return f && re.test(f.textContent.trim()); })[0]; }
+      var cr = rr(/^[■□]\s*가입통신사/), br = rr(/^■청구매체/); if (!cr || !br) return;
+      var cv = (cr.querySelector('input.ff-in') || {}).value || '', bl = br.querySelector('input.ff-in'), bd = br.querySelector('.ff-dom');
+      if (/SK|스카이|sky/i.test(cv) && !/헬로|hello/i.test(cv) && bl && !bl.value.trim() && !(bd && bd.value.trim())){ bl.value = '문자청구서'; bl.dispatchEvent(new Event('input', { bubbles: true })); }
+    })();
     var usimNote = toUsimForm();
     window.goPage('p6', 'wired');
     if (usimNote) infoToast(usimNote);
